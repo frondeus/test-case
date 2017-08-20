@@ -1,0 +1,26 @@
+[package]
+name = "test-case-derive"
+version = "0.1.0"
+authors = ["Marcin Sas-Szymanski <marcin.sas-szymanski@anixe.pl>"]
+description = "Provides #[test_case(...)] procedural macro attribute for generating test cases easily"
+keywords = ["test", "case", "tests", "unit", "testing"]
+categories = ["development-tools", "development-tools::testing"]
+readme = "README.md"
+license-file = "LICENSE"
+repository = "https://github.com/synek317/test-case-derive"
+documentation = "https://docs.rs/test-case-derive"
+
+[badges]
+gitlab = { repository = "https://github.com/synek317/test-case-derive", branch = "master" }
+travis-ci = { repository = "synek317/test-case-derive", branch = "master" }
+maintenance = { status = "actively-developed" }
+
+[lib]
+doctest = false
+proc-macro = true
+path = "src/lib.rs"
+
+[dependencies]
+syn = "0.11.11"
+quote = "0.3.15"
+lazy_static = "0.2.8"
