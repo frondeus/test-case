@@ -1,6 +1,6 @@
 [package]
 name = "test-case-derive"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Marcin Sas-Szymanski <marcin.sas-szymanski@anixe.pl>"]
 description = "Provides #[test_case(...)] procedural macro attribute for generating test cases easily"
 keywords = ["test", "case", "tests", "unit", "testing"]
@@ -11,7 +11,6 @@ repository = "https://github.com/synek317/test-case-derive"
 documentation = "https://docs.rs/test-case-derive"
 
 [badges]
-gitlab = { repository = "https://github.com/synek317/test-case-derive", branch = "master" }
 travis-ci = { repository = "synek317/test-case-derive", branch = "master" }
 maintenance = { status = "actively-developed" }
 
