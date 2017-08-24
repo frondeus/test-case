@@ -56,7 +56,7 @@ use test_case_derive::test_case;
 fn multiplication_tests(x: i8, y: i8) {
     let actual = (x * y).abs();
 
-    assert!(8, actual)
+    assert_eq!(8, actual)
 }
 ```
 
