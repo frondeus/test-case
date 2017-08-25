@@ -17,7 +17,7 @@
 //! 
 //! ```toml
 //! [dev-dependencies]
-//! test-case-derive = "0.1.0"
+//! test-case-derive = "0.1.3"
 //! ```
 //! 
 //! Additionally you have to enable `proc_macro` feature and include crate. You can do this globally by adding:
