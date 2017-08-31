@@ -1,110 +1,52 @@
 #![cfg(test)]
-#![feature(proc_macro)]
 
-extern crate test_case_derive;
+#[macro_use]
+extern crate lazy_static;
 
-use test_case_derive::test_case;
+mod acceptance {
+    use std::process::{Command, Output};
 
-#[test_case(1)]
-fn basic_test(x: u32) {
-    assert_eq!(x, 1)
-}
-
-#[test_case(2)]
-#[test_case(4)]
-fn multiple_test_cases(x: u32) {
-    assert!(x < 10)
-}
-
-#[test_case(2 => 4)]
-#[test_case(4 => 8)]
-fn result(x: u32) -> u32 {
-    x * 2
-}
-
-#[test_case(1, 8 :: "test 1 + 8 = 9")]
-#[test_case(2, 7 :: "2nd test")]
-#[test_case(3, 6 :: "test_3_+6_=_9")]
-#[test_case(4, 5)]
-fn name(x: u32, y: u32) {
-    assert_eq!(9, x + y)
-}
-
-#[test_case(1, 2 => 3 :: "test no. 1")]
-#[test_case(4, 5 => 9)]
-fn result_and_name(x: u32, y: u32) -> u32 {
-    x + y
-}
-
-#[test_case(true)]
-fn keyword_test(x: bool)
-{
-    assert!(x)
-}
-
-#[test_case(2 + 4, "6".to_string())]
-fn arg_expressions(x: u32, expected: String) {
-    assert_eq!(expected, x.to_string())
-}
-
-#[test_case(2, 2 => 2 + 2)]
-fn result_expression(x: u32, y: u32) -> u32 {
-    x + y
-}
-
-#[test_case(2, 2 => 2 + 2 :: "test result expression")]
-fn result_expresion_with_name(x: u32, y: u32) -> u32 {
-    x + y
-}
-
-fn foo() -> u32 { 42 }
-
-#[test_case("dummy")]
-fn removes_leading_underscore_from_test_name(x: &str) {
-    assert_eq!("dummy", x)
-}
-
-mod nested {
-    use super::*;
-    
-    #[test_case(1, 1)]
-    fn nested_test_case(x: u32, y: u32) {
-        assert_eq!(x, y)
+    fn run_tests() -> Output {
+        Command::new("cargo")
+            .args(&["test", "test_cases"])
+            .output()
+            .expect("cargo command failed to start")
     }
 
-    #[test_case(20 + 22)]
-    #[test_case(42)]
-    fn using_fn_from_super(x: u32) {
-        assert_eq!(foo(), x)
+    lazy_static! {
+        static ref ACTUAL: String = {
+            let output = run_tests().stdout;
+
+            String::from_utf8_lossy(&output).to_string()
+        };
     }
-}
 
-#[test_case(42 => std::string::String::new())]
-fn result_with_mod_sep(_: i8) -> String {
-    "".to_string()
-}
+    fn actual<'a>() -> &'a str {
+        ACTUAL.as_ref()
+    }
 
-// tests from documentation
+    #[test]
+    fn runs_all_test_cases() {
+        assert!(actual().contains("running 29 tests"));
+    }
 
-#[test_case( 2 =>  2 :: "returns given number for positive input")]
-#[test_case(-2 =>  2 :: "returns opposite number for non-positive input")]
-#[test_case( 0 =>  0 :: "returns 0 for 0")]
-fn abs_tests(x: i8) -> i8 {
-   if x > 0 { x } else { -x }
-}
+    #[test]
+    fn escapes_unnecessary_leading_underscore() {
+        assert!(actual().contains("test test_cases::leading_underscore_in_test_name::dummy ... ok"));
+    }
 
-#[test_case(None,    None    => 0 :: "treats none as 0")]
-#[test_case(Some(2), Some(3) => 5)]
-#[test_case(Some(2 + 3), Some(4) => 2 + 3 + 4)]
-fn fancy_addition(x: Option<i8>, y: Option<i8>) -> i8 {
-    x.unwrap_or(0) + y.unwrap_or(0)
-}
+    #[test]
+    fn escapes_names_starting_with_digit() {
+        assert!(actual().contains("test test_cases::basic_test::_1 ... ok"));
+    }
 
-#[test_case( 2,  4 :: "when both operands are possitive")]
-#[test_case( 4,  2 :: "when operands are swapped")]
-#[test_case(-2, -4 :: "when both operands are negative")]
-fn multiplication_tests(x: i8, y: i8) {
-    let actual = x * y;
+    #[test]
+    fn removes_repeated_underscores() {
+        assert!(actual().contains("test test_cases::arg_expressions::_2_4_6_to_string ... ok"));
+    }
 
-    assert_eq!(8, actual);
+    #[test]
+    fn escapes_rust_keywords() {
+        assert!(actual().contains("test test_cases::keyword_test::_true ... ok"));
+    }
 }
