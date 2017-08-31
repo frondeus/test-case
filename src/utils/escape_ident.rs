@@ -20,7 +20,8 @@ fn escape_chars<S: AsRef<str>>(raw: S) -> String {
         match c {
             'A'...'Z' if !is_big_letter_allowed(&escaped) => escaped.push(c.to_ascii_lowercase()),
             'a'...'z' | 'A'...'Z' | '0'...'9'             => escaped.push(c),
-            _ if !is_ending_with_underscore(&escaped)     => escaped.push('_'),
+            _ if !escaped.is_empty()
+                 && !is_ending_with_underscore(&escaped)  => escaped.push('_'),
             _ => {}
         }
     }

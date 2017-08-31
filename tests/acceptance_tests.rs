@@ -59,6 +59,11 @@ fn result_expresion_with_name(x: u32, y: u32) -> u32 {
 
 fn foo() -> u32 { 42 }
 
+#[test_case("dummy")]
+fn removes_leading_underscore_from_test_name(x: &str) {
+    assert_eq!("dummy", x)
+}
+
 mod nested {
     use super::*;
     
