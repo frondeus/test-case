@@ -27,7 +27,7 @@ mod acceptance {
 
     #[test]
     fn runs_all_test_cases() {
-        assert!(actual().contains("running 29 tests"));
+        assert!(actual().contains("running 30 tests"));
     }
 
     #[test]
@@ -48,5 +48,10 @@ mod acceptance {
     #[test]
     fn escapes_rust_keywords() {
         assert!(actual().contains("test test_cases::keyword_test::_true ... ok"));
+    }
+
+    #[test]
+    fn lowers_test_case_name() {
+        assert!(actual().contains("test test_cases::lowercase_test_name::dummy_code ... ok"));
     }
 }

@@ -21,8 +21,3 @@ pub fn is_test_case(delimited: &Delimited) -> bool {
 pub fn is_ending_with_underscore(ident: &Vec<char>) -> bool {
     ident.iter().last() == Some(&'_')
 }
-
-pub fn is_big_letter_allowed(ident: &Vec<char>) -> bool {
-    !ident.is_empty()
-    && !is_ending_with_underscore(ident)
-}

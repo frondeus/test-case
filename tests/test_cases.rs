@@ -66,9 +66,14 @@ mod test_cases {
         assert_eq!("dummy", x)
     }
 
+    #[test_case("DUMMY_CODE")]
+    fn lowercase_test_name(x: &str) {
+        assert_eq!("DUMMY_CODE", x)
+    }
+
     mod nested {
         use super::*;
-        
+
         #[test_case(1, 1)]
         fn nested_test_case(x: u32, y: u32) {
             assert_eq!(x, y)
