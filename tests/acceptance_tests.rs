@@ -26,8 +26,8 @@ mod acceptance {
     }
 
     #[test]
-    fn runs_all_test_cases() {
-        assert!(actual().contains("running 30 tests"));
+    fn runs_all_tests() {
+        assert!(actual().contains("running 32 tests"));
     }
 
     #[test]
@@ -53,5 +53,11 @@ mod acceptance {
     #[test]
     fn lowers_test_case_name() {
         assert!(actual().contains("test test_cases::lowercase_test_name::dummy_code ... ok"));
+    }
+
+    #[test]
+    fn marks_inconclusive_tests_as_ignored() {
+        assert!(actual().contains("test test_cases::inconclusive_tests::should_not_take_into_account_keyword_on_argument_position ... ok"));
+        assert!(actual().contains("test test_cases::inconclusive_tests::this_test_is_inconclusive_and_will_always_be ... ignored"));
     }
 }

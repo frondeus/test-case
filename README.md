@@ -17,7 +17,7 @@ First of all you have to add this dependency to your `Cargo.toml`:
 
 ```toml
 [dev-dependencies]
-test-case-derive = "0.1.3"
+test-case-derive = "0.2.0"
 ```
 
 Additionally you have to enable `proc_macro` feature and include crate. You can do this globally by adding:
@@ -86,7 +86,7 @@ fn abs_tests(x: i8) -> i8 {
 }
 ```
 
-Which is equivalent to 
+Which is equivalent to
 
 ```
 #[test_case( 2, 2 :: "returns given number for positive input")]
@@ -137,7 +137,7 @@ mod fancy_addition {
     fn some_2_some_3() {
         let expected = 5;
         let actual = fancy_addition(Some(2), Some(3));
-        
+
         assert_eq!(expected, actual);
     }
 
@@ -150,6 +150,38 @@ mod fancy_addition {
     }
 }
 ```
+
+## Inconclusive (ignored) test cases (sicne 0.2.0)
+
+If test case name (passed using `::` syntax described above) contains word "inconclusive", generated test will be marked with `#[ignore]`.
+
+```
+#[test_case("42")]
+#[test_case("XX" :: "inconclusive - parsing letters temporarily doesn't work but it's ok")]
+fn parses_input(input: &str) {
+    // ...
+}
+```
+
+Generated code:
+```
+mod parses_input {
+    // ...
+
+    #[test]
+    pub fn _42() {
+        // ...
+    }
+
+    #[test]
+    #[ignore]
+    pub fn inconclusive_parsing_letters_temporarily_doesn_t_work_but_it_s_ok() {
+        // ...
+    }
+
+```
+
+**Note**: word `inconclusive` is only reserved in test name given after `::`.
 
 # Contribution
 

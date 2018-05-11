@@ -115,4 +115,9 @@ mod test_cases {
 
         assert_eq!(8, actual);
     }
+
+    #[test_case("inconclusive" :: "should not take into account keyword on argument position")]
+    #[test_case("dummy" :: "this test is inconclusive and will always be")]
+    fn inconclusive_tests(_s: &str) {
+    }
 }
