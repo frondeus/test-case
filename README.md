@@ -1,5 +1,5 @@
 # Overview
-This crate provides `#[test_case]` procedural macro attribute that generates multiple tests using one body with different input parameters.
+This crate provides `#[test_case]` procedural macro attribute that generates multiple parametrized tests using one body with different input parameters.
 A test is generated for each data set passed in `test_case` attribute.
 Under the hood, all test cases that share same body are grouped into `mod`, giving clear and readable test results.
 
