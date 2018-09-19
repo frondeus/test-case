@@ -282,7 +282,8 @@ use prelude::*;
 /// ```
 #[proc_macro_attribute]
 pub fn test_case(attr: TokenStream, input: TokenStream) -> TokenStream {
-    let input_string = format!("#[test_case{}]{}", attr, input);
+    let attr_string = get_attr_string(&attr);
+    let input_string = format!("#[test_case{}]{}", attr_string, input);
     let ast          = syn::parse_token_trees(&input_string);
 
     match ast {
@@ -297,5 +298,16 @@ pub fn test_case(attr: TokenStream, input: TokenStream) -> TokenStream {
                 .expect(&format!("generate test cases for: {}", input_string))
         },
         Err(e) => panic!(e)
+    }
+}
+
+fn get_attr_string(attr: &TokenStream) -> String {
+    let result = format!("{}", attr);
+
+    if result.starts_with("(") {
+        result
+    }
+    else {
+        format!("({})", result)
     }
 }

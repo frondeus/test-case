@@ -73,6 +73,7 @@ mod test_cases {
 
     mod nested {
         use super::*;
+        use test_case_derive::test_case;
 
         #[test_case(1, 1)]
         fn nested_test_case(x: u32, y: u32) {
