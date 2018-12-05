@@ -151,7 +151,7 @@
 //! }
 //! ```
 //!
-//! ## Inconclusive (ignored) test cases (sicne 0.2.0)
+//! ## Inconclusive (ignored) test cases (since 0.2.0)
 //!
 //! If test case name (passed using `::` syntax described above) contains word "inconclusive", generated test will be marked with `#[ignore]`.
 //!
