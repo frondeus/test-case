@@ -1,6 +1,6 @@
 [package]
 name = "test-case-derive"
-version = "0.2.1"
+version = "0.2.2"
 authors = ["Marcin Sas-Szymanski <marcin.sas-szymanski@anixe.pl>"]
 description = "Provides #[test_case(...)] procedural macro attribute for generating parametrized test cases easily"
 keywords = ["test", "case", "tests", "unit", "testing"]
