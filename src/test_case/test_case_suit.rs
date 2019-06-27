@@ -60,13 +60,13 @@ impl From<Vec<TokenTree>> for TestCaseSuit {
                 continue;
             }
             
-            name = name.or(try_parse_fn_name(&token, next_token));
+            name = name.or_else(|| try_parse_fn_name(&token, next_token));
             
             leftover.push(token);
         }
 
         Self {
-            attrs: attrs,
+            attrs,
             body:  leftover,
             name:  name.expect("Couldn't find test function name")
         }

@@ -211,8 +211,6 @@
 //! OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //! SOFTWARE.
 
-#![feature(proc_macro)]
-
 #[macro_use]
 extern crate lazy_static;
 #[macro_use]
@@ -295,7 +293,7 @@ pub fn test_case(attr: TokenStream, input: TokenStream) -> TokenStream {
                     .to_string();
 
             TokenStream::from_str(&test_cases)
-                .expect(&format!("generate test cases for: {}", input_string))
+                .unwrap_or_else(|_| panic!("generate test cases for: {}", input_string))
         },
         Err(e) => panic!(e)
     }
@@ -304,7 +302,7 @@ pub fn test_case(attr: TokenStream, input: TokenStream) -> TokenStream {
 fn get_attr_string(attr: &TokenStream) -> String {
     let result = format!("{}", attr);
 
-    if result.starts_with("(") {
+    if result.starts_with('(') {
         result
     }
     else {

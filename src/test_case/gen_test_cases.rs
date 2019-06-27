@@ -1,6 +1,6 @@
 use prelude::*;
 
-pub fn gen_test_case(test_fn_name: Token, token_tree: &Vec<TokenTree>) -> Tokens {
+pub fn gen_test_case(test_fn_name: Token, token_tree: &[TokenTree]) -> Tokens {
     let (name, leftover)       = given_test_case_name(token_tree);
     let (expected, leftover)   = expected_result(leftover);
     let args                   = leftover;
@@ -18,7 +18,7 @@ pub fn gen_test_case(test_fn_name: Token, token_tree: &Vec<TokenTree>) -> Tokens
 }
 
 fn given_test_case_name(token_tree: &[TokenTree]) -> (Option<Token>, &[TokenTree]) {
-    let mut iter     = token_tree.into_iter().rev();
+    let mut iter     = token_tree.iter().rev();
     let last         = iter.next();
     let last_but_one = iter.next();
 
@@ -55,7 +55,7 @@ fn test_case_body(test_fn_name: Token, args: &[TokenTree], expected: &[TokenTree
 
 fn expected_result(token_tree: &[TokenTree]) -> (&[TokenTree], &[TokenTree]) {
     for i in (0..token_tree.len()).rev() {
-        if &TTToken(TFatArrow) == &token_tree[i] {
+        if TTToken(TFatArrow) == token_tree[i] {
             return (
                 &token_tree[i+1..token_tree.len()],
                 &token_tree[0..i]

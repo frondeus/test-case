@@ -6,7 +6,7 @@ pub fn is_digit(c: char) -> bool {
 
 pub fn is_delimited(tt: &TokenTree) -> bool {
     match tt {
-        &TTDelimited(_) => true,
+        TTDelimited(_)  => true,
         _               => false
     }
 }
@@ -18,6 +18,6 @@ pub fn is_test_case(delimited: &Delimited) -> bool {
     && is_delimited(&delimited.tts[1])
 }
 
-pub fn is_ending_with_underscore(ident: &Vec<char>) -> bool {
+pub fn is_ending_with_underscore(ident: &[char]) -> bool {
     ident.iter().last() == Some(&'_')
 }

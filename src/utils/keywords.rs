@@ -8,7 +8,7 @@ lazy_static! {
         "type", "unsafe", "use", "where", "while", "abstract", "alignof", "become", "box", "do", 
         "final", "macro", "offsetof", "override", "priv", "proc", "pure", "sizeof", "typeof", "unsized", 
         "virtual", "yield"
-    ].into_iter().cloned().collect();
+    ].iter().cloned().collect();
 }
 
 pub trait IsRustKeyword {

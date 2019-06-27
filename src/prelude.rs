@@ -1,6 +1,5 @@
 pub use std::str::FromStr;
 pub use std::collections::HashSet;
-pub use std::ascii::AsciiExt;
 
 pub use syn::Token::{
     self, 
