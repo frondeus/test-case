@@ -38,8 +38,7 @@ mod test_cases {
     }
 
     #[test_case(true)]
-    fn keyword_test(x: bool)
-    {
+    fn keyword_test(x: bool) {
         assert!(x)
     }
 
@@ -58,7 +57,9 @@ mod test_cases {
         x + y
     }
 
-    fn foo() -> u32 { 42 }
+    fn foo() -> u32 {
+        42
+    }
 
     #[test_case("dummy")]
     fn leading_underscore_in_test_name(x: &str) {
@@ -97,7 +98,11 @@ mod test_cases {
     #[test_case(-2 =>  2 :: "returns opposite number for non-positive input")]
     #[test_case( 0 =>  0 :: "returns 0 for 0")]
     fn abs_tests(x: i8) -> i8 {
-    if x > 0 { x } else { -x }
+        if x > 0 {
+            x
+        } else {
+            -x
+        }
     }
 
     #[test_case(None,    None    => 0 :: "treats none as 0")]
@@ -118,6 +123,5 @@ mod test_cases {
 
     #[test_case("inconclusive" :: "should not take into account keyword on argument position")]
     #[test_case("dummy" :: "this test is inconclusive and will always be")]
-    fn inconclusive_tests(_s: &str) {
-    }
+    fn inconclusive_tests(_s: &str) {}
 }

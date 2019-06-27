@@ -215,14 +215,14 @@
 extern crate lazy_static;
 #[macro_use]
 extern crate quote;
-extern crate syn;
 extern crate proc_macro;
+extern crate syn;
 
-mod utils;
-mod test_case;
 mod prelude;
+mod test_case;
+mod utils;
 
-use prelude::*;
+use crate::prelude::*;
 
 /// Generates tests for given set of data
 ///
@@ -282,20 +282,17 @@ use prelude::*;
 pub fn test_case(attr: TokenStream, input: TokenStream) -> TokenStream {
     let attr_string = get_attr_string(&attr);
     let input_string = format!("#[test_case{}]{}", attr_string, input);
-    let ast          = syn::parse_token_trees(&input_string);
+    let ast = syn::parse_token_trees(&input_string);
 
     match ast {
         Ok(token_tree) => {
-            let test_case_suit : TestCaseSuit = token_tree.into();
-            let test_cases =
-                test_case_suit
-                    .gen_test_cases()
-                    .to_string();
+            let test_case_suit: TestCaseSuit = token_tree.into();
+            let test_cases = test_case_suit.gen_test_cases().to_string();
 
             TokenStream::from_str(&test_cases)
                 .unwrap_or_else(|_| panic!("generate test cases for: {}", input_string))
-        },
-        Err(e) => panic!(e)
+        }
+        Err(e) => panic!(e),
     }
 }
 
@@ -304,8 +301,7 @@ fn get_attr_string(attr: &TokenStream) -> String {
 
     if result.starts_with('(') {
         result
-    }
-    else {
+    } else {
         format!("({})", result)
     }
 }

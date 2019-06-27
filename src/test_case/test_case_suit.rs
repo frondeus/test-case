@@ -1,9 +1,9 @@
-use prelude::*;
+use crate::prelude::*;
 
 pub struct TestCaseSuit {
     attrs: Vec<Vec<TokenTree>>,
-    body:  Vec<TokenTree>,
-    name:  String
+    body: Vec<TokenTree>,
+    name: String,
 }
 
 impl TestCaseSuit {
@@ -20,15 +20,13 @@ impl TestCaseSuit {
     pub fn gen_test_cases(&self) -> Tokens {
         let name = self.name_token();
         let body = self.body_tokens();
-        let test_cases = 
-            self.attrs
-                .iter()
-                .map(|tt| {
-                    gen_test_case(self.name_token(), tt)
-                })
-                .collect::<Vec<_>>();
+        let test_cases = self
+            .attrs
+            .iter()
+            .map(|tt| gen_test_case(self.name_token(), tt))
+            .collect::<Vec<_>>();
 
-        quote! { 
+        quote! {
             mod #name {
                 #[allow(unused_imports)]
                 use super::*;
@@ -43,37 +41,43 @@ impl TestCaseSuit {
 
 impl From<Vec<TokenTree>> for TestCaseSuit {
     fn from(token_tree: Vec<TokenTree>) -> Self {
-        let mut attrs     = Vec::new();
-        let mut leftover  = Vec::new();
-        let mut name      = None;
-        let mut iter      = token_tree.into_iter().peekable();
+        let mut attrs = Vec::new();
+        let mut leftover = Vec::new();
+        let mut name = None;
+        let mut iter = token_tree.into_iter().peekable();
         let mut skip_next = false;
 
         while let Some(token) = iter.next() {
-            if skip_next { skip_next = false; continue }
+            if skip_next {
+                skip_next = false;
+                continue;
+            }
 
             let next_token = iter.peek();
 
-            if let Some(attributes) = try_get_test_case(&token, next_token) { 
+            if let Some(attributes) = try_get_test_case(&token, next_token) {
                 attrs.push(attributes.clone());
                 skip_next = true;
                 continue;
             }
-            
+
             name = name.or_else(|| try_parse_fn_name(&token, next_token));
-            
+
             leftover.push(token);
         }
 
         Self {
             attrs,
-            body:  leftover,
-            name:  name.expect("Couldn't find test function name")
+            body: leftover,
+            name: name.expect("Couldn't find test function name"),
         }
     }
 }
 
-fn try_get_test_case<'a>(token: &'a TokenTree, next_token: Option<&'a TokenTree>) -> Option<&'a Vec<TokenTree>> {
+fn try_get_test_case<'a>(
+    token: &'a TokenTree,
+    next_token: Option<&'a TokenTree>,
+) -> Option<&'a Vec<TokenTree>> {
     if token == &TTToken(TPound) {
         if let Some(&TTDelimited(ref delimited)) = next_token {
             if is_test_case(delimited) {

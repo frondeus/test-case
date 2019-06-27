@@ -1,4 +1,4 @@
-use prelude::*;
+use crate::prelude::*;
 
 pub fn escape_ident<S: AsRef<str>>(raw: S) -> Token {
     let mut escaped = escape_chars(raw);
@@ -18,10 +18,9 @@ fn escape_chars<S: AsRef<str>>(raw: S) -> String {
 
     for c in iter {
         match c {
-            'A'...'Z'                                     => escaped.push(c.to_ascii_lowercase()),
-            'a'...'z' | '0'...'9'                         => escaped.push(c),
-            _ if !escaped.is_empty()
-                 && !is_ending_with_underscore(&escaped)  => escaped.push('_'),
+            'A'...'Z' => escaped.push(c.to_ascii_lowercase()),
+            'a'...'z' | '0'...'9' => escaped.push(c),
+            _ if !escaped.is_empty() && !is_ending_with_underscore(&escaped) => escaped.push('_'),
             _ => {}
         }
     }

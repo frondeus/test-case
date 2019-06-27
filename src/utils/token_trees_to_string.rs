@@ -1,4 +1,4 @@
-use prelude::*;
+use crate::prelude::*;
 
 pub trait TokenTreesToString {
     fn to_string(&self) -> String;
