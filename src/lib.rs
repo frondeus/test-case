@@ -20,17 +20,14 @@
 //! test-case-derive = "0.2.0"
 //! ```
 //!
-//! Additionally you have to enable `proc_macro` feature and include crate. You can do this globally by adding:
-//!
 //! ```
-//! #![feature(proc_macro)]
 //! extern crate test_case_derive;
 //! ```
 //!
 //! to your `lib.rs` or `main.rs` file. Optionally you may enable proc macros only for tests:
 //!
 //! ```
-//! #![cfg_attr(test, feature(proc_macro))]
+//! #![cfg_attr(test)]
 //! #[cfg(test)]
 //! extern crate test_case_derive;
 //! ```
@@ -45,7 +42,6 @@
 //!
 //! ```
 //! #![cfg(test)]
-//! #![feature(proc_macro)]
 //! extern crate test_case_derive;
 //!
 //! use test_case_derive::test_case;
@@ -211,18 +207,22 @@
 //! OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //! SOFTWARE.
 
-#[macro_use]
-extern crate lazy_static;
-#[macro_use]
-extern crate quote;
 extern crate proc_macro;
-extern crate syn;
 
-mod prelude;
+use proc_macro::{TokenStream};
+
+use syn::{parse_macro_input, ItemFn};
+
+
+
+use quote::quote;
+use syn::parse_quote;
+use test_case::TestCase;
+use crate::parented_test_case::ParentedTestCase;
+
+mod parented_test_case;
 mod test_case;
 mod utils;
-
-use crate::prelude::*;
 
 /// Generates tests for given set of data
 ///
@@ -279,29 +279,47 @@ use crate::prelude::*;
 /// }
 /// ```
 #[proc_macro_attribute]
-pub fn test_case(attr: TokenStream, input: TokenStream) -> TokenStream {
-    let attr_string = get_attr_string(&attr);
-    let input_string = format!("#[test_case{}]{}", attr_string, input);
-    let ast = syn::parse_token_trees(&input_string);
+pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
+    let test_case = parse_macro_input!(args as TestCase);
+    let mut item = parse_macro_input!(input as ItemFn);
 
-    match ast {
-        Ok(token_tree) => {
-            let test_case_suit: TestCaseSuit = token_tree.into();
-            let test_cases = test_case_suit.gen_test_cases().to_string();
-
-            TokenStream::from_str(&test_cases)
-                .unwrap_or_else(|_| panic!("generate test cases for: {}", input_string))
+    let mut test_cases = vec![test_case];
+    let mut attrs_to_remove = vec![];
+    for (idx, attr) in item.attrs.iter().enumerate() {
+        if attr.path == parse_quote!(test_case) {
+            let tts: TokenStream = attr.tts.clone().into();
+            let parented_test_case = parse_macro_input!(tts as ParentedTestCase);
+            test_cases.push(parented_test_case.test_case);
+            attrs_to_remove.push(idx);
         }
-        Err(e) => panic!(e),
     }
+
+    for i in attrs_to_remove.into_iter().rev() {
+        item.attrs.swap_remove(i);
+    }
+
+    render_test_cases(&test_cases, item)
 }
 
-fn get_attr_string(attr: &TokenStream) -> String {
-    let result = format!("{}", attr);
-
-    if result.starts_with('(') {
-        result
-    } else {
-        format!("({})", result)
+fn render_test_cases(test_cases: &[TestCase], item: ItemFn) -> TokenStream {
+    let mut rendered_test_cases = vec![];
+    for test_case in test_cases {
+        rendered_test_cases.push(test_case.render(item.clone()));
     }
+
+    let mod_name  = item.ident;
+
+    let output = quote! {
+            mod #mod_name {
+                #[allow(unused_imports)]
+                use super::*;
+
+                #(#rendered_test_cases)*
+            }
+        };
+
+    output.into()
 }
+
+
+

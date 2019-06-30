@@ -6,15 +6,16 @@ mod test_cases {
     use super::*;
     use test_case_derive::test_case;
 
-    #[test_case(1)]
-    fn basic_test(x: u32) {
-        assert_eq!(x, 1)
-    }
 
     #[test_case(2)]
     #[test_case(4)]
     fn multiple_test_cases(x: u32) {
         assert!(x < 10)
+    }
+
+    #[test_case(1)]
+    fn basic_test(x: u32) {
+        assert_eq!(x, 1)
     }
 
     #[test_case(2 => 4)]
@@ -23,15 +24,15 @@ mod test_cases {
         x * 2
     }
 
-    #[test_case(1, 8 :: "test 1 + 8 = 9")]
-    #[test_case(2, 7 :: "2nd test")]
-    #[test_case(3, 6 :: "test_3_+6_=_9")]
+    #[test_case(1, 8 ; "test 1 + 8 = 9")]
+    #[test_case(2, 7 ; "2nd test")]
+    #[test_case(3, 6 ; "test_3_+6_=_9")]
     #[test_case(4, 5)]
     fn name(x: u32, y: u32) {
         assert_eq!(9, x + y)
     }
 
-    #[test_case(1, 2 => 3 :: "test no. 1")]
+    #[test_case(1, 2 => 3 ; "test no. 1")]
     #[test_case(4, 5 => 9)]
     fn result_and_name(x: u32, y: u32) -> u32 {
         x + y
@@ -52,7 +53,13 @@ mod test_cases {
         x + y
     }
 
-    #[test_case(2, 2 => 2 + 2 :: "test result expression")]
+    #[test_case(2, 2 => 2 + 3)]
+    #[should_panic]
+    fn result_which_panics(x: u32, y: u32) -> u32 {
+        x + y
+    }
+
+    #[test_case(2, 2 => 2 + 2 ; "test result expression")]
     fn result_expresion_with_name(x: u32, y: u32) -> u32 {
         x + y
     }
@@ -94,9 +101,9 @@ mod test_cases {
 
     // tests from documentation
 
-    #[test_case( 2 =>  2 :: "returns given number for positive input")]
-    #[test_case(-2 =>  2 :: "returns opposite number for non-positive input")]
-    #[test_case( 0 =>  0 :: "returns 0 for 0")]
+    #[test_case( 2 =>  2 ; "returns given number for positive input")]
+    #[test_case(-2 =>  2 ; "returns opposite number for non-positive input")]
+    #[test_case( 0 =>  0 ; "returns 0 for 0")]
     fn abs_tests(x: i8) -> i8 {
         if x > 0 {
             x
@@ -105,23 +112,23 @@ mod test_cases {
         }
     }
 
-    #[test_case(None,    None    => 0 :: "treats none as 0")]
+    #[test_case(None,    None    => 0 ; "treats none as 0")]
     #[test_case(Some(2), Some(3) => 5)]
     #[test_case(Some(2 + 3), Some(4) => 2 + 3 + 4)]
     fn fancy_addition(x: Option<i8>, y: Option<i8>) -> i8 {
         x.unwrap_or(0) + y.unwrap_or(0)
     }
 
-    #[test_case( 2,  4 :: "when both operands are possitive")]
-    #[test_case( 4,  2 :: "when operands are swapped")]
-    #[test_case(-2, -4 :: "when both operands are negative")]
+    #[test_case( 2,  4 ; "when both operands are possitive")]
+    #[test_case( 4,  2 ; "when operands are swapped")]
+    #[test_case(-2, -4 ; "when both operands are negative")]
     fn multiplication_tests(x: i8, y: i8) {
         let actual = x * y;
 
         assert_eq!(8, actual);
     }
 
-    #[test_case("inconclusive" :: "should not take into account keyword on argument position")]
-    #[test_case("dummy" :: "this test is inconclusive and will always be")]
+    #[test_case("inconclusive" ; "should not take into account keyword on argument position")]
+    #[test_case("dummy" ; "this test is inconclusive and will always be")]
     fn inconclusive_tests(_s: &str) {}
 }
