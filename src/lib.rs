@@ -197,16 +197,14 @@
 
 extern crate proc_macro;
 
-use proc_macro::{TokenStream};
+use proc_macro::TokenStream;
 
 use syn::{parse_macro_input, ItemFn};
 
-
-
+use crate::parented_test_case::ParentedTestCase;
 use quote::quote;
 use syn::parse_quote;
 use test_case::TestCase;
-use crate::parented_test_case::ParentedTestCase;
 
 mod parented_test_case;
 mod test_case;
@@ -275,7 +273,7 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
     let mut attrs_to_remove = vec![];
     for (idx, attr) in item.attrs.iter().enumerate() {
         if attr.path == parse_quote!(test_case) {
-            let tts: TokenStream = attr.tts.clone().into();
+            let tts: TokenStream = attr.tokens.clone().into();
             let parented_test_case = parse_macro_input!(tts as ParentedTestCase);
             test_cases.push(parented_test_case.test_case);
             attrs_to_remove.push(idx);
@@ -295,19 +293,16 @@ fn render_test_cases(test_cases: &[TestCase], item: ItemFn) -> TokenStream {
         rendered_test_cases.push(test_case.render(item.clone()));
     }
 
-    let mod_name  = item.ident;
+    let mod_name = item.sig.ident;
 
     let output = quote! {
-            mod #mod_name {
-                #[allow(unused_imports)]
-                use super::*;
+        mod #mod_name {
+            #[allow(unused_imports)]
+            use super::*;
 
-                #(#rendered_test_cases)*
-            }
-        };
+            #(#rendered_test_cases)*
+        }
+    };
 
     output.into()
 }
-
-
-

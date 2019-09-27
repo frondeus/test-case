@@ -1,7 +1,6 @@
 mod test_cases {
     use test_case::test_case;
 
-
     #[test_case(2)]
     #[test_case(4)]
     fn multiple_test_cases(x: u32) {
