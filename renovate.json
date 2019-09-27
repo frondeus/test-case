@@ -1,5 +1,11 @@
 {
   "extends": [
     "config:base"
+  ],
+  "packageRules": [
+    {
+      "packageNames": ["syn", "quote", "proc-macro2"],
+      "groupName": "syn/quote/proc-macros packages"
+    }
   ]
 }
