@@ -3,13 +3,21 @@ This crate provides `#[test_case]` procedural macro attribute that generates mul
 A test is generated for each data set passed in `test_case` attribute.
 Under the hood, all test cases that share same body are grouped into `mod`, giving clear and readable test results.
 
-[![Crates.io](https://img.shields.io/crates/v/test-case-derive.svg)](https://crates.io/crates/test-case-derive)
+[![Crates.io](https://img.shields.io/crates/v/test-case.svg)](https://crates.io/crates/test-case)
 [![license](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/kbknapp/clap-rs/blob/master/LICENSE-MIT)
-[![Build Status](https://travis-ci.org/synek317/test-case-derive.svg?branch=master)](https://travis-ci.org/synek317/test-case-derive)
+[![Build Status](https://travis-ci.org/frondeus/test-case.svg?branch=master)](https://travis-ci.org/frondeus/test-case)
 
-[Documentation](https://docs.rs/test-case-derive/)
+[Documentation](https://docs.rs/test-case/)
 
-[Repository](https://github.com/synek317/test-case-derive)
+[Repository](https://github.com/frondeus/test-case)
+
+# Breaking changes
+* Crate has new name, as `test-case-derive` had no meaning for `derive` part.
+* Crate has new maintainer: Wojciech Polak :hand: :tada:
+* Since `0.3.0` delimiter for test case description is `;` instead of `::`.
+Reason: `::` is valid part of expression and rustc treats const variable as path
+with length 1. So usage `#[test_case(1, MY_CONST :: "my desc")]` is treated as
+`MY_CONST::"invalid because literal string cannot be part of path"`.
 
 # Getting Started
 
@@ -17,42 +25,23 @@ First of all you have to add this dependency to your `Cargo.toml`:
 
 ```toml
 [dev-dependencies]
-test-case-derive = "0.2.0"
-```
-
-Additionally you have to enable `proc_macro` feature and include crate. You can do this globally by adding:
-
-```
-#![feature(proc_macro)]
-extern crate test_case_derive;
-```
-
-to your `lib.rs` or `main.rs` file. Optionally you may enable proc macros only for tests:
-
-```
-#![cfg_attr(test, feature(proc_macro))]
-#[cfg(test)]
-extern crate test_case_derive;
+test-case = "0.3.0"
 ```
 
 Don't forget that procedural macros are imported with `use` statement:
 
 ```
-use test_case_derive::test_case;
+use test_case::test_case;
 ```
 
 # Example usage:
 
 ```
-#![cfg(test)]
-#![feature(proc_macro)]
-extern crate test_case_derive;
+use test_case::test_case;
 
-use test_case_derive::test_case;
-
-#[test_case( 2,  4 :: "when both operands are possitive")]
-#[test_case( 4,  2 :: "when operands are swapped")]
-#[test_case(-2, -4 :: "when both operands are negative")]
+#[test_case( 2,  4 ; "when both operands are possitive")]
+#[test_case( 4,  2 ; "when operands are swapped")]
+#[test_case(-2, -4 ; "when both operands are negative")]
 fn multiplication_tests(x: i8, y: i8) {
     let actual = (x * y).abs();
 
@@ -78,9 +67,9 @@ test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 If your only assertion is just `assert_eq!`, you can pass the expectation as macro attribute using `=>` syntax:
 
 ```
-#[test_case( 2 => 2 :: "returns given number for positive input")]
-#[test_case(-2 => 2 :: "returns opposite number for non-positive input")]
-#[test_case( 0 => 0 :: "returns 0 for 0")]
+#[test_case( 2 => 2 ; "returns given number for positive input")]
+#[test_case(-2 => 2 ; "returns opposite number for non-positive input")]
+#[test_case( 0 => 0 ; "returns 0 for 0")]
 fn abs_tests(x: i8) -> i8 {
    if x > 0 { x } else { -x }
 }
@@ -89,9 +78,9 @@ fn abs_tests(x: i8) -> i8 {
 Which is equivalent to
 
 ```
-#[test_case( 2, 2 :: "returns given number for positive input")]
-#[test_case(-2, 2 :: "returns opposite number for non-positive input")]
-#[test_case( 0, 0 :: "returns 0 for 0")]
+#[test_case( 2, 2 ; "returns given number for positive input")]
+#[test_case(-2, 2 ; "returns opposite number for non-positive input")]
+#[test_case( 0, 0 ; "returns 0 for 0")]
 fn abs_tests(x: i8, expected: i8){
    let actual = if x > 0 { x } else { -x };
 
@@ -102,7 +91,7 @@ fn abs_tests(x: i8, expected: i8){
 Attributes and expectation may be any expresion unless they contain `=>`, e.g.
 
 ```
-#[test_case(None,        None    => 0 :: "treats none as 0")]
+#[test_case(None,        None    => 0 ; "treats none as 0")]
 #[test_case(Some(2),     Some(3) => 5)]
 #[test_case(Some(2 + 3), Some(4) => 2 + 3 + 4)]
 fn fancy_addition(x: Option<i8>, y: Option<i8>) -> i8 {
@@ -112,7 +101,7 @@ fn fancy_addition(x: Option<i8>, y: Option<i8>) -> i8 {
 
 Note: in fact, `=>` is not prohibited but the parser will always treat last `=>` sign as beginning of expectation definition.
 
-Test case names are optional. They are set using `::` followed by string literal at the end of macro attributes.
+Test case names are optional. They are set using `;` followed by string literal at the end of macro attributes.
 
 Example generated code:
 
@@ -153,11 +142,11 @@ mod fancy_addition {
 
 ## Inconclusive (ignored) test cases (sicne 0.2.0)
 
-If test case name (passed using `::` syntax described above) contains word "inconclusive", generated test will be marked with `#[ignore]`.
+If test case name (passed using `;` syntax described above) contains word "inconclusive", generated test will be marked with `#[ignore]`.
 
 ```
 #[test_case("42")]
-#[test_case("XX" :: "inconclusive - parsing letters temporarily doesn't work but it's ok")]
+#[test_case("XX" ; "inconclusive - parsing letters temporarily doesn't work but it's ok")]
 fn parses_input(input: &str) {
     // ...
 }
@@ -181,7 +170,7 @@ mod parses_input {
 
 ```
 
-**Note**: word `inconclusive` is only reserved in test name given after `::`.
+**Note**: word `inconclusive` is only reserved in test name given after `;`.
 
 # Contribution
 
@@ -191,7 +180,7 @@ All contributions and comments are more than welcome! Don't be afraid to open an
 
 MIT License
 
-Copyright (c) 2017 Marcin Sas-Szymański
+Copyright (c) 2017-2019 Marcin Sas-Szymański, Wojciech Polak
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

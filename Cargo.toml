@@ -1,17 +1,19 @@
 [package]
-name = "test-case-derive"
-version = "0.2.1"
-authors = ["Marcin Sas-Szymanski <marcin.sas-szymanski@anixe.pl>"]
+name = "test-case"
+version = "0.3.0"
+edition = "2018"
+authors = ["Marcin Sas-Szymanski <marcin.sas-szymanski@anixe.pl>", "Wojciech Polak <frondeus@gmail.com>"]
 description = "Provides #[test_case(...)] procedural macro attribute for generating parametrized test cases easily"
 keywords = ["test", "case", "tests", "unit", "testing"]
 categories = ["development-tools", "development-tools::testing"]
 readme = "README.md"
 license = "MIT"
-repository = "https://github.com/synek317/test-case-derive"
-documentation = "https://docs.rs/test-case-derive"
+repository = "https://github.com/frondeus/test-case"
+documentation = "https://docs.rs/test-case"
+exclude = ["tests/snapshots/**/*"]
 
 [badges]
-travis-ci = { repository = "synek317/test-case-derive", branch = "master" }
+travis-ci = { repository = "frondeus/test-case", branch = "master" }
 maintenance = { status = "actively-developed" }
 
 [lib]
@@ -20,6 +22,10 @@ proc-macro = true
 path = "src/lib.rs"
 
 [dependencies]
-syn = "0.11.11"
-quote = "0.3.15"
-lazy_static = "0.2.8"
+syn = { version = "0.15.39", features = ["full"] }
+quote = "0.6.12"
+proc-macro2 = { version = "0.4.30", features = [] }
+lazy_static = "1.3.0"
+
+[dev-dependencies]
+insta = "0.8.1"
