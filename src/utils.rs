@@ -2,21 +2,20 @@ use proc_macro2::{Ident, Span};
 
 pub fn escape_test_name(input: impl Into<String>) -> Ident {
     let mut last_under = false;
-    let mut ident: String = input.into()
+    let mut ident: String = input
+        .into()
         .to_ascii_lowercase()
         .chars()
-        .filter_map(|c| {
-            match c {
-                c if c.is_alphanumeric() => {
-                    last_under = false;
-                    Some(c.to_ascii_lowercase())
-                },
-                _ if !last_under => {
-                    last_under = true;
-                    Some('_')
-                },
-                _ => None,
+        .filter_map(|c| match c {
+            c if c.is_alphanumeric() => {
+                last_under = false;
+                Some(c.to_ascii_lowercase())
             }
+            _ if !last_under => {
+                last_under = true;
+                Some('_')
+            }
+            _ => None,
         })
         .collect();
 

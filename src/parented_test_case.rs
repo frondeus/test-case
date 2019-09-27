@@ -1,10 +1,10 @@
-use syn::parse::{Parse, ParseStream};
-use syn::parenthesized;
-use syn::Error;
 use crate::test_case::TestCase;
+use syn::parenthesized;
+use syn::parse::{Parse, ParseStream};
+use syn::Error;
 
 pub struct ParentedTestCase {
-    pub test_case: TestCase
+    pub test_case: TestCase,
 }
 
 impl Parse for ParentedTestCase {
@@ -12,8 +12,6 @@ impl Parse for ParentedTestCase {
         let content;
         let _ = parenthesized!(content in input);
         let test_case = TestCase::parse(&content)?;
-        Ok(Self {
-            test_case
-        })
+        Ok(Self { test_case })
     }
 }
