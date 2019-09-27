@@ -1,18 +1,19 @@
 [package]
-name = "test-case-derive"
+name = "test-case"
 version = "0.3.0"
 edition = "2018"
-authors = ["Marcin Sas-Szymanski <marcin.sas-szymanski@anixe.pl>"]
+authors = ["Marcin Sas-Szymanski <marcin.sas-szymanski@anixe.pl>", "Wojciech Polak <frondeus@gmail.com>"]
 description = "Provides #[test_case(...)] procedural macro attribute for generating parametrized test cases easily"
 keywords = ["test", "case", "tests", "unit", "testing"]
 categories = ["development-tools", "development-tools::testing"]
 readme = "README.md"
 license = "MIT"
-repository = "https://github.com/synek317/test-case-derive"
-documentation = "https://docs.rs/test-case-derive"
+repository = "https://github.com/frondeus/test-case"
+documentation = "https://docs.rs/test-case"
+exclude = ["tests/snapshots/**/*"]
 
 [badges]
-travis-ci = { repository = "synek317/test-case-derive", branch = "master" }
+travis-ci = { repository = "frondeus/test-case", branch = "master" }
 maintenance = { status = "actively-developed" }
 
 [lib]
