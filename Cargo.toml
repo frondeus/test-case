@@ -23,7 +23,7 @@ path = "src/lib.rs"
 
 [dependencies]
 syn = { version = "0.15.44", features = ["full"] }
-quote = "0.6.12"
+quote = "0.6.13"
 proc-macro2 = { version = "0.4.30", features = [] }
 lazy_static = "1.4.0"
 
