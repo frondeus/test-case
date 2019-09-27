@@ -1,25 +1,16 @@
-# Overview
+[![Crates.io](https://img.shields.io/crates/v/test-case.svg)](https://crates.io/crates/test-case)
+[![Docs.rs](https://docs.rs/test-case/badge.svg)](https://docs.rs/test-case/badge.svg)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/rust-lang/docs.rs/master/LICENSE)
+[![Build Status](https://travis-ci.org/frondeus/test-case.svg?branch=master)](https://travis-ci.org/frondeus/test-case)
+
+# Test Case
+
+## Overview
 This crate provides `#[test_case]` procedural macro attribute that generates multiple parametrized tests using one body with different input parameters.
 A test is generated for each data set passed in `test_case` attribute.
 Under the hood, all test cases that share same body are grouped into `mod`, giving clear and readable test results.
 
-[![Crates.io](https://img.shields.io/crates/v/test-case.svg)](https://crates.io/crates/test-case)
-[![license](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/kbknapp/clap-rs/blob/master/LICENSE-MIT)
-[![Build Status](https://travis-ci.org/frondeus/test-case.svg?branch=master)](https://travis-ci.org/frondeus/test-case)
-
-[Documentation](https://docs.rs/test-case/)
-
-[Repository](https://github.com/frondeus/test-case)
-
-# Breaking changes
-* Crate has new name, as `test-case-derive` had no meaning for `derive` part.
-* Crate has new maintainer: Wojciech Polak :hand: :tada:
-* Since `0.3.0` delimiter for test case description is `;` instead of `::`.
-Reason: `::` is valid part of expression and rustc treats const variable as path
-with length 1. So usage `#[test_case(1, MY_CONST :: "my desc")]` is treated as
-`MY_CONST::"invalid because literal string cannot be part of path"`.
-
-# Getting Started
+## Getting Started
 
 First of all you have to add this dependency to your `Cargo.toml`:
 
@@ -28,15 +19,20 @@ First of all you have to add this dependency to your `Cargo.toml`:
 test-case = "0.3.0"
 ```
 
-Don't forget that procedural macros are imported with `use` statement:
+Additionally you have to import the procedural macro with `use` statement:
 
-```
+```rust
 use test_case::test_case;
 ```
 
-# Example usage:
+The crate depends on `proc_macro` feature that has been stabilized on rustc 1.29+.
 
-```
+## Example usage:
+
+```rust
+#![cfg(test)]
+extern crate test_case;
+
 use test_case::test_case;
 
 #[test_case( 2,  4 ; "when both operands are possitive")]
@@ -51,7 +47,7 @@ fn multiplication_tests(x: i8, y: i8) {
 
 Output from `cargo test` for this example:
 
-```
+```sh
 $ cargo test
 
 running 3 tests
@@ -62,11 +58,11 @@ test multiplication_tests::when_operands_are_swapped ... ok
 test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 ```
 
-# Examples
+## Examples
 
 If your only assertion is just `assert_eq!`, you can pass the expectation as macro attribute using `=>` syntax:
 
-```
+```rust
 #[test_case( 2 => 2 ; "returns given number for positive input")]
 #[test_case(-2 => 2 ; "returns opposite number for non-positive input")]
 #[test_case( 0 => 0 ; "returns 0 for 0")]
@@ -77,7 +73,7 @@ fn abs_tests(x: i8) -> i8 {
 
 Which is equivalent to
 
-```
+```rust
 #[test_case( 2, 2 ; "returns given number for positive input")]
 #[test_case(-2, 2 ; "returns opposite number for non-positive input")]
 #[test_case( 0, 0 ; "returns 0 for 0")]
@@ -90,7 +86,7 @@ fn abs_tests(x: i8, expected: i8){
 
 Attributes and expectation may be any expresion unless they contain `=>`, e.g.
 
-```
+```rust
 #[test_case(None,        None    => 0 ; "treats none as 0")]
 #[test_case(Some(2),     Some(3) => 5)]
 #[test_case(Some(2 + 3), Some(4) => 2 + 3 + 4)]
@@ -105,7 +101,7 @@ Test case names are optional. They are set using `;` followed by string literal 
 
 Example generated code:
 
-```
+```rust
 mod fancy_addition {
     #[allow(unused_imports)]
     use super::*;
@@ -140,11 +136,11 @@ mod fancy_addition {
 }
 ```
 
-## Inconclusive (ignored) test cases (sicne 0.2.0)
+### Inconclusive (ignored) test cases (since 0.2.0)
 
 If test case name (passed using `;` syntax described above) contains word "inconclusive", generated test will be marked with `#[ignore]`.
 
-```
+```rust
 #[test_case("42")]
 #[test_case("XX" ; "inconclusive - parsing letters temporarily doesn't work but it's ok")]
 fn parses_input(input: &str) {
@@ -153,7 +149,7 @@ fn parses_input(input: &str) {
 ```
 
 Generated code:
-```
+```rust
 mod parses_input {
     // ...
 
@@ -172,30 +168,10 @@ mod parses_input {
 
 **Note**: word `inconclusive` is only reserved in test name given after `;`.
 
-# Contribution
+## License
+
+Licensed under of MIT license ([LICENSE-MIT](LICENSE-MIT) or https://opensource.org/licenses/MIT)
+
+### Contribution
 
 All contributions and comments are more than welcome! Don't be afraid to open an issue or PR whenever you find a bug or have an idea to improve this crate.
-
-# License
-
-MIT License
-
-Copyright (c) 2017-2019 Marcin Sas-Szymański, Wojciech Polak
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
