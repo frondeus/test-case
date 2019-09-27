@@ -1,6 +1,4 @@
 ---
-created: "2019-09-27T12:20:42.670107Z"
-creator: insta@0.8.2
 source: tests/acceptance_tests.rs
 expression: lines
 ---
