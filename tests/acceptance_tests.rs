@@ -31,6 +31,6 @@ mod acceptance {
         let mut lines: Vec<_> = actual.lines().collect();
         lines.sort();
         let lines: String = lines.join("\n");
-        insta::assert_display_snapshot_matches!(lines);
+        insta::assert_display_snapshot!(lines);
     }
 }
