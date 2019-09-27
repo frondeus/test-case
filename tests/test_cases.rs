@@ -125,4 +125,14 @@ mod test_cases {
     #[test_case("inconclusive" ; "should not take into account keyword on argument position")]
     #[test_case("dummy" ; "this test is inconclusive and will always be")]
     fn inconclusive_tests(_s: &str) {}
+
+    const MY_CONST: &str = "my const";
+
+    #[test_case(MY_CONST ; "this is desc, not an argument")]
+    fn const_in_arg(_s: &str) {}
+
+    #[test_case(""     => String::default())]
+    fn foo(_: &str) -> String {
+        String::default()
+    }
 }
