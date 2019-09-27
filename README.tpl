@@ -14,3 +14,11 @@ Licensed under of MIT license ([LICENSE-MIT](LICENSE-MIT) or https://opensource.
 ### Contribution
 
 All contributions and comments are more than welcome! Don't be afraid to open an issue or PR whenever you find a bug or have an idea to improve this crate.
+
+Recommended tools:
+* `cargo readme` - to regenerate README.md based on template and lib.rs comments
+* `cargo insta`  - to review test snapshots
+* `cargo edit`   - to add/remove dependencies
+* `cargo fmt`    - to format code
+* `cargo clippy` - for all insights and tips
+* `cargo fix`    - for fixing warnings

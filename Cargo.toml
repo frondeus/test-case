@@ -1,6 +1,6 @@
 [package]
 name = "test-case"
-version = "0.3.0"
+version = "0.3.1"
 edition = "2018"
 authors = ["Marcin Sas-Szymanski <marcin.sas-szymanski@anixe.pl>", "Wojciech Polak <frondeus@gmail.com>"]
 description = "Provides #[test_case(...)] procedural macro attribute for generating parametrized test cases easily"
@@ -8,7 +8,6 @@ keywords = ["test", "case", "tests", "unit", "testing"]
 categories = ["development-tools", "development-tools::testing"]
 readme = "README.md"
 license = "MIT"
-license-file = "LICENSE"
 repository = "https://github.com/frondeus/test-case"
 documentation = "https://docs.rs/test-case"
 exclude = ["tests/snapshots/**/*"]
