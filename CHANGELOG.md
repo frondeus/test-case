@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3.3-alpha1
+## 0.3.3
 ### Bugfixes
 * Fixed "inconclusive" feature with different cases.
 
