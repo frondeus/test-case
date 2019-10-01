@@ -19,6 +19,6 @@ git commit
 git push origin -u master
 
 echo "Next step: Wait for CI"
-echo "Next step: `git tag vX.Y.Z; git push --tags`"
-echo "Next step: Create release in Github`"
-echo "Next step: `cargo publish`"
+echo "Next step: \`git tag vX.Y.Z; git push --tags\`"
+echo "Next step: Create release in Github"
+echo "Next step: \`cargo publish\`"

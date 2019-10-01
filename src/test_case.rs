@@ -76,7 +76,7 @@ impl TestCase {
         let inconclusive = self
             .case_desc
             .as_ref()
-            .map(|cd| cd.value().contains("inconclusive"))
+            .map(|cd| cd.value().to_lowercase().contains("inconclusive"))
             .unwrap_or_default();
 
         let expected: Expr = match &self.expected {

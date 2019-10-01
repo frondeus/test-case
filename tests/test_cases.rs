@@ -129,6 +129,9 @@ mod test_cases {
 
     #[test_case("inconclusive" ; "should not take into account keyword on argument position")]
     #[test_case("dummy" ; "this test is inconclusive and will always be")]
+    #[test_case("dummy" ; "this test is also Inconclusive")]
+    #[test_case("dummy" ; "this test is also INCONCLUSIVE even all caps")]
+    #[test_case("dummy" ; "this test is also iNCONCLUSIVE even inverted caps")]
     fn inconclusive_tests(_s: &str) {}
 
     const MY_CONST: &str = "my const";
