@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.3-alpha1
+### Bugfixes
+* Fixed "inconclusive" feature with different cases.
+
 ## 0.3.2
 ### Bugfixes
 * Added support for `impl Trait` - it worked in 2.x crate.
