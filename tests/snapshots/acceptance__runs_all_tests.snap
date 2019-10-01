@@ -13,10 +13,10 @@ expression: lines
 
 running 0 tests
 running 0 tests
-running 35 tests
+running 36 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out
-test result: ok. 34 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out
+test result: ok. 35 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out
 test test_cases::abs_tests::returns_0_for_0 ... ok
 test test_cases::abs_tests::returns_given_number_for_positive_input ... ok
 test test_cases::abs_tests::returns_opposite_number_for_non_positive_input ... ok
@@ -27,6 +27,7 @@ test test_cases::fancy_addition::_some_2_3_some_4_expects_2_3_4 ... ok
 test test_cases::fancy_addition::_some_2_some_3_expects_5 ... ok
 test test_cases::fancy_addition::treats_none_as_0 ... ok
 test test_cases::foo::_expects_string_default ... ok
+test test_cases::impl_trait::_foo ... ok
 test test_cases::inconclusive_tests::should_not_take_into_account_keyword_on_argument_position ... ok
 test test_cases::inconclusive_tests::this_test_is_inconclusive_and_will_always_be ... ignored
 test test_cases::keyword_test::_true ... ok

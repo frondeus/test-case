@@ -70,8 +70,7 @@ impl TestCase {
     }
 
     pub fn render(&self, item: ItemFn) -> TokenStream2 {
-        let arg_keys = item.sig.inputs.iter();
-        let item_body = item.block;
+        let item_name = item.sig.ident.clone();
         let arg_values = self.args.iter();
         let test_case_name = self.test_case_name();
         let inconclusive = self
@@ -97,11 +96,7 @@ impl TestCase {
             #[test]
             #(#attrs)*
             fn #test_case_name() {
-                #(
-                    let #arg_keys = #arg_values;
-                )*
-
-                let _result = { #item_body };
+                let _result = #item_name(#(#arg_values),*);//{ #item_body };
                 #expected
             }
         }

@@ -12,6 +12,11 @@ mod test_cases {
         assert_eq!(x, 1)
     }
 
+    #[test_case("foo")]
+    fn impl_trait(x: impl AsRef<str>) {
+        assert_eq!("foo", x.as_ref());
+    }
+
     #[test_case(2 => 4)]
     #[test_case(4 => 8)]
     fn result(x: u32) -> u32 {

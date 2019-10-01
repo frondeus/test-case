@@ -263,16 +263,20 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
 
 fn render_test_cases(test_cases: &[TestCase], item: ItemFn) -> TokenStream {
     let mut rendered_test_cases = vec![];
+
     for test_case in test_cases {
         rendered_test_cases.push(test_case.render(item.clone()));
     }
 
-    let mod_name = item.sig.ident;
+    let mod_name = item.sig.ident.clone();
 
     let output = quote! {
         mod #mod_name {
             #[allow(unused_imports)]
             use super::*;
+
+            #[allow(unused_attributes)]
+            #item
 
             #(#rendered_test_cases)*
         }
