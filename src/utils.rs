@@ -2,7 +2,7 @@ use proc_macro2::{Ident, Span};
 
 pub fn escape_test_name(input: impl AsRef<str>) -> Ident {
     if input.as_ref().is_empty() {
-        return Ident::new("_empty", Span::call_site())
+        return Ident::new("_empty", Span::call_site());
     }
 
     let mut last_under = false;

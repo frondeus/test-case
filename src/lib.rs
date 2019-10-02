@@ -173,8 +173,8 @@ use syn::{parse_macro_input, ItemFn};
 
 use quote::quote;
 use syn::parse_quote;
-use test_case::TestCase;
 use syn::spanned::Spanned;
+use test_case::TestCase;
 
 mod test_case;
 mod utils;
@@ -248,8 +248,14 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
         if attr.path == parse_quote!(test_case) {
             let test_case = match attr.parse_args::<TestCase>() {
                 Ok(test_case) => test_case,
-                Err(err) =>
-                    return syn::Error::new(attr.span(), format!("cannot parse test_case arguments: {:?}", err)).to_compile_error().into(),
+                Err(err) => {
+                    return syn::Error::new(
+                        attr.span(),
+                        format!("cannot parse test_case arguments: {:?}", err),
+                    )
+                    .to_compile_error()
+                    .into()
+                }
             };
             test_cases.push(test_case);
             attrs_to_remove.push(idx);
