@@ -6,6 +6,7 @@ use syn::parse::{Parse, ParseStream};
 use syn::parse_quote;
 use syn::{Error, Expr, ItemFn, LitStr, Token};
 
+#[cfg_attr(test, derive(Debug, PartialEq))]
 pub struct TestCase {
     test_case_name: String,
     args: Vec<Expr>,
@@ -98,6 +99,80 @@ impl TestCase {
             fn #test_case_name() {
                 let _result = #item_name(#(#arg_values),*);//{ #item_body };
                 #expected
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    mod test_case {
+        use super::*;
+
+        mod parse {
+            use super::*;
+            use syn::parse_quote;
+
+            #[test]
+            fn parses_basic_input() {
+                let actual: TestCase = parse_quote! {
+                    2, 10
+                };
+
+                assert_eq!(
+                    TestCase {
+                        test_case_name: " 2 10".to_string(),
+                        args: vec![
+                            parse_quote!(2),
+                            parse_quote!(10),
+                        ],
+                        expected: None,
+                        case_desc: None,
+                    },
+                    actual
+                );
+            }
+
+            #[test]
+            fn parses_input_with_expectation() {
+                let actual: TestCase = parse_quote! {
+                    2, 10 => 12
+                };
+
+                assert_eq!(
+                    TestCase {
+                        test_case_name: " 2 10 expects 12".to_string(),
+                        args: vec![
+                            parse_quote!(2),
+                            parse_quote!(10),
+                        ],
+                        expected: Some(parse_quote!(12)),
+                        case_desc: None,
+                    },
+                    actual
+                );
+            }
+
+            #[test]
+            fn parses_input_with_description() {
+                let actual: TestCase = parse_quote! {
+                    2, 10; "basic addition"
+                };
+
+                assert_eq!(
+                    TestCase {
+                        test_case_name: " 2 10".to_string(),
+                        args: vec![
+                            parse_quote!(2),
+                            parse_quote!(10),
+                        ],
+                        expected: None,
+                        case_desc: parse_quote!("basic addition"),
+                    },
+                    actual
+                );
             }
         }
     }
