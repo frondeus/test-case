@@ -1,17 +1,58 @@
-use proc_macro2::Ident;
 use quote::quote;
 use quote::ToTokens;
 use syn::export::TokenStream2;
 use syn::parse::{Parse, ParseStream};
-use syn::parse_quote;
-use syn::{Error, Expr, ItemFn, LitStr, Token};
+use syn::{parse_quote, Error, Expr, Ident, ItemFn, LitStr, Pat, Token};
 
 #[cfg_attr(test, derive(Debug, PartialEq))]
 pub struct TestCase {
     test_case_name: String,
     args: Vec<Expr>,
-    expected: Option<Expr>,
+    expected: Option<Expected>,
     case_desc: Option<LitStr>,
+}
+
+#[cfg_attr(test, derive(Debug, PartialEq))]
+pub enum Expected {
+    Pat(Pat),
+    Panic(LitStr),
+    Expr(Box<Expr>),
+}
+
+mod kw {
+    syn::custom_keyword!(matches);
+    syn::custom_keyword!(panics);
+    syn::custom_keyword!(inconclusive);
+}
+
+impl ToString for Expected {
+    fn to_string(&self) -> String {
+        match self {
+            Expected::Pat(p) => format!("matches {}", fmt_syn(&p)),
+            Expected::Panic(p) => format!("panics {}", fmt_syn(&p)),
+            Expected::Expr(e) => format!("expects {}", fmt_syn(&e)),
+        }
+    }
+}
+
+impl Parse for Expected {
+    fn parse(input: ParseStream) -> Result<Self, Error> {
+        let lookahead = input.lookahead1();
+        if lookahead.peek(kw::matches) {
+            let _kw = input.parse::<kw::matches>()?;
+            let pat = input.parse()?;
+            return Ok(Expected::Pat(pat));
+        }
+
+        if lookahead.peek(kw::panics) {
+            let _kw = input.parse::<kw::panics>()?;
+            let pat = input.parse()?;
+            return Ok(Expected::Panic(pat));
+        }
+
+        let expr = input.parse()?;
+        Ok(Expected::Expr(expr))
+    }
 }
 
 fn fmt_syn(syn: &(impl ToTokens + Clone)) -> String {
@@ -36,9 +77,11 @@ impl Parse for TestCase {
         let arrow: Option<Token![=>]> = input.parse()?;
 
         let expected = if arrow.is_some() {
-            let expr: Expr = input.parse()?;
-            test_case_name += &format!(" expects {}", fmt_syn(&expr));
-            Some(expr)
+            let expected: Expected = input.parse()?;
+
+            test_case_name += &format!(" {}", expected.to_string());
+
+            Some(expected)
         } else {
             None
         };
@@ -80,14 +123,28 @@ impl TestCase {
             .map(|cd| cd.value().to_lowercase().contains("inconclusive"))
             .unwrap_or_default();
 
+        let mut attrs = vec![];
+
         let expected: Expr = match &self.expected {
-            Some(e) => parse_quote! {
-                assert_eq!(#e, _result)
-            },
+            Some(Expected::Pat(pat)) => {
+                let pat_str = format!("{}", quote! { #pat });
+                parse_quote! {
+                    match _result {
+                        #pat => (),
+                        e => panic!("Expected {} found {:?}", #pat_str, e)
+                    }
+                }
+            }
+            Some(Expected::Expr(e)) => {
+                parse_quote! { assert_eq!(#e, _result) }
+            }
+            Some(Expected::Panic(l)) => {
+                attrs.push(parse_quote! { #[should_panic(expected = #l)] });
+                parse_quote! {()}
+            }
             None => parse_quote! {()},
         };
 
-        let mut attrs = vec![];
         if inconclusive {
             attrs.push(parse_quote! { #[ignore] });
         }
@@ -97,7 +154,7 @@ impl TestCase {
             #[test]
             #(#attrs)*
             fn #test_case_name() {
-                let _result = #item_name(#(#arg_values),*);//{ #item_body };
+                let _result = #item_name(#(#arg_values),*);
                 #expected
             }
         }
@@ -107,6 +164,36 @@ impl TestCase {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    mod expected {
+        use super::*;
+
+        mod parse {
+            use super::*;
+            use syn::parse_quote;
+
+            #[test]
+            fn parses_expression() {
+                let actual: Expected = parse_quote! { 2 + 3 };
+
+                assert_eq!(Expected::Expr(parse_quote!(2 + 3)), actual);
+            }
+
+            #[test]
+            fn parses_panic() {
+                let actual: Expected = parse_quote! { panics "Error msg" };
+
+                assert_eq!(Expected::Panic(parse_quote!("Error msg")), actual);
+            }
+
+            #[test]
+            fn parses_pattern() {
+                let actual: Expected = parse_quote! { matches Some(_) };
+
+                assert_eq!(Expected::Pat(parse_quote!(Some(_))), actual);
+            }
+        }
+    }
 
     mod test_case {
         use super::*;
@@ -124,10 +211,7 @@ mod tests {
                 assert_eq!(
                     TestCase {
                         test_case_name: " 2 10".to_string(),
-                        args: vec![
-                            parse_quote!(2),
-                            parse_quote!(10),
-                        ],
+                        args: vec![parse_quote!(2), parse_quote!(10),],
                         expected: None,
                         case_desc: None,
                     },
@@ -144,10 +228,7 @@ mod tests {
                 assert_eq!(
                     TestCase {
                         test_case_name: " 2 10 expects 12".to_string(),
-                        args: vec![
-                            parse_quote!(2),
-                            parse_quote!(10),
-                        ],
+                        args: vec![parse_quote!(2), parse_quote!(10),],
                         expected: Some(parse_quote!(12)),
                         case_desc: None,
                     },
@@ -164,10 +245,7 @@ mod tests {
                 assert_eq!(
                     TestCase {
                         test_case_name: " 2 10".to_string(),
-                        args: vec![
-                            parse_quote!(2),
-                            parse_quote!(10),
-                        ],
+                        args: vec![parse_quote!(2), parse_quote!(10),],
                         expected: None,
                         case_desc: parse_quote!("basic addition"),
                     },
