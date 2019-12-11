@@ -30,7 +30,7 @@ The crate depends on `proc_macro` feature that has been stabilized on rustc 1.29
 ## Example usage:
 
 ```rust
-// The next two lines are not needed for 2018 or newer
+// The next two lines are not needed for 2018 edition or newer
 #[cfg(test)]
 extern crate test_case;
 
