@@ -26,7 +26,6 @@ pub fn escape_test_name(input: impl AsRef<str>) -> Ident {
     if !ident.starts_with(|c: char| c == '_' || c.is_ascii_alphabetic()) {
         ident = format!("_{}", ident);
     }
-    let ident = ident.trim_end_matches('_');
     Ident::new(&ident, Span::call_site())
 }
 
@@ -53,7 +52,7 @@ mod tests {
             );
             assert_eq!(
                 escape_test_name(" extra end and start spaces "),
-                Ident::new("_extra_end_and_start_spaces", Span::call_site())
+                Ident::new("_extra_end_and_start_spaces_", Span::call_site())
             );
             assert_eq!(
                 escape_test_name("abcdefghijklmnoqprstuwvxyz1234567890"),
