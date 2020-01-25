@@ -9,7 +9,7 @@
 //!
 //! ```toml
 //! [dev-dependencies]
-//! test-case = "0.3.3"
+//! test-case = "1.0.0-alpha-1"
 //! ```
 //!
 //! Additionally you have to import the procedural macro with `use` statement:
@@ -28,7 +28,7 @@
 //!
 //! use test_case::test_case;
 //!
-//! #[test_case( 2,  4 ; "when both operands are possitive")]
+//! #[test_case( 2,  4 ; "when both operands are positive")]
 //! #[test_case( 4,  2 ; "when operands are swapped")]
 //! #[test_case(-2, -4 ; "when both operands are negative")]
 //! fn multiplication_tests(x: i8, y: i8) {
@@ -44,7 +44,7 @@
 //! $ cargo test
 //!
 //! running 3 tests
-//! test multiplication_tests::when_both_operands_are_possitive ... ok
+//! test multiplication_tests::when_both_operands_are_positive ... ok
 //! test multiplication_tests::when_both_operands_are_negative ... ok
 //! test multiplication_tests::when_operands_are_swapped ... ok
 //!
@@ -136,10 +136,16 @@
 //!
 //! If test case name (passed using `;` syntax described above) contains word "inconclusive", generated test will be marked with `#[ignore]`.
 //!
+//! ### Keyword inconclusive (since 1.0.0)
+//!
+//! If test expectation is preceded by keyword `inconclusive` the test will be ignored as if it's description would contain word `inconclusive`
+//!
+//!
 //! ```rust
 //! # use test_case::test_case;
 //! #[test_case("42")]
 //! #[test_case("XX" ; "inconclusive - parsing letters temporarily doesn't work but it's ok")]
+//! #[test_case("na" => inconclusive ())]
 //! fn parses_input(input: &str) {
 //!     // ...
 //! }
@@ -163,7 +169,35 @@
 //!
 //! ```
 //!
-//! **Note**: word `inconclusive` is only reserved in test name given after `;`.
+//! ## Pattern matched test cases (since 1.0.0)
+//!
+//! If test expectation is preceded by `matches` keyword, the result will be tested whether it fits within provided pattern.
+//!
+//! ```rust
+//! fn zip(left: &str, right: &str) -> (&str, &str) {
+//!     (left, right)
+//! }
+//!
+//! #[test_case("foo", "bar" => matches ("foo", _) ; "first element of zipped tuple is correct"]
+//! #[test_case("foo", "bar" => matches (_, "bar") ; "second element of zipped tuple is correct"]
+//! fn zip_test(left: &str, right: &str) -> (&str, &str) {
+//!     zip(left, right)
+//! }
+//! ```
+//!
+//! ## Panicking test cases (since 1.0.0)
+//!
+//! If test case expectation is preceded by `panics` keyword and the expectation itself is `&str` **or** expresion that evaluates to `&str` then test case will be expected to panic during execution.
+//!
+//! ```rust
+//! #[test_case("foo" => panics "invalid input")]
+//! #[test_case("bar")]
+//! fn test_panicking(input: &str) {
+//!     if input == "foo" {
+//!         panic!("invalid input")
+//!     }
+//! }
+//! ```
 
 extern crate proc_macro;
 

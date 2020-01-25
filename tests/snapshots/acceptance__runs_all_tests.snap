@@ -13,10 +13,10 @@ expression: lines
 
 running 0 tests
 running 0 tests
-running 42 tests
+running 45 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out
-test result: ok. 38 passed; 0 failed; 4 ignored; 0 measured; 0 filtered out
+test result: ok. 38 passed; 0 failed; 7 ignored; 0 measured; 0 filtered out
 test test_cases::abs_tests::returns_0_for_0 ... ok
 test test_cases::abs_tests::returns_given_number_for_positive_input ... ok
 test test_cases::abs_tests::returns_opposite_number_for_non_positive_input ... ok
@@ -33,6 +33,9 @@ test test_cases::inconclusive_tests::this_test_is_also_inconclusive ... ignored
 test test_cases::inconclusive_tests::this_test_is_also_inconclusive_even_all_caps ... ignored
 test test_cases::inconclusive_tests::this_test_is_also_inconclusive_even_inverted_caps ... ignored
 test test_cases::inconclusive_tests::this_test_is_inconclusive_and_will_always_be ... ignored
+test test_cases::inconclusives::_ignored_ ... ignored
+test test_cases::inconclusives::inconclusive_test ... ignored
+test test_cases::inconclusives::test_is_not_ran ... ignored
 test test_cases::keyword_test::_true ... ok
 test test_cases::leading_underscore_in_test_name::_dummy_ ... ok
 test test_cases::lowercase_test_name::_dummy_code_ ... ok
