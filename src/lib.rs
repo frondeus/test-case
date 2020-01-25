@@ -188,14 +188,11 @@
 //! If test expectation is preceded by `matches` keyword, the result will be tested whether it fits within provided pattern.
 //!
 //! ```rust
-//! fn zip(left: &str, right: &str) -> (&str, &str) {
+//! # use test_case::test_case;
+//! #[test_case("foo", "bar" => matches ("foo", _) ; "first element of zipped tuple is correct")]
+//! #[test_case("foo", "bar" => matches (_, "bar") ; "second element of zipped tuple is correct")]
+//! fn zip_test<'a>(left: &'a str, right: &'a str) -> (&'a str, &'a str) {
 //!     (left, right)
-//! }
-//!
-//! #[test_case("foo", "bar" => matches ("foo", _) ; "first element of zipped tuple is correct"]
-//! #[test_case("foo", "bar" => matches (_, "bar") ; "second element of zipped tuple is correct"]
-//! fn zip_test(left: &str, right: &str) -> (&str, &str) {
-//!     zip(left, right)
 //! }
 //! ```
 //!
@@ -204,6 +201,8 @@
 //! If test case expectation is preceded by `panics` keyword and the expectation itself is `&str` **or** expresion that evaluates to `&str` then test case will be expected to panic during execution.
 //!
 //! ```rust
+//! # use test_case::test_case;
+//!
 //! #[test_case("foo" => panics "invalid input")]
 //! #[test_case("bar")]
 //! fn test_panicking(input: &str) {
