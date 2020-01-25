@@ -16,6 +16,7 @@ pub struct TestCase {
 pub enum Expected {
     Pat(Pat),
     Panic(LitStr),
+    Ignored(Box<Expr>),
     Expr(Box<Expr>),
 }
 
@@ -30,6 +31,7 @@ impl ToString for Expected {
         match self {
             Expected::Pat(p) => format!("matches {}", fmt_syn(&p)),
             Expected::Panic(p) => format!("panics {}", fmt_syn(&p)),
+            Expected::Ignored(e) => format!("ignored {}", fmt_syn(&e)),
             Expected::Expr(e) => format!("expects {}", fmt_syn(&e)),
         }
     }
@@ -48,6 +50,12 @@ impl Parse for Expected {
             let _kw = input.parse::<kw::panics>()?;
             let pat = input.parse()?;
             return Ok(Expected::Panic(pat));
+        }
+
+        if lookahead.peek(kw::inconclusive) {
+            let _kw = input.parse::<kw::inconclusive>()?;
+            let expr = input.parse()?;
+            return Ok(Expected::Ignored(expr));
         }
 
         let expr = input.parse()?;
@@ -142,12 +150,17 @@ impl TestCase {
                 attrs.push(parse_quote! { #[should_panic(expected = #l)] });
                 parse_quote! {()}
             }
+            Some(Expected::Ignored(_)) => {
+                attrs.push(parse_quote! { #[ignore] });
+                parse_quote! {()}
+            }
             None => parse_quote! {()},
         };
 
         if inconclusive {
             attrs.push(parse_quote! { #[ignore] });
         }
+
         attrs.append(&mut item.attrs);
 
         quote! {
