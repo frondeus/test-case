@@ -19,7 +19,7 @@ First of all you have to add this dependency to your `Cargo.toml`:
 test-case = "0.3.3"
 ```
 
-Additionally you have to import the procedural macro with `use` statement:
+Additionally, you have to import the procedural macro with `use` statement:
 
 ```rust
 use test_case::test_case;
@@ -41,7 +41,7 @@ mod tests {
     // Not needed for this example, but useful in general
     use super::*;
 
-    #[test_case( 2,  4 ; "when both operands are possitive")]
+    #[test_case( 2,  4 ; "when both operands are positive")]
     #[test_case( 4,  2 ; "when operands are swapped")]
     #[test_case(-2, -4 ; "when both operands are negative")]
     fn multiplication_tests(x: i8, y: i8) {
@@ -67,7 +67,7 @@ $ cargo test
 running 4 tests
 test tests::addition_test ... ok
 test tests::multiplication_tests::when_both_operands_are_negative ... ok
-test tests::multiplication_tests::when_both_operands_are_possitive ... ok
+test tests::multiplication_tests::when_both_operands_are_positive ... ok
 test tests::multiplication_tests::when_operands_are_swapped ... ok
 
 test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
@@ -110,7 +110,7 @@ fn fancy_addition(x: Option<i8>, y: Option<i8>) -> i8 {
 }
 ```
 
-Note: in fact, `=>` is not prohibited but the parser will always treat last `=>` sign as beginning of expectation definition.
+Note: in fact, `=>` is not prohibited, but the parser will always treat last `=>` sign as beginning of expectation definition.
 
 Test case names are optional. They are set using `;` followed by string literal at the end of macro attributes.
 
@@ -153,11 +153,11 @@ mod fancy_addition {
 
 ### Inconclusive (ignored) test cases (since 0.2.0)
 
-If test case name (passed using `;` syntax described above) contains word "inconclusive", generated test will be marked with `#[ignore]`.
+If test case name (passed using `;` syntax described above) contains a word "inconclusive", generated test will be marked with `#[ignore]`.
 
 ```rust
 #[test_case("42")]
-#[test_case("XX" ; "inconclusive - parsing letters temporarily doesn't work but it's ok")]
+#[test_case("XX" ; "inconclusive - parsing letters temporarily doesn't work, but it's ok")]
 fn parses_input(input: &str) {
     // ...
 }

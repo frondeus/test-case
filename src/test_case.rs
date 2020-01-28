@@ -113,7 +113,7 @@ impl TestCase {
         crate::utils::escape_test_name(case_desc)
     }
 
-    pub fn render(&self, item: ItemFn) -> TokenStream2 {
+    pub fn render(&self, mut item: ItemFn) -> TokenStream2 {
         let item_name = item.sig.ident.clone();
         let arg_values = self.args.iter();
         let test_case_name = self.test_case_name();
@@ -148,7 +148,7 @@ impl TestCase {
         if inconclusive {
             attrs.push(parse_quote! { #[ignore] });
         }
-        attrs.append(&mut item.attrs.clone());
+        attrs.append(&mut item.attrs);
 
         quote! {
             #[test]

@@ -12,7 +12,7 @@
 //! test-case = "0.3.3"
 //! ```
 //!
-//! Additionally you have to import the procedural macro with `use` statement:
+//! Additionally, you have to import the procedural macro with `use` statement:
 //!
 //! ```rust
 //! use test_case::test_case;
@@ -23,18 +23,32 @@
 //! # Example usage:
 //!
 //! ```rust
-//! #![cfg(test)]
+//! // The next two lines are not needed for 2018 edition or newer
+//! #[cfg(test)]
 //! extern crate test_case;
 //!
-//! use test_case::test_case;
+//! #[cfg(test)]
+//! mod tests {
+//!     use test_case::test_case;
 //!
-//! #[test_case( 2,  4 ; "when both operands are possitive")]
-//! #[test_case( 4,  2 ; "when operands are swapped")]
-//! #[test_case(-2, -4 ; "when both operands are negative")]
-//! fn multiplication_tests(x: i8, y: i8) {
-//!     let actual = (x * y).abs();
+//!     // Not needed for this example, but useful in general
+//!     use super::*;
 //!
-//!     assert_eq!(8, actual)
+//!     #[test_case( 2,  4 ; "when both operands are positive")]
+//!     #[test_case( 4,  2 ; "when operands are swapped")]
+//!     #[test_case(-2, -4 ; "when both operands are negative")]
+//!     fn multiplication_tests(x: i8, y: i8) {
+//!         let actual = (x * y).abs();
+//!
+//!         assert_eq!(8, actual)
+//!     }
+//!
+//!     // You can still use regular tests too
+//!     #[test]
+//!     fn addition_test() {
+//!         let actual = -2 + 8;
+//!         assert_eq!(6, actual)
+//!     }
 //! }
 //! ```
 //!
@@ -43,12 +57,13 @@
 //! ```sh
 //! $ cargo test
 //!
-//! running 3 tests
-//! test multiplication_tests::when_both_operands_are_possitive ... ok
-//! test multiplication_tests::when_both_operands_are_negative ... ok
-//! test multiplication_tests::when_operands_are_swapped ... ok
+//! running 4 tests
+//! test tests::addition_test ... ok
+//! test tests::multiplication_tests::when_both_operands_are_negative ... ok
+//! test tests::multiplication_tests::when_both_operands_are_positive ... ok
+//! test tests::multiplication_tests::when_operands_are_swapped ... ok
 //!
-//! test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+//! test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 //! ```
 //!
 //! # Examples
@@ -91,7 +106,7 @@
 //! }
 //! ```
 //!
-//! Note: in fact, `=>` is not prohibited but the parser will always treat last `=>` sign as beginning of expectation definition.
+//! Note: in fact, `=>` is not prohibited, but the parser will always treat last `=>` sign as beginning of expectation definition.
 //!
 //! Test case names are optional. They are set using `;` followed by string literal at the end of macro attributes.
 //!
@@ -134,12 +149,12 @@
 //!
 //! ## Inconclusive (ignored) test cases (since 0.2.0)
 //!
-//! If test case name (passed using `;` syntax described above) contains word "inconclusive", generated test will be marked with `#[ignore]`.
+//! If test case name (passed using `;` syntax described above) contains a word "inconclusive", generated test will be marked with `#[ignore]`.
 //!
 //! ```rust
 //! # use test_case::test_case;
 //! #[test_case("42")]
-//! #[test_case("XX" ; "inconclusive - parsing letters temporarily doesn't work but it's ok")]
+//! #[test_case("XX" ; "inconclusive - parsing letters temporarily doesn't work, but it's ok")]
 //! fn parses_input(input: &str) {
 //!     // ...
 //! }
