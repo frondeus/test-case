@@ -166,4 +166,11 @@ mod test_cases {
     fn panicing(_: ()) {
         panic!("It has to panic")
     }
+
+    #[test_case(() => inconclusive ())]
+    #[test_case(() => inconclusive (); "test is not ran")]
+    #[test_case(() => inconclusive (); "inconclusive test")]
+    fn inconclusives(_: ()) {
+        unreachable!()
+    }
 }

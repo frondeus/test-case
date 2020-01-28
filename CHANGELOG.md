@@ -1,24 +1,34 @@
 # Changelog
 
-## v1.0.0-alpha-1
+## V1.0.0
 ### New features
-* Add support for two new keywords: `panics` and `matches` which can be applied after `=>` token.
+* Added support for three new keywords: `panics`, `matches` and `inconclusive` which can be applied after `=>` token.
 
   `matches` gives possibility to test patterns, like:
   ```rust
   #[test_case("foo" => matches Some(("foo", _)))]
   ```
 
-  `panics` gives `should_panic(expected="...")` for one test_case:
+  `panics` gives `should_panic(expected="...")` for one `test_case`:
   ```rust
   #[test_case(true  => panics "Panic error message" ; "This should panic")]
   #[test_case(false => None                         ; "But this should return None")]
   ```
+
+  `inconclusive` ignores one specific test case.- thanks to @luke_biel
+  ```rust
+  #[test_case("42")]
+  #[test_case("XX" ; "inconclusive - parsing letters temporarily doesn't work, but it's ok")]
+  #[test_case("na" => inconclusive ())]
+  ```
+
 ### Major improvements
-* Add extra unit tests - thanks to @luke-biel
+* Added extra unit tests - thanks to @luke-biel
 * Replace `parented_test_case` with parsing `test_case` directly from args - thanks to @luke-biel
+* Added keeping trailing underscores in names - thanks to @rzumer
 ### Minor improvements
 * Moved `lazy-static` dependency to `dev-dependencies`
+* Fixed README - thanks to @luke_biel and @drwilco
 ### Upgraded dependencies
 * Upgraded `insta` to `0.12.0`
 
