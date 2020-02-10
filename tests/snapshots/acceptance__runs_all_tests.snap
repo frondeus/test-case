@@ -11,12 +11,18 @@ expression: lines
 
 
 
+
+
+
+
 running 0 tests
 running 0 tests
 running 45 tests
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 12 filtered out
+running 6 tests
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 test result: ok. 38 passed; 0 failed; 7 ignored; 0 measured; 0 filtered out
+test result: ok. 5 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out
 test test_cases::abs_tests::returns_0_for_0 ... ok
 test test_cases::abs_tests::returns_given_number_for_positive_input ... ok
 test test_cases::abs_tests::returns_opposite_number_for_non_positive_input ... ok
@@ -27,6 +33,12 @@ test test_cases::fancy_addition::_some_2_3_some_4_expects_2_3_4 ... ok
 test test_cases::fancy_addition::_some_2_some_3_expects_5 ... ok
 test test_cases::fancy_addition::treats_none_as_0 ... ok
 test test_cases::foo::_expects_string_default_ ... ok
+test test_cases::hamcrest_feature_works::_none_that_none_ ... ok
+test test_cases::hamcrest_feature_works::_some_str_that_all_some_not_none_ ... ok
+test test_cases::hamcrest_feature_works::_some_str_that_has_str_ ... ok
+test test_cases::hamcrest_feature_works::_some_str_that_some_ ... ok
+test test_cases::hamcrest_feature_works::can_be_followed_by_comment ... ok
+test test_cases::hamcrest_feature_works::can_be_followed_by_inconclusive_comment ... ignored
 test test_cases::impl_trait::_foo_ ... ok
 test test_cases::inconclusive_tests::should_not_take_into_account_keyword_on_argument_position ... ok
 test test_cases::inconclusive_tests::this_test_is_also_inconclusive ... ignored

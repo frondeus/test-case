@@ -26,6 +26,7 @@ path = "src/lib.rs"
 syn = { version = "1.0", features = ["full", "extra-traits"] }
 quote = "1.0"
 proc-macro2 = { version = "1.0", features = [] }
+cfg-if = "0.1.10"
 
 [build-dependencies]
 version_check = "0.9.1"
@@ -33,3 +34,11 @@ version_check = "0.9.1"
 [dev-dependencies]
 insta = "0.12.0"
 lazy_static = "1.4.0"
+
+[[test]]
+name = "acceptance"
+path = "tests/acceptance_tests.rs"
+
+[features]
+default = []
+hamcrest_assertions = []

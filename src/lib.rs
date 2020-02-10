@@ -220,6 +220,7 @@ use proc_macro::TokenStream;
 use syn::{parse_macro_input, ItemFn};
 
 use quote::quote;
+use syn::export::TokenStream2;
 use syn::parse_quote;
 use syn::spanned::Spanned;
 use test_case::TestCase;
@@ -318,6 +319,7 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
     render_test_cases(&test_cases, item)
 }
 
+#[allow(unused_mut)]
 fn render_test_cases(test_cases: &[TestCase], item: ItemFn) -> TokenStream {
     let mut rendered_test_cases = vec![];
 
@@ -327,10 +329,23 @@ fn render_test_cases(test_cases: &[TestCase], item: ItemFn) -> TokenStream {
 
     let mod_name = item.sig.ident.clone();
 
+    let mut additional_usings: Vec<TokenStream2> = vec![];
+
+    cfg_if::cfg_if! {
+        if #[cfg(feature="hamcrest_assertions")] {
+            additional_usings.push(quote! {
+                #[allow(unused_imports)]
+                use hamcrest2::*;
+            })
+        }
+    }
+
     let output = quote! {
         mod #mod_name {
             #[allow(unused_imports)]
             use super::*;
+
+            #(#additional_usings)*
 
             #[allow(unused_attributes)]
             #item

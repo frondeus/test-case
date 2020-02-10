@@ -5,7 +5,7 @@ fn main() {
         Some(true) => {}
         _ => {
             // rustc version too small or can't figure it out
-            eprintln!("rustc>=1.29 is required due to feature(proc_macro) stabilitation");
+            eprintln!("rustc>=1.29 is required due to feature(proc_macro) stabilisation");
             exit(1);
         }
     }
