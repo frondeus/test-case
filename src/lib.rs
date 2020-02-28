@@ -224,6 +224,7 @@ use syn::parse_quote;
 use syn::spanned::Spanned;
 use test_case::TestCase;
 
+mod expected;
 mod test_case;
 mod utils;
 
