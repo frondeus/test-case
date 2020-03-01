@@ -25,6 +25,7 @@ mod kw {
     syn::custom_keyword!(panics);
     syn::custom_keyword!(inconclusive);
     syn::custom_keyword!(is);
+    syn::custom_keyword!(it);
 }
 
 #[cfg_attr(test, derive(Debug, PartialEq))]
@@ -82,7 +83,18 @@ impl Parse for Expected {
                 if #[cfg(any(feature="hamcrest_assertions", test))] {
                     return Ok(Expected::new_hamcrest(input.parse()?));
                 } else {
-                    panic!("Hamcrest assertions require 'hamcrest_assertions' feature")
+                    panic!("Hamcrest2 assertions require 'hamcrest_assertions' feature")
+                }
+            }
+        }
+
+        if lookahead.peek(kw::it) {
+            let _kw = input.parse::<kw::it>()?;
+            cfg_if! {
+                if #[cfg(any(feature="hamcrest_assertions", test))] {
+                    return Ok(Expected::new_hamcrest(input.parse()?));
+                } else {
+                    panic!("Hamcrest2 assertions require 'hamcrest_assertions' feature")
                 }
             }
         }

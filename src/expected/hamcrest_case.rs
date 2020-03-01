@@ -11,7 +11,7 @@ pub struct HamcrestCase {
 
 impl fmt::Display for HamcrestCase {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "that {}", fmt_syn(&self.value))
+        write!(f, "is {}", fmt_syn(&self.value))
     }
 }
 
