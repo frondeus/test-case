@@ -147,14 +147,17 @@
 //! }
 //! ```
 //!
-//! ## Inconclusive (ignored) test cases (since 0.2.0)
+//! # Modifiers
+//!
+//! ## inconclusive
+//!
+//! ### Context ignored test cases (since 0.2.0)
 //!
 //! If test case name (passed using `;` syntax described above) contains a word "inconclusive", generated test will be marked with `#[ignore]`.
 //!
 //! ### Keyword inconclusive (since 1.0.0)
 //!
 //! If test expectation is preceded by keyword `inconclusive` the test will be ignored as if it's description would contain word `inconclusive`
-//!
 //!
 //! ```rust
 //! # use test_case::test_case;
@@ -183,8 +186,9 @@
 //!     }
 //!
 //! ```
+//! ## matches
 //!
-//! ## Pattern matched test cases (since 1.0.0)
+//! ### Pattern matched test cases (since 1.0.0)
 //!
 //! If test expectation is preceded by `matches` keyword, the result will be tested whether it fits within provided pattern.
 //!
@@ -197,7 +201,9 @@
 //! }
 //! ```
 //!
-//! ## Panicking test cases (since 1.0.0)
+//! ## panics
+//!
+//! ### Panicking test cases (since 1.0.0)
 //!
 //! If test case expectation is preceded by `panics` keyword and the expectation itself is `&str` **or** expresion that evaluates to `&str` then test case will be expected to panic during execution.
 //!
@@ -212,6 +218,33 @@
 //!     }
 //! }
 //! ```
+//!
+//! ## is|it (feature = "hamcrest_assertions")
+//!
+//! ### Hamcrest2 crate integration (since 1.1.0)
+//!
+//! This feature requires addition of hamcrest2 crate to your Cargo.toml:
+//!
+//! ```toml
+//! test-case = { version = "1.1.0", features = ["hamcrest_assertions"] }
+//! hamcrest2 = "0.3.0"
+//! ```
+//!
+//! After that you can use test cases with new keywords `is` and `it` which will allow you to use hamcrest2 assertions ([doc](https://docs.rs/hamcrest2/0.3.0/hamcrest2/))
+//!
+//! ```rust
+//! # use test_case::test_case;
+//!
+//! #[test_case(&[1, 3] => is empty())]
+//! #[test_case(&[2, 3] => it contains(2))]
+//! #[test_case(&[2, 3] => it not(contains(3)))]
+//! #[test_case(&[2, 4] => it contains(vec!(2, 4)))]
+//! #[test_case(&[2, 3] => is len(1))]
+//! fn removes_odd_numbers(collection: &[u8]) -> &Vec<u8> {
+//!     Box::leak(Box::new(collection.into_iter().filter(|x| *x % 2 == 0).copied().collect()))
+//! }
+//! ```
+//!
 
 extern crate proc_macro;
 
@@ -220,6 +253,7 @@ use proc_macro::TokenStream;
 use syn::{parse_macro_input, ItemFn};
 
 use quote::quote;
+use syn::export::TokenStream2;
 use syn::parse_quote;
 use syn::spanned::Spanned;
 use test_case::TestCase;
@@ -318,6 +352,7 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
     render_test_cases(&test_cases, item)
 }
 
+#[allow(unused_mut)]
 fn render_test_cases(test_cases: &[TestCase], item: ItemFn) -> TokenStream {
     let mut rendered_test_cases = vec![];
 
@@ -327,10 +362,23 @@ fn render_test_cases(test_cases: &[TestCase], item: ItemFn) -> TokenStream {
 
     let mod_name = item.sig.ident.clone();
 
+    let mut additional_usings: Vec<TokenStream2> = vec![];
+
+    cfg_if::cfg_if! {
+        if #[cfg(feature="hamcrest_assertions")] {
+            additional_usings.push(quote! {
+                #[allow(unused_imports)]
+                use hamcrest2::*;
+            })
+        }
+    }
+
     let output = quote! {
         mod #mod_name {
             #[allow(unused_imports)]
             use super::*;
+
+            #(#additional_usings)*
 
             #[allow(unused_attributes)]
             #item

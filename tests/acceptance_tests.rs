@@ -1,33 +1,28 @@
 #![cfg(test)]
 
-#[macro_use]
-extern crate lazy_static;
-
 mod acceptance {
-    use std::process::{Command, Output};
+    use std::path::PathBuf;
+    use std::process::Command;
 
-    fn run_tests() -> Output {
-        Command::new("cargo")
-            .args(&["test", "test_cases"])
-            .output()
-            .expect("cargo command failed to start")
-    }
+    fn run_tests() -> String {
+        ["basic", "hamcrest_assertions"]
+            .iter()
+            .map(|feature| {
+                let output = Command::new("cargo")
+                    .current_dir(PathBuf::from("acceptance_tests").join(feature))
+                    .args(&["test"])
+                    .output()
+                    .expect("cargo command failed to start");
 
-    lazy_static! {
-        static ref ACTUAL: String = {
-            let output = run_tests().stdout;
-
-            String::from_utf8_lossy(&output).to_string()
-        };
-    }
-
-    fn actual<'a>() -> &'a str {
-        ACTUAL.as_ref()
+                String::from_utf8_lossy(&output.stdout).to_string()
+            })
+            .collect::<Vec<String>>()
+            .join("\n")
     }
 
     #[test]
     fn runs_all_tests() {
-        let actual = actual();
+        let actual = run_tests();
         let mut lines: Vec<_> = actual.lines().collect();
         lines.sort();
         let lines: String = lines.join("\n");
