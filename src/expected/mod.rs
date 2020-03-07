@@ -60,24 +60,30 @@ impl fmt::Display for Expected {
 
 impl Parse for Expected {
     fn parse(input: ParseStream) -> Result<Self, Error> {
-        let lookahead = input.lookahead1();
 
-        if lookahead.peek(kw::matches) {
+        if input.peek(kw::matches) {
             let _kw = input.parse::<kw::matches>()?;
             return Ok(Expected::new_pattern(input.parse()?));
         }
 
-        if lookahead.peek(kw::panics) {
+        if input.peek(kw::panics) {
             let _kw = input.parse::<kw::panics>()?;
-            return Ok(Expected::new_panic(input.parse()?));
+
+            let value = if input.peek(LitStr) {
+                Some(input.parse()?)
+            } else {
+                None
+            };
+
+            return Ok(Expected::new_panic(value));
         }
 
-        if lookahead.peek(kw::inconclusive) {
+        if input.peek(kw::inconclusive) {
             let _kw = input.parse::<kw::inconclusive>()?;
             return Ok(Expected::new_ignore(input.parse()?));
         }
 
-        if lookahead.peek(kw::is) {
+        if input.peek(kw::is) {
             let _kw = input.parse::<kw::is>()?;
             cfg_if! {
                 if #[cfg(any(feature="hamcrest_assertions", test))] {
@@ -88,7 +94,7 @@ impl Parse for Expected {
             }
         }
 
-        if lookahead.peek(kw::it) {
+        if input.peek(kw::it) {
             let _kw = input.parse::<kw::it>()?;
             cfg_if! {
                 if #[cfg(any(feature="hamcrest_assertions", test))] {
@@ -108,7 +114,7 @@ impl Expected {
         Expected::Pattern(PatternCase::new(pat))
     }
 
-    pub fn new_panic(lit_str: LitStr) -> Self {
+    pub fn new_panic(lit_str: Option<LitStr>) -> Self {
         Expected::Panic(PanicCase::new(lit_str))
     }
 

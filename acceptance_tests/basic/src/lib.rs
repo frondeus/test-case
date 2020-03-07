@@ -167,6 +167,11 @@ mod test_cases {
         panic!("It has to panic")
     }
 
+    #[test_case(() => panics)]
+    fn panics_without_value(_: ()) {
+        panic!("Message doesn't matter")
+    }
+
     #[test_case(() => inconclusive ())]
     #[test_case(() => inconclusive (); "test is not ran")]
     #[test_case(() => inconclusive (); "inconclusive test")]
