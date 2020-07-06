@@ -2,3 +2,4 @@ language: rust
 rust:
   - nightly
   - stable
+  - 1.34.2
