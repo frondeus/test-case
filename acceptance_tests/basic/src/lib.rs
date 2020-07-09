@@ -147,17 +147,17 @@ mod test_cases {
     #[derive(Debug)]
     #[allow(dead_code)]
     enum SimpleEnum {
-        Var1(i32),
-        Var2(char, i32),
+        Var1,
+        Var2,
     }
 
-    #[test_case(SimpleEnum::Var2('a', 4) => matches SimpleEnum::Var2(_, 4))]
+    #[test_case(SimpleEnum::Var2 => matches SimpleEnum::Var2)]
     fn pattern_matching_result(e: SimpleEnum) -> SimpleEnum {
         e
     }
 
-    #[should_panic(expected = "Expected SimpleEnum :: Var2 (_, 5) found Var2('a', 4)")]
-    #[test_case(SimpleEnum::Var2('a', 4) => matches SimpleEnum::Var2(_, 5))]
+    #[should_panic(expected = "Expected SimpleEnum :: Var2 found Var1")]
+    #[test_case(SimpleEnum::Var1 => matches SimpleEnum::Var2)]
     fn pattern_matching_result_fails(e: SimpleEnum) -> SimpleEnum {
         e
     }
