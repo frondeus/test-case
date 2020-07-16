@@ -1,26 +1,26 @@
 [package]
-name = "test-case"
-version = "1.0.0"
-edition = "2018"
-authors = ["Marcin Sas-Szymanski <marcin.sas-szymanski@anixe.pl>", "Wojciech Polak <frondeus@gmail.com>"]
-description = "Provides #[test_case(...)] procedural macro attribute for generating parametrized test cases easily"
-keywords = ["test", "case", "tests", "unit", "testing"]
-categories = ["development-tools", "development-tools::testing"]
-readme = "README.md"
-license = "MIT"
-repository = "https://github.com/frondeus/test-case"
+name          = "test-case"
+version       = "1.0.0"
+edition       = "2018"
+authors       = ["Marcin Sas-Szymanski <marcin.sas-szymanski@anixe.pl>", "Wojciech Polak <frondeus@gmail.com>"]
+description   = "Provides #[test_case(...)] procedural macro attribute for generating parametrized test cases easily"
+keywords      = ["test", "case", "tests", "unit", "testing"]
+categories    = ["development-tools", "development-tools::testing"]
+readme        = "README.md"
+license       = "MIT"
+repository    = "https://github.com/frondeus/test-case"
 documentation = "https://docs.rs/test-case"
-exclude = ["tests/snapshots/**/*"]
-build = "build.rs"
+exclude       = ["tests/snapshots/**/*"]
+build         = "build.rs"
 
 [badges]
-travis-ci = { repository = "frondeus/test-case", branch = "master" }
+travis-ci   = { repository = "frondeus/test-case", branch = "master" }
 maintenance = { status = "actively-developed" }
 
 [lib]
-doctest = false
+doctest    = false
 proc-macro = true
-path = "src/lib.rs"
+path       = "src/lib.rs"
 
 [dependencies]
 syn = { version = "1.0", features = ["full", "extra-traits"] }

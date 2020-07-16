@@ -64,8 +64,8 @@ test test_cases::nested::nested_test_case::_1_1 ... ok
 test test_cases::nested::using_fn_from_super::_20_22 ... ok
 test test_cases::nested::using_fn_from_super::_42 ... ok
 test test_cases::panicing::_panics_it_has_to_panic_ ... ok
-test test_cases::pattern_matching_result::_simpleenum_var2_a_4_matches_simpleenum_var2_4_ ... ok
-test test_cases::pattern_matching_result_fails::_simpleenum_var2_a_4_matches_simpleenum_var2_5_ ... ok
+test test_cases::pattern_matching_result::_simpleenum_var2_matches_simpleenum_var2 ... ok
+test test_cases::pattern_matching_result_fails::_simpleenum_var1_matches_simpleenum_var2 ... ok
 test test_cases::removes_odd_numbers::_1_3_is_empty_ ... ok
 test test_cases::removes_odd_numbers::_2_3_is_contains_2_ ... ok
 test test_cases::removes_odd_numbers::_2_3_is_len_1_ ... ok

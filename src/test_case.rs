@@ -62,7 +62,7 @@ impl TestCase {
         let case_desc = self
             .case_desc
             .as_ref()
-            .map(|cd| cd.value())
+            .map(LitStr::value)
             .unwrap_or_else(|| self.test_case_name.clone());
         crate::utils::escape_test_name(case_desc)
     }

@@ -17,6 +17,6 @@ mod test_cases {
     #[test_case(&[2, 4] => it contains(vec!(2, 4)))]
     #[test_case(&[2, 3] => is len(1))]
     fn removes_odd_numbers(collection: &[u8]) -> &Vec<u8> {
-        Box::leak(Box::new(collection.into_iter().filter(|x| *x % 2 == 0).copied().collect()))
+        Box::leak(Box::new(collection.into_iter().filter(|x| *x % 2 == 0).map(|v| *v).collect()))
     }
 }
