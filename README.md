@@ -220,6 +220,8 @@ fn test_panicking(input: &str) {
 }
 ```
 
+It is allowed to test whether test case panics ignoring _panic message_ via `#[test_case("foo" => panics)]` **(since 1.1.0)**.
+
 ### is|it (feature = "hamcrest_assertions")
 
 #### Hamcrest2 crate integration (since 1.1.0)
