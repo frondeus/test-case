@@ -6,7 +6,7 @@ use syn::{Attribute, Expr, LitStr};
 
 #[cfg_attr(test, derive(Debug, PartialEq))]
 pub struct PanicCase {
-    value: LitStr,
+    value: Option<LitStr>,
 }
 
 impl fmt::Display for PanicCase {
@@ -21,13 +21,16 @@ impl Case for PanicCase {
     }
 
     fn attr(&self) -> Option<Attribute> {
-        let value = &self.value;
-        Some(parse_quote! { #[should_panic(expected = #value)] })
+        if let Some(value) = self.value.as_ref() {
+            Some(parse_quote! { #[should_panic(expected = #value)] })
+        } else {
+            Some(parse_quote! { #[should_panic] })
+        }
     }
 }
 
 impl PanicCase {
-    pub fn new(value: LitStr) -> Self {
+    pub fn new(value: Option<LitStr>) -> Self {
         Self { value }
     }
 }
