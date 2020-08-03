@@ -60,7 +60,6 @@ impl fmt::Display for Expected {
 
 impl Parse for Expected {
     fn parse(input: ParseStream) -> Result<Self, Error> {
-
         if input.peek(kw::matches) {
             let _kw = input.parse::<kw::matches>()?;
             return Ok(Expected::new_pattern(input.parse()?));

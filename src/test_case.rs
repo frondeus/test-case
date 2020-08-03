@@ -148,10 +148,7 @@ mod tests {
             fn parses_panic_without_msg() {
                 let actual: Expected = parse_quote! { panics };
 
-                assert_eq!(
-                    Expected::Panic(PanicCase::new(None)),
-                    actual
-                );
+                assert_eq!(Expected::Panic(PanicCase::new(None)), actual);
             }
 
             #[test]
