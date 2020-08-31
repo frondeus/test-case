@@ -101,12 +101,22 @@ impl TestCase {
 
         attrs.append(&mut item.attrs);
 
-        quote! {
-            #[test]
-            #(#attrs)*
-            fn #test_case_name() {
-                let _result = #item_name(#(#arg_values),*);
-                #expected
+        if let Some(_asyncness) = item.sig.asyncness {
+            quote! {
+                #(#attrs)*
+                async fn #test_case_name() {
+                    let _result = #item_name(#(#arg_values),*).await;
+                    #expected
+                }
+            }
+        } else {
+            quote! {
+                #[test]
+                #(#attrs)*
+                fn #test_case_name() {
+                    let _result = #item_name(#(#arg_values),*);
+                    #expected
+                }
             }
         }
     }

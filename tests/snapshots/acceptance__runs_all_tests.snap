@@ -18,11 +18,11 @@ expression: lines
 running 0 tests
 running 0 tests
 running 11 tests
-running 46 tests
+running 48 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 test result: ok. 10 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out
-test result: ok. 39 passed; 0 failed; 7 ignored; 0 measured; 0 filtered out
+test result: ok. 41 passed; 0 failed; 7 ignored; 0 measured; 0 filtered out
 test test_cases::abs_tests::returns_0_for_0 ... ok
 test test_cases::abs_tests::returns_given_number_for_positive_input ... ok
 test test_cases::abs_tests::returns_opposite_number_for_non_positive_input ... ok
@@ -80,3 +80,5 @@ test test_cases::result_expresion_with_name::test_result_expression ... ok
 test test_cases::result_expression::_2_2_expects_2_2 ... ok
 test test_cases::result_which_panics::_2_2_expects_2_3 ... ok
 test test_cases::result_with_mod_sep::_42_expects_std_string_string_new_ ... ok
+test test_cases::works_seamlessly_with_async_std::_100i32_expects_100usize ... ok
+test test_cases::works_seamlessly_with_tokio::_100i32_expects_100usize ... ok
