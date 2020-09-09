@@ -1,5 +1,5 @@
 [package]
-name = "basic"
+name = "async"
 version = "0.1.0"
 authors = ["Łukasz Biel <lukasz.p.biel@gmail.com>"]
 edition = "2018"
@@ -8,3 +8,5 @@ edition = "2018"
 
 [dependencies]
 test-case = { path = "../../" }
+tokio = { version = "0.2.22", features = [ "rt-threaded", "macros" ] }
+async-std = { version = "1.6.3", features = [ "attributes" ] }
