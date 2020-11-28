@@ -1,0 +1,12 @@
+[package]
+name = "async"
+version = "0.1.0"
+authors = ["Łukasz Biel <lukasz.p.biel@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+test-case = { path = "../../" }
+tokio = { version = "0.2.22", features = [ "rt-threaded", "macros" ] }
+async-std = { version = "1.6.3", features = [ "attributes" ] }

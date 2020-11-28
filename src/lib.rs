@@ -353,7 +353,7 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
 }
 
 #[allow(unused_mut)]
-fn render_test_cases(test_cases: &[TestCase], item: ItemFn) -> TokenStream {
+fn render_test_cases(test_cases: &[TestCase], mut item: ItemFn) -> TokenStream {
     let mut rendered_test_cases = vec![];
 
     for test_case in test_cases {
@@ -372,6 +372,9 @@ fn render_test_cases(test_cases: &[TestCase], item: ItemFn) -> TokenStream {
             })
         }
     }
+
+    // We don't want any external crate to alter main fn code, we are passing them to each sub-function
+    item.attrs.clear();
 
     let output = quote! {
         mod #mod_name {
