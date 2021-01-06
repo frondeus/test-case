@@ -1,7 +1,7 @@
+use proc_macro2::TokenStream as TokenStream2;
 use crate::expected::Expected;
 use crate::utils::fmt_syn;
 use quote::quote;
-use syn::export::TokenStream2;
 use syn::parse::{Parse, ParseStream};
 use syn::{parse_quote, Error, Expr, Ident, ItemFn, LitStr, Token};
 
