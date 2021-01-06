@@ -1,5 +1,5 @@
 use proc_macro2::{Ident, Span};
-use syn::export::ToTokens;
+use quote::ToTokens;
 
 pub fn escape_test_name(input: impl AsRef<str>) -> Ident {
     if input.as_ref().is_empty() {
