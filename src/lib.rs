@@ -18,8 +18,6 @@
 //! use test_case::test_case;
 //! ```
 //!
-//! The crate depends on `proc_macro` feature that has been stabilized on rustc 1.29+.
-//!
 //! # Example usage:
 //!
 //! ```rust
@@ -34,9 +32,9 @@
 //!     // Not needed for this example, but useful in general
 //!     use super::*;
 //!
-//!     #[test_case( 4,  2 ; "when operands are swapped")]
+//!     #[test_case(4,  2  ; "when operands are swapped")]
 //!     #[test_case(-2, -4 ; "when both operands are negative")]
-//!     #[test_case(2,   4 ; "when both operands are positive")]
+//!     #[test_case(2,  4  ; "when both operands are positive")]
 //!     fn multiplication_tests(x: i8, y: i8) {
 //!         let actual = (x * y).abs();
 //!
@@ -151,11 +149,11 @@
 //!
 //! ## inconclusive
 //!
-//! ### Context ignored test cases (since 0.2.0)
+//! ### Context ignored test cases (deprecated, will be dropped in 2.0.0)
 //!
 //! If test case name (passed using `;` syntax described above) contains a word "inconclusive", generated test will be marked with `#[ignore]`.
 //!
-//! ### Keyword inconclusive (since 1.0.0)
+//! ### Keyword 'inconclusive'
 //!
 //! If test expectation is preceded by keyword `inconclusive` the test will be ignored as if it's description would contain word `inconclusive`
 //!
@@ -188,8 +186,6 @@
 //! ```
 //! ## matches
 //!
-//! ### Pattern matched test cases (since 1.0.0)
-//!
 //! If test expectation is preceded by `matches` keyword, the result will be tested whether it fits within provided pattern.
 //!
 //! ```rust
@@ -202,8 +198,6 @@
 //! ```
 //!
 //! ## panics
-//!
-//! ### Panicking test cases (since 1.0.0)
 //!
 //! If test case expectation is preceded by `panics` keyword and the expectation itself is `&str` **or** expresion that evaluates to `&str` then test case will be expected to panic during execution.
 //!
@@ -220,8 +214,6 @@
 //! ```
 //!
 //! ## is|it (feature = "hamcrest_assertions")
-//!
-//! ### Hamcrest2 crate integration (since 1.1.0)
 //!
 //! This feature requires addition of hamcrest2 crate to your Cargo.toml:
 //!
@@ -242,6 +234,22 @@
 //! #[test_case(&[2, 3] => is len(1))]
 //! fn removes_odd_numbers(collection: &[u8]) -> &Vec<u8> {
 //!     Box::leak(Box::new(collection.into_iter().filter(|x| *x % 2 == 0).copied().collect()))
+//! }
+//! ```
+//!
+//! # async in test cases
+//!
+//! Test cases can work with `tokio`, `async-std` and other runtimes, provided `#[test...]` attribute from mentioned libraries is used as a last attribute.
+//!
+//! eg.
+//!
+//! ```rust
+//! # use test_case::test_case;
+//!
+//! #[test_case("Hello, world" => true)]
+//! #[tokio::test]
+//! async fn runs_async_task(input: &str) -> bool {
+//!     some_async_fn(input).await
 //! }
 //! ```
 //!

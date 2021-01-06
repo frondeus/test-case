@@ -1,5 +1,15 @@
 # Changelog
 
+## V1.1.0
+### New features
+* Added support for using `hamcrest2` assertions with test case
+* Enabled support of `async` via tokio or similar
+* Enabled attribute passthrough for test cases - it means that you can combine `test-case` with other testing frameworks,
+  given at least one `#[test_case]` attribute appears before mentioned framework in testing function
+  
+### Deprecation
+* `inconclusive` inside test case name will not be supported starting `2.0.0`
+
 ## V1.0.0
 ### New features
 * Added support for three new keywords: `panics`, `matches` and `inconclusive` which can be applied after `=>` token.
