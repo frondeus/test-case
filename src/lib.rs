@@ -252,8 +252,8 @@ use proc_macro::TokenStream;
 
 use syn::{parse_macro_input, ItemFn};
 
-use quote::quote;
 use proc_macro2::TokenStream as TokenStream2;
+use quote::quote;
 use syn::parse_quote;
 use syn::spanned::Spanned;
 use test_case::TestCase;
