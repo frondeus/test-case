@@ -14,7 +14,6 @@ exclude       = ["tests/snapshots/**/*"]
 build         = "build.rs"
 
 [badges]
-travis-ci   = { repository = "frondeus/test-case", branch = "master" }
 maintenance = { status = "actively-developed" }
 
 [lib]
