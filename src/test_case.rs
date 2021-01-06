@@ -1,8 +1,11 @@
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
 use quote::ToTokens;
+use crate::expected::Expected;
+use crate::utils::fmt_syn;
+use quote::quote;
 use syn::parse::{Parse, ParseStream};
-use syn::{parse_quote, Error, Expr, Ident, ItemFn, LitStr, Pat, Token};
+use syn::{parse_quote, Error, Expr, Ident, ItemFn, LitStr, Token};
 
 #[cfg_attr(test, derive(Debug, PartialEq))]
 pub struct TestCase {
@@ -10,61 +13,6 @@ pub struct TestCase {
     args: Vec<Expr>,
     expected: Option<Expected>,
     case_desc: Option<LitStr>,
-}
-
-#[cfg_attr(test, derive(Debug, PartialEq))]
-pub enum Expected {
-    Pat(Pat),
-    Panic(LitStr),
-    Ignored(Box<Expr>),
-    Expr(Box<Expr>),
-}
-
-mod kw {
-    syn::custom_keyword!(matches);
-    syn::custom_keyword!(panics);
-    syn::custom_keyword!(inconclusive);
-}
-
-impl ToString for Expected {
-    fn to_string(&self) -> String {
-        match self {
-            Expected::Pat(p) => format!("matches {}", fmt_syn(&p)),
-            Expected::Panic(p) => format!("panics {}", fmt_syn(&p)),
-            Expected::Ignored(e) => format!("ignored {}", fmt_syn(&e)),
-            Expected::Expr(e) => format!("expects {}", fmt_syn(&e)),
-        }
-    }
-}
-
-impl Parse for Expected {
-    fn parse(input: ParseStream) -> Result<Self, Error> {
-        let lookahead = input.lookahead1();
-        if lookahead.peek(kw::matches) {
-            let _kw = input.parse::<kw::matches>()?;
-            let pat = input.parse()?;
-            return Ok(Expected::Pat(pat));
-        }
-
-        if lookahead.peek(kw::panics) {
-            let _kw = input.parse::<kw::panics>()?;
-            let pat = input.parse()?;
-            return Ok(Expected::Panic(pat));
-        }
-
-        if lookahead.peek(kw::inconclusive) {
-            let _kw = input.parse::<kw::inconclusive>()?;
-            let expr = input.parse()?;
-            return Ok(Expected::Ignored(expr));
-        }
-
-        let expr = input.parse()?;
-        Ok(Expected::Expr(expr))
-    }
-}
-
-fn fmt_syn(syn: &(impl ToTokens + Clone)) -> String {
-    syn.clone().into_token_stream().to_string()
 }
 
 impl Parse for TestCase {
@@ -116,7 +64,7 @@ impl TestCase {
         let case_desc = self
             .case_desc
             .as_ref()
-            .map(|cd| cd.value())
+            .map(LitStr::value)
             .unwrap_or_else(|| self.test_case_name.clone());
         crate::utils::escape_test_name(case_desc)
     }
@@ -133,42 +81,44 @@ impl TestCase {
 
         let mut attrs = vec![];
 
-        let expected: Expr = match &self.expected {
-            Some(Expected::Pat(pat)) => {
-                let pat_str = format!("{}", quote! { #pat });
-                parse_quote! {
-                    match _result {
-                        #pat => (),
-                        e => panic!("Expected {} found {:?}", #pat_str, e)
-                    }
-                }
+        let expected = if let Some(expected) = &self.expected {
+            let case = expected.case();
+
+            if let Some(attr) = case.attr() {
+                attrs.push(attr);
             }
-            Some(Expected::Expr(e)) => {
-                parse_quote! { assert_eq!(#e, _result) }
+
+            if let Some(body) = case.body() {
+                body
+            } else {
+                parse_quote! { () }
             }
-            Some(Expected::Panic(l)) => {
-                attrs.push(parse_quote! { #[should_panic(expected = #l)] });
-                parse_quote! {()}
-            }
-            Some(Expected::Ignored(_)) => {
-                attrs.push(parse_quote! { #[ignore] });
-                parse_quote! {()}
-            }
-            None => parse_quote! {()},
+        } else {
+            parse_quote! { () }
         };
 
         if inconclusive {
-            attrs.push(parse_quote! { #[ignore] });
+            attrs.push(parse_quote! { #[ignore] })
         }
 
         attrs.append(&mut item.attrs);
 
-        quote! {
-            #[test]
-            #(#attrs)*
-            fn #test_case_name() {
-                let _result = #item_name(#(#arg_values),*);
-                #expected
+        if let Some(_asyncness) = item.sig.asyncness {
+            quote! {
+                #(#attrs)*
+                async fn #test_case_name() {
+                    let _result = #item_name(#(#arg_values),*).await;
+                    #expected
+                }
+            }
+        } else {
+            quote! {
+                #[test]
+                #(#attrs)*
+                fn #test_case_name() {
+                    let _result = #item_name(#(#arg_values),*);
+                    #expected
+                }
             }
         }
     }
@@ -183,27 +133,54 @@ mod tests {
 
         mod parse {
             use super::*;
+            use crate::expected::expr_case::ExprCase;
+            use crate::expected::ignore_case::IgnoreCase;
+            use crate::expected::panic_case::PanicCase;
+            use crate::expected::pattern_case::PatternCase;
             use syn::parse_quote;
 
             #[test]
             fn parses_expression() {
                 let actual: Expected = parse_quote! { 2 + 3 };
 
-                assert_eq!(Expected::Expr(parse_quote!(2 + 3)), actual);
+                assert_eq!(Expected::Expr(ExprCase::new(parse_quote!(2 + 3))), actual);
             }
 
             #[test]
             fn parses_panic() {
                 let actual: Expected = parse_quote! { panics "Error msg" };
 
-                assert_eq!(Expected::Panic(parse_quote!("Error msg")), actual);
+                assert_eq!(
+                    Expected::Panic(PanicCase::new(parse_quote!("Error msg"))),
+                    actual
+                );
+            }
+
+            #[test]
+            fn parses_panic_without_msg() {
+                let actual: Expected = parse_quote! { panics };
+
+                assert_eq!(Expected::Panic(PanicCase::new(None)), actual);
             }
 
             #[test]
             fn parses_pattern() {
                 let actual: Expected = parse_quote! { matches Some(_) };
 
-                assert_eq!(Expected::Pat(parse_quote!(Some(_))), actual);
+                assert_eq!(
+                    Expected::Pattern(PatternCase::new(parse_quote!(Some(_)))),
+                    actual
+                );
+            }
+
+            #[test]
+            fn parses_inconclusive() {
+                let actual: Expected = parse_quote! { inconclusive "Ignore this" };
+
+                assert_eq!(
+                    Expected::Ignore(IgnoreCase::new(parse_quote!("Ignore this"))),
+                    actual
+                );
             }
         }
     }

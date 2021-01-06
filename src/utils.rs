@@ -1,4 +1,5 @@
 use proc_macro2::{Ident, Span};
+use syn::export::ToTokens;
 
 pub fn escape_test_name(input: impl AsRef<str>) -> Ident {
     if input.as_ref().is_empty() {
@@ -26,7 +27,12 @@ pub fn escape_test_name(input: impl AsRef<str>) -> Ident {
     if !ident.starts_with(|c: char| c == '_' || c.is_ascii_alphabetic()) {
         ident = format!("_{}", ident);
     }
+
     Ident::new(&ident, Span::call_site())
+}
+
+pub fn fmt_syn(syn: &(impl ToTokens + Clone)) -> String {
+    syn.clone().into_token_stream().to_string()
 }
 
 #[cfg(test)]
