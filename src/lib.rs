@@ -9,7 +9,7 @@
 //!
 //! ```toml
 //! [dev-dependencies]
-//! test-case = "1.0.0"
+//! test-case = "1.1.0"
 //! ```
 //!
 //! Additionally, you have to import the procedural macro with `use` statement:
