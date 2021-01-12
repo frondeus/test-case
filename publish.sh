@@ -1,14 +1,16 @@
 #!/bin/bash
 
+EDITOR=${EDITOR:-nvim}
+
 cargo clippy --all-targets --all-features -- -D warnings
 cargo fmt --all
 cargo test --all --all-features
 
-nvim Cargo.toml
+$EDITOR Cargo.toml
 cargo build
 
-nvim CHANGELOG.md
-nvim src/lib.rs
+$EDITOR CHANGELOG.md
+$EDITOR src/lib.rs
 
 cargo readme > README.md
 

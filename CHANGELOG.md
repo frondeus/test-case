@@ -1,5 +1,8 @@
 # Changelog
 
+## V1.0.1
+* Legacy support of rust < 1.39
+
 ## V1.0.0
 ### New features
 * Added support for three new keywords: `panics`, `matches` and `inconclusive` which can be applied after `=>` token.
