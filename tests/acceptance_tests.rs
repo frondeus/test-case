@@ -4,7 +4,20 @@ mod acceptance {
     use itertools::Itertools;
     use std::env;
     use std::path::PathBuf;
-    use std::process::Command;
+    use std::process::{Command, Output};
+
+    fn retrieve_stdout(output: &Output) -> String {
+        String::from_utf8_lossy(&output.stdout)
+            .to_string()
+            .lines()
+            .filter(|s| !s.is_empty())
+            .map(|line| match line.find("; finished in") {
+                Some(idx) => &line[0..idx],
+                None => line,
+            })
+            .sorted()
+            .join("\n")
+    }
 
     #[test]
     fn basic() {
@@ -14,11 +27,7 @@ mod acceptance {
             .output()
             .expect("cargo command failed to start");
 
-        let lines = String::from_utf8_lossy(&output.stdout)
-            .to_string()
-            .lines()
-            .sorted()
-            .join("\n");
+        let lines = retrieve_stdout(&output);
         insta::assert_display_snapshot!(lines);
     }
 
@@ -30,11 +39,7 @@ mod acceptance {
             .output()
             .expect("cargo command failed to start");
 
-        let lines = String::from_utf8_lossy(&output.stdout)
-            .to_string()
-            .lines()
-            .sorted()
-            .join("\n");
+        let lines = retrieve_stdout(&output);
         insta::assert_display_snapshot!(lines);
     }
 
@@ -46,11 +51,7 @@ mod acceptance {
             .output()
             .expect("cargo command failed to start");
 
-        let lines = String::from_utf8_lossy(&output.stdout)
-            .to_string()
-            .lines()
-            .sorted()
-            .join("\n");
+        let lines = retrieve_stdout(&output);
         insta::assert_display_snapshot!(lines);
     }
 }
