@@ -4,9 +4,9 @@ expression: lines
 
 ---
 running 0 tests
-running 46 tests
+running 48 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
-test result: ok. 39 passed; 0 failed; 7 ignored; 0 measured; 0 filtered out
+test result: ok. 41 passed; 0 failed; 7 ignored; 0 measured; 0 filtered out
 test test_cases::abs_tests::returns_0_for_0 ... ok
 test test_cases::abs_tests::returns_given_number_for_positive_input ... ok
 test test_cases::abs_tests::returns_opposite_number_for_non_positive_input ... ok
@@ -45,6 +45,8 @@ test test_cases::panicing::_panics_it_has_to_panic_ ... ok
 test test_cases::panics_without_value::_panics_ ... ok
 test test_cases::pattern_matching_result::_simpleenum_var2_matches_simpleenum_var2 ... ok
 test test_cases::pattern_matching_result_fails::_simpleenum_var1_matches_simpleenum_var2 ... ok
+test test_cases::qualified_attribute::first_test ... ok
+test test_cases::qualified_attribute::second_test ... ok
 test test_cases::result::_2_expects_4 ... ok
 test test_cases::result::_4_expects_8 ... ok
 test test_cases::result_and_name::_4_5_expects_9 ... ok
