@@ -336,7 +336,7 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
     let mut test_cases = vec![test_case];
     let mut attrs_to_remove = vec![];
     for (idx, attr) in item.attrs.iter().enumerate() {
-        if attr.path == parse_quote!(test_case) {
+        if attr.path == parse_quote!(test_case) || attr.path == parse_quote!(test_case::test_case) {
             let test_case = match attr.parse_args::<TestCase>() {
                 Ok(test_case) => test_case,
                 Err(err) => {

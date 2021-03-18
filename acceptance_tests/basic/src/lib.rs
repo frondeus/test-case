@@ -178,4 +178,8 @@ mod test_cases {
     fn inconclusives(_: ()) {
         unreachable!()
     }
+
+    #[test_case::test_case(1; "first test")]
+    #[test_case::test_case(1; "second test")]
+    fn qualified_attribute(_: u8) {}
 }
