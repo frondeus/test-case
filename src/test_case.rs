@@ -79,21 +79,15 @@ impl TestCase {
 
         let mut attrs = vec![];
 
-        let expected = if let Some(expected) = &self.expected {
+        let expected = self.expected.as_ref().and_then(|expected| {
             let case = expected.case();
 
             if let Some(attr) = case.attr() {
                 attrs.push(attr);
             }
 
-            if let Some(body) = case.body() {
-                body
-            } else {
-                parse_quote! { () }
-            }
-        } else {
-            parse_quote! { () }
-        };
+            case.body()
+        });
 
         if inconclusive {
             attrs.push(parse_quote! { #[ignore] })
