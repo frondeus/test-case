@@ -1,5 +1,12 @@
 # Changelog
 
+## V1.2.0
+### New features
+* Allow usage of fully qualified attribute `#[test_case::test_case]` (thanks to @tomprince)
+
+### Improvements
+* Stopped code from emmiting unneded `()` expression in test cases with `expected` fragment (thanks to @martinvonz)
+
 ## V1.1.0
 ### New features
 * Added support for using `hamcrest2` assertions with test case
