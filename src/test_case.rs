@@ -1,12 +1,12 @@
 use crate::expected::Expected;
 use crate::utils::fmt_syn;
-use proc_macro2::TokenStream as TokenStream2;
+use proc_macro2::{TokenStream as TokenStream2, TokenStream};
 use quote::quote;
 use syn::parse::{Parse, ParseStream};
-use syn::{parse_quote, Error, Expr, Ident, ItemFn, LitStr, Token};
+use syn::{parse_quote, Attribute, Error, Expr, Ident, ItemFn, LitStr, Token};
 
 #[cfg_attr(test, derive(Debug, PartialEq))]
-pub struct TestCase {
+pub(crate) struct TestCase {
     test_case_name: String,
     args: Vec<Expr>,
     expected: Option<Expected>,
@@ -58,60 +58,120 @@ impl Parse for TestCase {
 }
 
 impl TestCase {
-    pub fn test_case_name(&self) -> Ident {
+    pub fn render(&self, mut item: ItemFn) -> TokenStream2 {
+        let test_case_name = self.test_case_name();
+
+        let expected = self.expected();
+
+        let mut attrs = self.expected_attrs();
+        attrs.append(&mut item.attrs);
+        if self.is_inconclusive() {
+            attrs.push(parse_quote! { #[ignore] })
+        }
+
+        let method_call = self.method_call(item.sig.ident);
+
+        let additions = self.render_context(&test_case_name);
+
+        if let Some(_asyncness) = item.sig.asyncness {
+            TestCase::render_async_test_case(
+                &test_case_name,
+                &mut attrs,
+                &expected,
+                method_call,
+                additions,
+            )
+        } else {
+            TestCase::render_sync_test_case(
+                test_case_name,
+                &mut attrs,
+                expected,
+                method_call,
+                additions,
+            )
+        }
+    }
+
+    fn test_case_name(&self) -> Ident {
         let case_desc = self
             .case_desc
             .as_ref()
             .map(LitStr::value)
             .unwrap_or_else(|| self.test_case_name.clone());
+
         crate::utils::escape_test_name(case_desc)
     }
 
-    pub fn render(&self, mut item: ItemFn) -> TokenStream2 {
-        let item_name = item.sig.ident.clone();
-        let arg_values = self.args.iter();
-        let test_case_name = self.test_case_name();
-        let inconclusive = self
-            .case_desc
-            .as_ref()
-            .map(|cd| cd.value().to_lowercase().contains("inconclusive"))
-            .unwrap_or_default();
-
-        let mut attrs = vec![];
-
-        let expected = self.expected.as_ref().and_then(|expected| {
+    fn expected(&self) -> Option<Expr> {
+        self.expected.as_ref().and_then(|expected| {
             let case = expected.case();
 
-            if let Some(attr) = case.attr() {
-                attrs.push(attr);
-            }
-
             case.body()
-        });
+        })
+    }
 
-        if inconclusive {
-            attrs.push(parse_quote! { #[ignore] })
+    fn expected_attrs(&self) -> Vec<Attribute> {
+        self.expected.as_ref().and_then(|expected| expected.case().attr()).into_iter().collect()
+    }
+
+    fn render_sync_test_case(
+        test_case_name: Ident,
+        attrs: &mut Vec<Attribute>,
+        expected: Option<Expr>,
+        method_call: TokenStream,
+        context: TokenStream,
+    ) -> TokenStream2 {
+        quote! {
+            #[test]
+            #(#attrs)*
+            fn #test_case_name() {
+                #context
+
+                let _result = #method_call;
+                #expected
+            }
         }
+    }
 
-        attrs.append(&mut item.attrs);
+    fn render_async_test_case(
+        test_case_name: &Ident,
+        attrs: &mut Vec<Attribute>,
+        expected: &Option<Expr>,
+        method_call: TokenStream,
+        context: TokenStream,
+    ) -> TokenStream2 {
+        quote! {
+            #(#attrs)*
+            async fn #test_case_name() {
+                #context
 
-        if let Some(_asyncness) = item.sig.asyncness {
-            quote! {
-                #(#attrs)*
-                async fn #test_case_name() {
-                    let _result = #item_name(#(#arg_values),*).await;
-                    #expected
-                }
+                let _result = #method_call.await;
+                #expected
             }
-        } else {
-            quote! {
-                #[test]
-                #(#attrs)*
-                fn #test_case_name() {
-                    let _result = #item_name(#(#arg_values),*);
-                    #expected
-                }
-            }
+        }
+    }
+
+    fn method_call(&self, item_name: Ident) -> TokenStream2 {
+        let arg_values = self.args.iter();
+
+        quote! {
+            #item_name(#(#arg_values),*, __GENERATED_TEST_CASE_CONTEXT)
+        }
+    }
+
+    fn is_inconclusive(&self) -> bool {
+        self.case_desc
+            .as_ref()
+            .map(|cd| cd.value().to_lowercase().contains("inconclusive"))
+            .unwrap_or_default()
+    }
+
+    fn render_context(&self, test_case_name: &Ident) -> TokenStream2 {
+        let test_case_name = test_case_name.to_string();
+        quote! {
+            const __GENERATED_TEST_CASE_CONTEXT: __GeneratedTestCaseContext = __GeneratedTestCaseContext {
+                case_name: #test_case_name,
+            };
         }
     }
 }

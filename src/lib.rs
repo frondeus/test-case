@@ -257,9 +257,7 @@
 extern crate proc_macro;
 
 use proc_macro::TokenStream;
-
 use syn::{parse_macro_input, ItemFn};
-
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
 use syn::parse_quote;
@@ -384,10 +382,16 @@ fn render_test_cases(test_cases: &[TestCase], mut item: ItemFn) -> TokenStream {
     // We don't want any external crate to alter main fn code, we are passing them to each sub-function
     item.attrs.clear();
 
+    item.sig.inputs.push(parse_quote! { CASE_CONTEXT: __GeneratedTestCaseContext });
+
     let output = quote! {
         mod #mod_name {
             #[allow(unused_imports)]
             use super::*;
+
+            struct __GeneratedTestCaseContext {
+                case_name: &'static str,
+            }
 
             #(#additional_usings)*
 

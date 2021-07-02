@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 mod test_cases {
     use test_case::test_case;
 
@@ -11,5 +13,11 @@ mod test_cases {
     #[async_std::test]
     async fn works_seamlessly_with_async_std(arg: i32) -> usize {
         arg as usize
+    }
+
+    #[test_case(100i32 => "async_test_case".to_string(); "async_test_case")]
+    #[tokio::test]
+    async fn can_read_case_name(_: i32) -> String {
+        CASE_CONTEXT.case_name.to_string()
     }
 }

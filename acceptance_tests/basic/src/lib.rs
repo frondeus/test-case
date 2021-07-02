@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 mod test_cases {
     use test_case::test_case;
 
@@ -182,4 +184,10 @@ mod test_cases {
     #[test_case::test_case(1; "first test")]
     #[test_case::test_case(1; "second test")]
     fn qualified_attribute(_: u8) {}
+
+    #[test_case(1 => "some_simple_name".to_string();       "some_simple_name")]
+    #[test_case(2 => "name_with_replacement_".to_string(); "Name-with replacement $!")]
+    fn provides_test_case_name(_: u8) -> String {
+        CASE_CONTEXT.case_name.to_string()
+    }
 }
