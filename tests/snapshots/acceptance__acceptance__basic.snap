@@ -41,10 +41,10 @@ test test_cases::name::test_3_6_9 ... ok
 test test_cases::nested::nested_test_case::_1_1 ... ok
 test test_cases::nested::using_fn_from_super::_20_22 ... ok
 test test_cases::nested::using_fn_from_super::_42 ... ok
-test test_cases::panicing::_panics_it_has_to_panic_ ... ok
-test test_cases::panics_without_value::_panics_ ... ok
+test test_cases::panicing::_panics_it_has_to_panic_ - should panic ... ok
+test test_cases::panics_without_value::_panics_ - should panic ... ok
 test test_cases::pattern_matching_result::_simpleenum_var2_matches_simpleenum_var2 ... ok
-test test_cases::pattern_matching_result_fails::_simpleenum_var1_matches_simpleenum_var2 ... ok
+test test_cases::pattern_matching_result_fails::_simpleenum_var1_matches_simpleenum_var2 - should panic ... ok
 test test_cases::qualified_attribute::first_test ... ok
 test test_cases::qualified_attribute::second_test ... ok
 test test_cases::result::_2_expects_4 ... ok
@@ -53,5 +53,5 @@ test test_cases::result_and_name::_4_5_expects_9 ... ok
 test test_cases::result_and_name::test_no_1 ... ok
 test test_cases::result_expresion_with_name::test_result_expression ... ok
 test test_cases::result_expression::_2_2_expects_2_2 ... ok
-test test_cases::result_which_panics::_2_2_expects_2_3 ... ok
+test test_cases::result_which_panics::_2_2_expects_2_3 - should panic ... ok
 test test_cases::result_with_mod_sep::_42_expects_std_string_string_new_ ... ok
