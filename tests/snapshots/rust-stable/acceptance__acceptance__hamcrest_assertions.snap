@@ -1,0 +1,20 @@
+---
+source: tests/acceptance_tests.rs
+expression: lines
+
+---
+running 0 tests
+running 11 tests
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+test result: ok. 10 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out
+test test_cases::hamcrest_feature_works::_none_is_none_ ... ok
+test test_cases::hamcrest_feature_works::_some_str_is_all_some_not_none_ ... ok
+test test_cases::hamcrest_feature_works::_some_str_is_has_str_ ... ok
+test test_cases::hamcrest_feature_works::_some_str_is_some_ ... ok
+test test_cases::hamcrest_feature_works::can_be_followed_by_comment ... ok
+test test_cases::hamcrest_feature_works::can_be_followed_by_inconclusive_comment ... ignored
+test test_cases::removes_odd_numbers::_1_3_is_empty_ ... ok
+test test_cases::removes_odd_numbers::_2_3_is_contains_2_ ... ok
+test test_cases::removes_odd_numbers::_2_3_is_len_1_ ... ok
+test test_cases::removes_odd_numbers::_2_3_is_not_contains_3_ ... ok
+test test_cases::removes_odd_numbers::_2_4_is_contains_vec_2_4_ ... ok
