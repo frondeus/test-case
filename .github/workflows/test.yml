@@ -49,5 +49,7 @@ jobs:
           args: -- --check
       - name: Test
         uses: actions-rs/cargo@v1
+        env:
+          SNAPSHOT_DIR: rust-${{ matrix.toolchain }}
         with:
           command: test
