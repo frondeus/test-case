@@ -1,0 +1,57 @@
+---
+source: tests/acceptance_tests.rs
+expression: lines
+
+---
+running 0 tests
+running 48 tests
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+test result: ok. 41 passed; 0 failed; 7 ignored; 0 measured; 0 filtered out
+test test_cases::abs_tests::returns_0_for_0 ... ok
+test test_cases::abs_tests::returns_given_number_for_positive_input ... ok
+test test_cases::abs_tests::returns_opposite_number_for_non_positive_input ... ok
+test test_cases::arg_expressions::_2_4_6_to_string_ ... ok
+test test_cases::basic_test::_1 ... ok
+test test_cases::const_in_arg::this_is_desc_not_an_argument ... ok
+test test_cases::fancy_addition::_some_2_3_some_4_expects_2_3_4 ... ok
+test test_cases::fancy_addition::_some_2_some_3_expects_5 ... ok
+test test_cases::fancy_addition::treats_none_as_0 ... ok
+test test_cases::foo::_expects_string_default_ ... ok
+test test_cases::impl_trait::_foo_ ... ok
+test test_cases::inconclusive_tests::should_not_take_into_account_keyword_on_argument_position ... ok
+test test_cases::inconclusive_tests::this_test_is_also_inconclusive ... ignored
+test test_cases::inconclusive_tests::this_test_is_also_inconclusive_even_all_caps ... ignored
+test test_cases::inconclusive_tests::this_test_is_also_inconclusive_even_inverted_caps ... ignored
+test test_cases::inconclusive_tests::this_test_is_inconclusive_and_will_always_be ... ignored
+test test_cases::inconclusives::_ignored_ ... ignored
+test test_cases::inconclusives::inconclusive_test ... ignored
+test test_cases::inconclusives::test_is_not_ran ... ignored
+test test_cases::keyword_test::_true ... ok
+test test_cases::leading_underscore_in_test_name::_dummy_ ... ok
+test test_cases::lowercase_test_name::_dummy_code_ ... ok
+test test_cases::multiple_test_cases::_2 ... ok
+test test_cases::multiple_test_cases::_4 ... ok
+test test_cases::multiplication_tests::when_both_operands_are_negative ... ok
+test test_cases::multiplication_tests::when_both_operands_are_possitive ... ok
+test test_cases::multiplication_tests::when_operands_are_swapped ... ok
+test test_cases::name::_2nd_test ... ok
+test test_cases::name::_4_5 ... ok
+test test_cases::name::test_1_8_9 ... ok
+test test_cases::name::test_3_6_9 ... ok
+test test_cases::nested::nested_test_case::_1_1 ... ok
+test test_cases::nested::using_fn_from_super::_20_22 ... ok
+test test_cases::nested::using_fn_from_super::_42 ... ok
+test test_cases::panicing::_panics_it_has_to_panic_ - should panic ... ok
+test test_cases::panics_without_value::_panics_ - should panic ... ok
+test test_cases::pattern_matching_result::_simpleenum_var2_matches_simpleenum_var2 ... ok
+test test_cases::pattern_matching_result_fails::_simpleenum_var1_matches_simpleenum_var2 - should panic ... ok
+test test_cases::qualified_attribute::first_test ... ok
+test test_cases::qualified_attribute::second_test ... ok
+test test_cases::result::_2_expects_4 ... ok
+test test_cases::result::_4_expects_8 ... ok
+test test_cases::result_and_name::_4_5_expects_9 ... ok
+test test_cases::result_and_name::test_no_1 ... ok
+test test_cases::result_expresion_with_name::test_result_expression ... ok
+test test_cases::result_expression::_2_2_expects_2_2 ... ok
+test test_cases::result_which_panics::_2_2_expects_2_3 - should panic ... ok
+test test_cases::result_with_mod_sep::_42_expects_std_string_string_new_ ... ok
