@@ -93,6 +93,8 @@ impl TestCase {
             attrs.push(parse_quote! { #[ignore] })
         }
 
+        attrs.push(parse_quote! { #[allow(clippy::bool_assert_comparison)] });
+
         attrs.append(&mut item.attrs);
 
         if let Some(_asyncness) = item.sig.asyncness {
