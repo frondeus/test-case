@@ -17,7 +17,7 @@ First of all you have to add this dependency to your `Cargo.toml`:
 
 ```toml
 [dev-dependencies]
-test-case = "1.2.0"
+test-case = "1.2.1"
 ```
 
 Additionally, you have to import the procedural macro with `use` statement:

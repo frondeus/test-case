@@ -1,5 +1,8 @@
 # Changelog
 
+## V1.2.1
+* Disabled clippy warning when test-case was generating `assert_eq(bool, bool)` expression.
+
 ## V1.2.0
 ### New features
 * Allow usage of fully qualified attribute `#[test_case::test_case]` (thanks to @tomprince)
