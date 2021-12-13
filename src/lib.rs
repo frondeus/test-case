@@ -266,7 +266,9 @@ use syn::parse_quote;
 use syn::spanned::Spanned;
 use test_case::TestCase;
 
-mod expected;
+mod comment;
+mod expr;
+mod keyword;
 mod test_case;
 mod utils;
 

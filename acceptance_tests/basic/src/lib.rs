@@ -127,13 +127,6 @@ mod test_cases {
         assert_eq!(8, actual);
     }
 
-    #[test_case("inconclusive" ; "should not take into account keyword on argument position")]
-    #[test_case("dummy" ; "this test is inconclusive and will always be")]
-    #[test_case("dummy" ; "this test is also Inconclusive")]
-    #[test_case("dummy" ; "this test is also INCONCLUSIVE even all caps")]
-    #[test_case("dummy" ; "this test is also iNCONCLUSIVE even inverted caps")]
-    fn inconclusive_tests(_s: &str) {}
-
     const MY_CONST: &str = "my const";
 
     #[test_case(MY_CONST ; "this is desc, not an argument")]
@@ -182,4 +175,10 @@ mod test_cases {
     #[test_case::test_case(1; "first test")]
     #[test_case::test_case(1; "second test")]
     fn qualified_attribute(_: u8) {}
+
+    #[test_case(1.0 => assert |v: f64| assert!(v.is_infinite()))]
+    #[test_case(0.0 => assert |v: f64| assert!(v.is_nan()))]
+    fn divide_by_zero_f64(input: f64) -> f64 {
+        input / 0.0f64
+    }
 }
