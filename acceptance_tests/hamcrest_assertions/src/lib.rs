@@ -6,7 +6,6 @@ mod test_cases {
     #[test_case(Some("str") => is all!(some(), not(none())))]
     #[test_case(Some("str") => is has("str"))]
     #[test_case(Some("str") => is some() ; "can be followed by comment")]
-    #[test_case(Some("str") => is none() ; "can be followed by inconclusive comment")]
     fn hamcrest_feature_works(v: Option<&str>) -> Option<&str> {
         v
     }
