@@ -11,7 +11,7 @@ use syn::{parse_quote, Attribute, Expr, Pat, Path, Token};
 pub mod kw {
     syn::custom_keyword!(matches);
     syn::custom_keyword!(using);
-    syn::custom_keyword!(assert);
+    syn::custom_keyword!(with);
     syn::custom_keyword!(it);
     syn::custom_keyword!(is);
     syn::custom_keyword!(panics);
@@ -86,8 +86,8 @@ impl Parse for TestCaseExpression {
                 extra_keywords,
                 TestCaseResult::UseFn,
             )
-        } else if input.peek(kw::assert) {
-            Self::parse_with_keyword::<kw::assert, _, _>(
+        } else if input.peek(kw::with) {
+            Self::parse_with_keyword::<kw::with, _, _>(
                 input,
                 token,
                 extra_keywords,

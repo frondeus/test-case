@@ -176,9 +176,20 @@ mod test_cases {
     #[test_case::test_case(1; "second test")]
     fn qualified_attribute(_: u8) {}
 
-    #[test_case(1.0 => assert |v: f64| assert!(v.is_infinite()))]
-    #[test_case(0.0 => assert |v: f64| assert!(v.is_nan()))]
-    fn divide_by_zero_f64(input: f64) -> f64 {
+    #[test_case(1.0 => with |v: f64| assert!(v.is_infinite()))]
+    #[test_case(0.0 => with |v: f64| assert!(v.is_nan()))]
+    fn divide_by_zero_f64_with_lambda(input: f64) -> f64 {
         input / 0.0f64
+    }
+
+    fn assert_is_power_of_two(input: u64) {
+        assert!(input.is_power_of_two())
+    }
+
+    #[test_case(1 => using assert_is_power_of_two)]
+    #[test_case(2 => using assert_is_power_of_two)]
+    #[test_case(4 => using assert_is_power_of_two)]
+    fn power_of_two_with_using(input: u64) -> u64 {
+        input
     }
 }
