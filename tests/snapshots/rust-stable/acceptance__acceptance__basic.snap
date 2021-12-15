@@ -43,8 +43,8 @@ test test_cases::panics_without_value::_expects_panicking_none - should panic ..
 test test_cases::pattern_matching_result::simpleenum_var2_expects_matching_simpleenum_var2 ... ok
 test test_cases::pattern_matching_result_fails::simpleenum_var1_expects_matching_simpleenum_var2 - should panic ... ok
 test test_cases::power_of_two_with_using::_1_expects_use_path_assert_is_power_of_two ... ok
-test test_cases::power_of_two_with_using::_2_expects_use_path_assert_is_power_of_two ... ok
-test test_cases::power_of_two_with_using::_4_expects_use_path_assert_is_power_of_two ... ok
+test test_cases::power_of_two_with_using::_2_expects_use_path_crate_test_cases_assert_is_power_of_two ... ok
+test test_cases::power_of_two_with_using::_4_expects_use_path_some_mod_assert_is_power_of_two ... ok
 test test_cases::qualified_attribute::first_test ... ok
 test test_cases::qualified_attribute::second_test ... ok
 test test_cases::result::_2_expects_4 ... ok

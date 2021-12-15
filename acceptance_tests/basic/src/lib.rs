@@ -182,13 +182,17 @@ mod test_cases {
         input / 0.0f64
     }
 
-    fn assert_is_power_of_two(input: u64) {
+    pub fn assert_is_power_of_two(input: u64) {
         assert!(input.is_power_of_two())
     }
 
+    mod some_mod {
+        pub use super::assert_is_power_of_two;
+    }
+
     #[test_case(1 => using assert_is_power_of_two)]
-    #[test_case(2 => using assert_is_power_of_two)]
-    #[test_case(4 => using assert_is_power_of_two)]
+    #[test_case(2 => using crate::test_cases::assert_is_power_of_two)]
+    #[test_case(4 => using some_mod::assert_is_power_of_two)]
     fn power_of_two_with_using(input: u64) -> u64 {
         input
     }
