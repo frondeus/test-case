@@ -43,20 +43,6 @@ mod acceptance {
     }
 
     #[test]
-    fn hamcrest_assertions() {
-        with_settings!({snapshot_path => get_snapshot_directory()}, {
-        let output = Command::new("cargo")
-                    .current_dir(PathBuf::from("acceptance_tests").join("hamcrest_assertions"))
-                    .args(&["test"])
-                    .output()
-                    .expect("cargo command failed to start");
-
-                let lines = retrieve_stdout(&output);
-                insta::assert_display_snapshot!(lines);
-        });
-    }
-
-    #[test]
     fn r#async() {
         with_settings!({snapshot_path => get_snapshot_directory()}, {
             let output = Command::new("cargo")

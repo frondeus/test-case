@@ -1,7 +1,6 @@
-use crate::keyword::{parse_kws, Modifier};
+use crate::modifier::{parse_kws, Modifier};
 use crate::utils::fmt_syn;
 use crate::TokenStream2;
-use cfg_if::cfg_if;
 use quote::ToTokens;
 use std::collections::HashSet;
 use std::fmt::{Display, Formatter};
@@ -32,11 +31,8 @@ pub enum TestCaseResult {
     Matching(Pat),
     // test_case(a, b, c => panics "abcd")
     Panicking(Option<Expr>),
-    // test_case(a, b, c => is some())
-    #[cfg(feature = "hamcrest_assertions")]
-    Hamcrest(Expr),
-    // test_case(a, b, c => using assert!($.is_nan()))
-    Assert(Expr),
+    // test_case(a, b, c => with assert!($.is_nan()))
+    With(Expr),
     // test_case(a, b, c => using assert_nan)
     UseFn(Path),
 }
@@ -53,32 +49,8 @@ impl Parse for TestCaseExpression {
                 extra_keywords,
                 TestCaseResult::Matching,
             )
-        } else if input.peek(kw::it) {
-            cfg_if! {
-                if #[cfg(feature = "hamcrest_assertions")] {
-                    Self::parse_with_keyword::<kw::it, _, _>(
-                        input,
-                        token,
-                        extra_keywords,
-                        TestCaseResult::Hamcrest,
-                    )
-                } else {
-                    proc_macro_error::abort!(input.span(), "Cannot use \"it\"; `hamcrest_assertions` aren't enabled")
-                }
-            }
-        } else if input.peek(kw::is) {
-            cfg_if! {
-                if #[cfg(feature = "hamcrest_assertions")] {
-                    Self::parse_with_keyword::<kw::is, _, _>(
-                        input,
-                        token,
-                        extra_keywords,
-                        TestCaseResult::Hamcrest,
-                    )
-                } else {
-                    proc_macro_error::abort!(input.span(), "Cannot use \"is\"; `hamcrest_assertions` aren't enabled")
-                }
-            }
+        } else if input.peek(kw::it) || input.peek(kw::is) {
+            todo!("custom matchers aren't implemented yet")
         } else if input.peek(kw::using) {
             Self::parse_with_keyword::<kw::using, _, _>(
                 input,
@@ -91,15 +63,15 @@ impl Parse for TestCaseExpression {
                 input,
                 token,
                 extra_keywords,
-                TestCaseResult::Assert,
+                TestCaseResult::With,
             )
         } else if input.peek(kw::panics) {
-            let _: kw::panics = input.parse()?;
-            Ok(Self {
-                _token: token,
+            Self::parse_with_keyword_ok::<kw::panics, _, _>(
+                input,
+                token,
                 extra_keywords,
-                result: TestCaseResult::Panicking(input.parse().ok()),
-            })
+                TestCaseResult::Panicking,
+            )
         } else {
             Ok(Self {
                 _token: token,
@@ -131,10 +103,8 @@ impl Display for TestCaseResult {
                     expr.as_ref().map(|inner| fmt_syn(&inner))
                 )
             }
-            #[cfg(feature = "hamcrest_assertions")]
-            TestCaseResult::Hamcrest(expr) => write!(f, "it is {}", fmt_syn(expr)),
-            TestCaseResult::Assert(expr) => write!(f, "use {}", fmt_syn(expr)),
-            TestCaseResult::UseFn(path) => write!(f, "use path {}", fmt_syn(path)),
+            TestCaseResult::With(expr) => write!(f, "with {}", fmt_syn(expr)),
+            TestCaseResult::UseFn(path) => write!(f, "use {}", fmt_syn(path)),
         }
     }
 }
@@ -146,16 +116,35 @@ impl TestCaseExpression {
         extra_keywords: HashSet<Modifier>,
         mapping: Mapping,
     ) -> syn::Result<TestCaseExpression>
-    where
-        Mapping: FnOnce(Inner) -> TestCaseResult,
-        Keyword: Parse,
-        Inner: Parse,
+        where
+            Mapping: FnOnce(Inner) -> TestCaseResult,
+            Keyword: Parse,
+            Inner: Parse,
     {
         let _: Keyword = input.parse()?;
         Ok(Self {
             _token: token,
             extra_keywords,
             result: mapping(input.parse()?),
+        })
+    }
+
+    fn parse_with_keyword_ok<Keyword, Inner, Mapping>(
+        input: ParseStream,
+        token: Token![=>],
+        extra_keywords: HashSet<Modifier>,
+        mapping: Mapping,
+    ) -> syn::Result<TestCaseExpression>
+        where
+            Mapping: FnOnce(Option<Inner>) -> TestCaseResult,
+            Keyword: Parse,
+            Inner: Parse,
+    {
+        let _: Keyword = input.parse()?;
+        Ok(Self {
+            _token: token,
+            extra_keywords,
+            result: mapping(input.parse::<Inner>().ok()),
         })
     }
 
@@ -172,9 +161,7 @@ impl TestCaseExpression {
                 }
             }
             TestCaseResult::Panicking(_) => TokenStream2::new(),
-            #[cfg(feature = "hamcrest_assertions")]
-            TestCaseResult::Hamcrest(expr) => parse_quote! { assert_that!(_result, #expr) },
-            TestCaseResult::Assert(expr) => parse_quote! { let fun = #expr; fun(_result) },
+            TestCaseResult::With(expr) => parse_quote! { let fun = #expr; fun(_result) },
             TestCaseResult::UseFn(path) => parse_quote! { #path(_result) },
         }
     }
