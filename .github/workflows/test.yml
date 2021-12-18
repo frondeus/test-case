@@ -38,21 +38,21 @@ jobs:
         with:
           command: check
           args: --all-features
-        if: ${{ matrix.toolchain == 'stable' && matirx.os == 'ubuntu-latest' }}
+        if: ${{ matrix.toolchain == 'stable' && matrix.os == 'ubuntu-latest' }}
 
       - name: Clippy
         uses: actions-rs/cargo@v1
         with:
           command: clippy
           args: --all-features -- -D warnings
-        if: ${{ matrix.toolchain == 'stable' && matirx.os == 'ubuntu-latest' }}
+        if: ${{ matrix.toolchain == 'stable' && matrix.os == 'ubuntu-latest' }}
 
       - name: Fmt
         uses: actions-rs/cargo@v1
         with:
           command: fmt
           args: -- --check
-        if: ${{ matrix.toolchain == 'stable' && matirx.os == 'ubuntu-latest' }}
+        if: ${{ matrix.toolchain == 'stable' && matrix.os == 'ubuntu-latest' }}
 
       - name: Test
         uses: actions-rs/cargo@v1
