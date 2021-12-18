@@ -304,7 +304,7 @@ fn render_test_cases(test_cases: &[TestCase], mut item: ItemFn) -> TokenStream {
 
     let mod_name = item.sig.ident.clone();
 
-    // We don't want any external crate to alter main fn code, we are passing them to each sub-function
+    // We don't want any external crate to alter main fn code, we are passing attributes to each sub-function anyway
     item.attrs.clear();
 
     let output = quote! {

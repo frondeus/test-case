@@ -31,7 +31,7 @@ pub enum TestCaseResult {
     Matching(Pat),
     // test_case(a, b, c => panics "abcd")
     Panicking(Option<Expr>),
-    // test_case(a, b, c => with assert!($.is_nan()))
+    // test_case(a, b, c => with |v: T| assert!(v.is_nan()))
     With(Expr),
     // test_case(a, b, c => using assert_nan)
     UseFn(Path),
@@ -43,7 +43,7 @@ impl Parse for TestCaseExpression {
         let extra_keywords = parse_kws(input);
 
         if input.peek(kw::matches) {
-            Self::parse_with_keyword::<kw::matches, _, _>(
+            parse_with_keyword::<kw::matches, _, _>(
                 input,
                 token,
                 extra_keywords,
@@ -52,21 +52,16 @@ impl Parse for TestCaseExpression {
         } else if input.peek(kw::it) || input.peek(kw::is) {
             todo!("custom matchers aren't implemented yet")
         } else if input.peek(kw::using) {
-            Self::parse_with_keyword::<kw::using, _, _>(
+            parse_with_keyword::<kw::using, _, _>(
                 input,
                 token,
                 extra_keywords,
                 TestCaseResult::UseFn,
             )
         } else if input.peek(kw::with) {
-            Self::parse_with_keyword::<kw::with, _, _>(
-                input,
-                token,
-                extra_keywords,
-                TestCaseResult::With,
-            )
+            parse_with_keyword::<kw::with, _, _>(input, token, extra_keywords, TestCaseResult::With)
         } else if input.peek(kw::panics) {
-            Self::parse_with_keyword_ok::<kw::panics, _, _>(
+            parse_with_keyword_ok::<kw::panics, _, _>(
                 input,
                 token,
                 extra_keywords,
@@ -110,44 +105,6 @@ impl Display for TestCaseResult {
 }
 
 impl TestCaseExpression {
-    fn parse_with_keyword<Keyword, Inner, Mapping>(
-        input: ParseStream,
-        token: Token![=>],
-        extra_keywords: HashSet<Modifier>,
-        mapping: Mapping,
-    ) -> syn::Result<TestCaseExpression>
-    where
-        Mapping: FnOnce(Inner) -> TestCaseResult,
-        Keyword: Parse,
-        Inner: Parse,
-    {
-        let _: Keyword = input.parse()?;
-        Ok(Self {
-            _token: token,
-            extra_keywords,
-            result: mapping(input.parse()?),
-        })
-    }
-
-    fn parse_with_keyword_ok<Keyword, Inner, Mapping>(
-        input: ParseStream,
-        token: Token![=>],
-        extra_keywords: HashSet<Modifier>,
-        mapping: Mapping,
-    ) -> syn::Result<TestCaseExpression>
-    where
-        Mapping: FnOnce(Option<Inner>) -> TestCaseResult,
-        Keyword: Parse,
-        Inner: Parse,
-    {
-        let _: Keyword = input.parse()?;
-        Ok(Self {
-            _token: token,
-            extra_keywords,
-            result: mapping(input.parse::<Inner>().ok()),
-        })
-    }
-
     pub fn assertion(&self) -> TokenStream2 {
         match &self.result {
             TestCaseResult::Simple(expr) => parse_quote! { assert_eq!(#expr, _result) },
@@ -181,4 +138,42 @@ impl TestCaseExpression {
         }
         attrs
     }
+}
+
+fn parse_with_keyword<Keyword, Inner, Mapping>(
+    input: ParseStream,
+    token: Token![=>],
+    extra_keywords: HashSet<Modifier>,
+    mapping: Mapping,
+) -> syn::Result<TestCaseExpression>
+where
+    Mapping: FnOnce(Inner) -> TestCaseResult,
+    Keyword: Parse,
+    Inner: Parse,
+{
+    let _: Keyword = input.parse()?;
+    Ok(TestCaseExpression {
+        _token: token,
+        extra_keywords,
+        result: mapping(input.parse()?),
+    })
+}
+
+fn parse_with_keyword_ok<Keyword, Inner, Mapping>(
+    input: ParseStream,
+    token: Token![=>],
+    extra_keywords: HashSet<Modifier>,
+    mapping: Mapping,
+) -> syn::Result<TestCaseExpression>
+where
+    Mapping: FnOnce(Option<Inner>) -> TestCaseResult,
+    Keyword: Parse,
+    Inner: Parse,
+{
+    let _: Keyword = input.parse()?;
+    Ok(TestCaseExpression {
+        _token: token,
+        extra_keywords,
+        result: mapping(input.parse::<Inner>().ok()),
+    })
 }
