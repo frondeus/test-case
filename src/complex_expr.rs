@@ -120,7 +120,9 @@ impl Display for ComplexTestCase {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             ComplexTestCase::Ord(ord, expr) => write!(f, "{} {}", ord, fmt_syn(expr)),
-            ComplexTestCase::AlmostEqual(target, precision) => write!(f, "almost {} p {}", fmt_syn(target), fmt_syn(precision)),
+            ComplexTestCase::AlmostEqual(target, precision) => {
+                write!(f, "almost {} p {}", fmt_syn(target), fmt_syn(precision))
+            }
             ComplexTestCase::Path(token) => write!(f, "{}", token),
             ComplexTestCase::Contains(elem) => write!(f, "{}", fmt_syn(elem)),
             ComplexTestCase::ContainsInOrder(elems) => write!(f, "{}", fmt_syn(elems)),

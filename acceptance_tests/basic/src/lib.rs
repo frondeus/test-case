@@ -1,5 +1,3 @@
-#![feature(type_name_of_val)]
-
 mod test_cases {
     use test_case::test_case;
 
