@@ -7,6 +7,40 @@ on:
       - master
 
 jobs:
+  validate:
+    name: Validate clippy and rustfmt
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          components: rustfmt, clippy
+
+      - name: Check
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+          args: --all-features
+
+      - name: Clippy
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: --all-features -- -D warnings
+
+      - name: Fmt
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: -- --check
+
   test:
     name: Test crate
     runs-on: ${{ matrix.os }}
@@ -17,6 +51,7 @@ jobs:
           - windows-latest
           - macOS-latest
         toolchain:
+          - nightly
           - stable
           - 1.41.0
 
@@ -32,21 +67,6 @@ jobs:
           override: true
           components: rustfmt, clippy
 
-      - name: Check
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --all-features
-      - name: Clippy
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: --all-features -- -D warnings
-      - name: Fmt
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: -- --check
       - name: Test
         uses: actions-rs/cargo@v1
         env:

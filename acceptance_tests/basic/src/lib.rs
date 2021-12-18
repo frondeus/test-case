@@ -127,20 +127,13 @@ mod test_cases {
         assert_eq!(8, actual);
     }
 
-    #[test_case("inconclusive" ; "should not take into account keyword on argument position")]
-    #[test_case("dummy" ; "this test is inconclusive and will always be")]
-    #[test_case("dummy" ; "this test is also Inconclusive")]
-    #[test_case("dummy" ; "this test is also INCONCLUSIVE even all caps")]
-    #[test_case("dummy" ; "this test is also iNCONCLUSIVE even inverted caps")]
-    fn inconclusive_tests(_s: &str) {}
-
     const MY_CONST: &str = "my const";
 
     #[test_case(MY_CONST ; "this is desc, not an argument")]
     fn const_in_arg(_s: &str) {}
 
     #[test_case(""     => String::default())]
-    fn foo(_: &str) -> String {
+    fn bar(_: &str) -> String {
         String::default()
     }
 
@@ -182,4 +175,86 @@ mod test_cases {
     #[test_case::test_case(1; "first test")]
     #[test_case::test_case(1; "second test")]
     fn qualified_attribute(_: u8) {}
+
+    #[test_case(1.0 => with |v: f64| assert!(v.is_infinite()))]
+    #[test_case(0.0 => with |v: f64| assert!(v.is_nan()))]
+    fn divide_by_zero_f64_with_lambda(input: f64) -> f64 {
+        input / 0.0f64
+    }
+
+    pub fn assert_is_power_of_two(input: u64) {
+        assert!(input.is_power_of_two())
+    }
+
+    mod some_mod {
+        pub use super::assert_is_power_of_two;
+    }
+
+    #[test_case(1 => using assert_is_power_of_two)]
+    #[test_case(2 => using crate::test_cases::assert_is_power_of_two)]
+    #[test_case(4 => using some_mod::assert_is_power_of_two)]
+    fn power_of_two_with_using(input: u64) -> u64 {
+        input
+    }
+
+    struct Target { i: i64 }
+
+    struct Source1;
+    struct Source2;
+
+    impl From<Source1> for Target {
+        fn from(_: Source1) -> Self {
+            Self { i: 1 }
+        }
+    }
+
+    impl From<Source2> for Target {
+        fn from(_: Source2) -> Self {
+            Self { i: 2 }
+        }
+    }
+
+    #[test_case(Source1 => 1)]
+    #[test_case(Source2 => 2)]
+    fn test_generics<T: Into<Target>>(input: T) -> i64 {
+        let t: Target = input.into();
+        t.i
+    }
+
+    #[test_case(Source1 => 1)]
+    #[test_case(Source2 => 2)]
+    fn test_impl(input: impl Into<Target>) -> i64 {
+        let t: Target = input.into();
+        t.i
+    }
+
+    #[test_case(1.0 => is equal_to 2.0 ; "eq1")]
+    #[test_case(1.0 => is eq 2.0 ; "eq2")]
+    #[test_case(1.0 => is less_than 3.0 ; "lt1")]
+    #[test_case(1.0 => is lt 3.0 ; "lt2")]
+    #[test_case(1.0 => is greater_than 0.0 ; "gt1")]
+    #[test_case(1.0 => is gt 0.0 ; "gt2")]
+    #[test_case(1.0 => is less_or_equal_than 2.0 ; "leq1")]
+    #[test_case(1.0 => is leq 2.0 ; "leq2")]
+    #[test_case(1.0 => is greater_or_equal_than 1.0 ; "geq1")]
+    #[test_case(1.0 => is geq 1.0 ; "geq2")]
+    #[test_case(1.0 => is almost_equal_to 2.1 precision 0.15 ; "almost_eq1")]
+    #[test_case(1.0 => is almost 2.0 precision 0.01 ; "almost_eq2")]
+    fn complex_tests(input: f64) -> f64 {
+        input * 2.0
+    }
+
+    #[test_case("Cargo.toml" => is existing_path)]
+    #[test_case("src/lib.rs" => is file)]
+    #[test_case("src/" => is dir ; "short_dir")]
+    #[test_case("src/" => is directory ; "long_dir")]
+    fn create_path(val: &str) -> std::path::PathBuf {
+        std::path::PathBuf::from(val)
+    }
+
+    #[test_case(vec![1, 2, 3, 4] => it contains 1)]
+    #[test_case(vec![1, 2, 3, 4] => it contains_in_order [3, 4])]
+    fn contains_tests(items: Vec<u64>) -> Vec<u64> {
+        items
+    }
 }

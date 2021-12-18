@@ -1,0 +1,11 @@
+---
+source: tests/acceptance_tests.rs
+expression: lines
+
+---
+running 0 tests
+running 2 tests
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+test test_cases::works_seamlessly_with_async_std::_100i32_expects_100usize ... ok
+test test_cases::works_seamlessly_with_tokio::_100i32_expects_100usize ... ok
