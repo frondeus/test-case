@@ -1,3 +1,4 @@
+use crate::complex_expr::ComplexTestCase;
 use crate::modifier::{parse_kws, Modifier};
 use crate::utils::fmt_syn;
 use crate::TokenStream2;
@@ -35,6 +36,8 @@ pub enum TestCaseResult {
     With(Expr),
     // test_case(a, b, c => using assert_nan)
     UseFn(Path),
+    // test_case(a, b, c => is close to 4 precision 0.1)
+    Complex(ComplexTestCase),
 }
 
 impl Parse for TestCaseExpression {
@@ -42,31 +45,16 @@ impl Parse for TestCaseExpression {
         let token: Token![=>] = input.parse()?;
         let extra_keywords = parse_kws(input);
 
-        if input.peek(kw::matches) {
-            parse_with_keyword::<kw::matches, _, _>(
-                input,
-                token,
-                extra_keywords,
-                TestCaseResult::Matching,
-            )
-        } else if input.peek(kw::it) || input.peek(kw::is) {
-            todo!("custom matchers aren't implemented yet")
-        } else if input.peek(kw::using) {
-            parse_with_keyword::<kw::using, _, _>(
-                input,
-                token,
-                extra_keywords,
-                TestCaseResult::UseFn,
-            )
-        } else if input.peek(kw::with) {
-            parse_with_keyword::<kw::with, _, _>(input, token, extra_keywords, TestCaseResult::With)
-        } else if input.peek(kw::panics) {
-            parse_with_keyword_ok::<kw::panics, _, _>(
-                input,
-                token,
-                extra_keywords,
-                TestCaseResult::Panicking,
-            )
+        if input.parse::<kw::matches>().is_ok() {
+            parse_with_keyword::<_, _>(input, token, extra_keywords, TestCaseResult::Matching)
+        } else if input.parse::<kw::it>().is_ok() || input.parse::<kw::is>().is_ok() {
+            parse_with_keyword::<_, _>(input, token, extra_keywords, TestCaseResult::Complex)
+        } else if input.parse::<kw::using>().is_ok() {
+            parse_with_keyword::<_, _>(input, token, extra_keywords, TestCaseResult::UseFn)
+        } else if input.parse::<kw::with>().is_ok() {
+            parse_with_keyword::<_, _>(input, token, extra_keywords, TestCaseResult::With)
+        } else if input.parse::<kw::panics>().is_ok() {
+            parse_with_keyword_ok::<_, _>(input, token, extra_keywords, TestCaseResult::Panicking)
         } else {
             Ok(Self {
                 _token: token,
@@ -100,6 +88,7 @@ impl Display for TestCaseResult {
             }
             TestCaseResult::With(expr) => write!(f, "with {}", fmt_syn(expr)),
             TestCaseResult::UseFn(path) => write!(f, "use {}", fmt_syn(path)),
+            TestCaseResult::Complex(complex) => write!(f, "complex {}", complex),
         }
     }
 }
@@ -120,6 +109,7 @@ impl TestCaseExpression {
             TestCaseResult::Panicking(_) => TokenStream2::new(),
             TestCaseResult::With(expr) => parse_quote! { let fun = #expr; fun(_result) },
             TestCaseResult::UseFn(path) => parse_quote! { #path(_result) },
+            TestCaseResult::Complex(complex) => complex.assertion(),
         }
     }
 
@@ -140,7 +130,7 @@ impl TestCaseExpression {
     }
 }
 
-fn parse_with_keyword<Keyword, Inner, Mapping>(
+fn parse_with_keyword<Inner, Mapping>(
     input: ParseStream,
     token: Token![=>],
     extra_keywords: HashSet<Modifier>,
@@ -148,10 +138,8 @@ fn parse_with_keyword<Keyword, Inner, Mapping>(
 ) -> syn::Result<TestCaseExpression>
 where
     Mapping: FnOnce(Inner) -> TestCaseResult,
-    Keyword: Parse,
     Inner: Parse,
 {
-    let _: Keyword = input.parse()?;
     Ok(TestCaseExpression {
         _token: token,
         extra_keywords,
@@ -159,7 +147,7 @@ where
     })
 }
 
-fn parse_with_keyword_ok<Keyword, Inner, Mapping>(
+fn parse_with_keyword_ok<Inner, Mapping>(
     input: ParseStream,
     token: Token![=>],
     extra_keywords: HashSet<Modifier>,
@@ -167,10 +155,8 @@ fn parse_with_keyword_ok<Keyword, Inner, Mapping>(
 ) -> syn::Result<TestCaseExpression>
 where
     Mapping: FnOnce(Option<Inner>) -> TestCaseResult,
-    Keyword: Parse,
     Inner: Parse,
 {
-    let _: Keyword = input.parse()?;
     Ok(TestCaseExpression {
         _token: token,
         extra_keywords,

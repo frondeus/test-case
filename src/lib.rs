@@ -177,7 +177,7 @@
 //!
 //! # Contributing
 //!
-//! Project roadmap is available at [link](example.com). All contributions are welcome.
+//! Project roadmap is available at [link][5]. All contributions are welcome.
 //!
 //! When reporting an issue please follow bug report or feature request templates when applicable.
 //!
@@ -185,6 +185,7 @@
 //! [2]: https://doc.rust-lang.org/reference/expressions/match-expr.html
 //! [3]: https://doc.rust-lang.org/reference/patterns.html
 //! [4]: https://doc.rust-lang.org/book/ch11-01-writing-tests.html#checking-for-panics-with-should_panic
+//! [5]: https://github.com/frondeus/test-case/issues/74
 
 extern crate proc_macro;
 
@@ -199,6 +200,7 @@ use syn::spanned::Spanned;
 use test_case::TestCase;
 
 mod comment;
+mod complex_expr;
 mod expr;
 mod modifier;
 mod test_case;
@@ -263,6 +265,7 @@ mod utils;
 /// }
 /// ```
 #[proc_macro_attribute]
+#[proc_macro_error::proc_macro_error]
 pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
     let test_case = parse_macro_input!(args as TestCase);
     let mut item = parse_macro_input!(input as ItemFn);
@@ -276,7 +279,7 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
                 Err(err) => {
                     return syn::Error::new(
                         attr.span(),
-                        format!("cannot parse test_case arguments: {:?}", err),
+                        format!("cannot parse test_case arguments: {}", err),
                     )
                     .to_compile_error()
                     .into()

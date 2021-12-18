@@ -1,3 +1,5 @@
+#![feature(type_name_of_val)]
+
 mod test_cases {
     use test_case::test_case;
 
@@ -226,5 +228,35 @@ mod test_cases {
     fn test_impl(input: impl Into<Target>) -> i64 {
         let t: Target = input.into();
         t.i
+    }
+
+    #[test_case(1.0 => is equal_to 2.0 ; "eq1")]
+    #[test_case(1.0 => is eq 2.0 ; "eq2")]
+    #[test_case(1.0 => is less_than 3.0 ; "lt1")]
+    #[test_case(1.0 => is lt 3.0 ; "lt2")]
+    #[test_case(1.0 => is greater_than 0.0 ; "gt1")]
+    #[test_case(1.0 => is gt 0.0 ; "gt2")]
+    #[test_case(1.0 => is less_or_equal_than 2.0 ; "leq1")]
+    #[test_case(1.0 => is leq 2.0 ; "leq2")]
+    #[test_case(1.0 => is greater_or_equal_than 1.0 ; "geq1")]
+    #[test_case(1.0 => is geq 1.0 ; "geq2")]
+    #[test_case(1.0 => is almost_equal_to 2.1 precision 0.15 ; "almost_eq1")]
+    #[test_case(1.0 => is almost 2.0 precision f64::EPSILON ; "almost_eq2")]
+    fn complex_tests(input: f64) -> f64 {
+        input * 2.0
+    }
+
+    #[test_case("Cargo.toml" => is existing_path)]
+    #[test_case("src/lib.rs" => is file)]
+    #[test_case("src/" => is dir ; "short_dir")]
+    #[test_case("src/" => is directory ; "long_dir")]
+    fn create_path(val: &str) -> std::path::PathBuf {
+        std::path::PathBuf::from(val)
+    }
+
+    #[test_case(vec![1, 2, 3, 4] => it contains 1)]
+    #[test_case(vec![1, 2, 3, 4] => it contains_in_order [3, 4])]
+    fn contains_tests(items: Vec<u64>) -> Vec<u64> {
+        items
     }
 }
