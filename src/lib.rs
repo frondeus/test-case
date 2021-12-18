@@ -1,13 +1,15 @@
 //! # Overview
 //! `test_case` crate provides procedural macro attribute that generates parametrized test instances.
 //!
+//! > Minimum rust version is `1.49.0`, everything down `1.39.0` should work
+//!
 //! # Getting Started
 //!
 //! Crate has to be added as an dependency to `Cargo.toml`:
 //!
 //! ```toml
 //! [dev-dependencies]
-//! test-case = "1.2.1"
+//! test-case = "2.0.0-rc1"
 //! ```
 //!
 //! and imported to the scope of a block where it's being called
@@ -151,12 +153,12 @@
 //! it accepts path to a function that should validate result of the testing function. Eg.:
 //!
 //! ```rust
-//! fn test_nan(i: f64) {
-//!     assert!(i.is_nan())
+//! fn is_power_of_two(input: u64) {
+//!     assert!(input.is_power_of_two())
 //! }
 //!
-//! #[test_case(0.0 => using self::test_nan)]
-//! fn some_test(i: f64) -> f64 {
+//! #[test_case(1 => using self::is_power_of_two)]
+//! fn some_test(input: u64) -> u64 {
 //!     "body omitted..."
 //! }
 //! ```
@@ -173,9 +175,11 @@
 //! async fn xyz() { }
 //! ```
 //!
-//! # Inner workings
+//! # Contributing
 //!
-//! Under the hood, all test cases that share same body are grouped into `mod`, giving clear and readable test results.
+//! Project roadmap is available at [link](example.com). All contributions are welcome.
+//!
+//! When reporting an issue please follow bug report or feature request templates when applicable.
 //!
 //! [1]: https://doc.rust-lang.org/reference/expressions.html
 //! [2]: https://doc.rust-lang.org/reference/expressions/match-expr.html

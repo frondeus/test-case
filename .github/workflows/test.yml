@@ -17,6 +17,7 @@ jobs:
           - windows-latest
           - macOS-latest
         toolchain:
+          - nightly
           - stable
           - 1.41.0
 
@@ -37,16 +38,19 @@ jobs:
         with:
           command: check
           args: --all-features
+
       - name: Clippy
         uses: actions-rs/cargo@v1
         with:
           command: clippy
           args: --all-features -- -D warnings
+
       - name: Fmt
         uses: actions-rs/cargo@v1
         with:
           command: fmt
           args: -- --check
+
       - name: Test
         uses: actions-rs/cargo@v1
         env:

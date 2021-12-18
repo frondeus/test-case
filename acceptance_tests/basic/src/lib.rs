@@ -133,7 +133,7 @@ mod test_cases {
     fn const_in_arg(_s: &str) {}
 
     #[test_case(""     => String::default())]
-    fn foo(_: &str) -> String {
+    fn bar(_: &str) -> String {
         String::default()
     }
 
@@ -195,5 +195,36 @@ mod test_cases {
     #[test_case(4 => using some_mod::assert_is_power_of_two)]
     fn power_of_two_with_using(input: u64) -> u64 {
         input
+    }
+
+    struct Target { i: i64 }
+
+    struct Source1;
+    struct Source2;
+
+    impl From<Source1> for Target {
+        fn from(_: Source1) -> Self {
+            Self { i: 1 }
+        }
+    }
+
+    impl From<Source2> for Target {
+        fn from(_: Source2) -> Self {
+            Self { i: 2 }
+        }
+    }
+
+    #[test_case(Source1 => 1)]
+    #[test_case(Source2 => 2)]
+    fn test_generics<T: Into<Target>>(input: T) -> i64 {
+        let t: Target = input.into();
+        t.i
+    }
+
+    #[test_case(Source1 => 1)]
+    #[test_case(Source2 => 2)]
+    fn test_impl(input: impl Into<Target>) -> i64 {
+        let t: Target = input.into();
+        t.i
     }
 }
