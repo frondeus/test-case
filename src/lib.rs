@@ -1,11 +1,9 @@
 //! # Overview
 //! `test_case` crate provides procedural macro attribute that generates parametrized test instances.
 //!
-//! > Minimum rust version is `1.49.0`, everything down `1.39.0` should work
-//!
 //! # Getting Started
 //!
-//! Crate has to be added as an dependency to `Cargo.toml`:
+//! Crate has to be added as a dependency to `Cargo.toml`:
 //!
 //! ```toml
 //! [dev-dependencies]
@@ -52,7 +50,7 @@
 //!
 //! # Advanced use
 //!
-//! For `#[test_case(body)]` attribute the body is built as follows:
+//! For `#[test_case(body)]` the body is built as follows:
 //!
 //! `body` := `$arguments ($expected_result)? ($description)?`
 //!
@@ -71,9 +69,11 @@
 //!
 //! `expected_result` := `=> ($modifier)* $validator`
 //!
+//! Optional part that provides assertions to instantiated tests.
+//!
 //! When using `expected_result` version of `test_case` tested function **must** return a type
 //! that can be matched with validator. Each validator description states how to ensure
-//! that the type returned by function is correct.
+//! that the type returned by function can be matched.
 //!
 //! ### Modifiers
 //!
@@ -175,17 +175,10 @@
 //! async fn xyz() { }
 //! ```
 //!
-//! # Contributing
-//!
-//! Project roadmap is available at [link][5]. All contributions are welcome.
-//!
-//! When reporting an issue please follow bug report or feature request templates when applicable.
-//!
 //! [1]: https://doc.rust-lang.org/reference/expressions.html
 //! [2]: https://doc.rust-lang.org/reference/expressions/match-expr.html
 //! [3]: https://doc.rust-lang.org/reference/patterns.html
 //! [4]: https://doc.rust-lang.org/book/ch11-01-writing-tests.html#checking-for-panics-with-should_panic
-//! [5]: https://github.com/frondeus/test-case/issues/74
 
 extern crate proc_macro;
 

@@ -7,20 +7,19 @@
 # Test Case
 
 ## Overview
-This crate provides `#[test_case]` procedural macro attribute that generates multiple parametrized tests using one body with different input parameters.
-A test is generated for each data set passed in `test_case` attribute.
-Under the hood, all test cases that share same body are grouped into `mod`, giving clear and readable test results.
+`test_case` crate provides procedural macro attribute that generates parametrized test instances.
 
 ## Getting Started
 
-First of all you have to add this dependency to your `Cargo.toml`:
+Crate has to be added as a dependency to `Cargo.toml`:
 
 ```toml
 [dev-dependencies]
-test-case = "1.2.1"
+test-case = "2.0.0-rc1"
 ```
 
-Additionally, you have to import the procedural macro with `use` statement:
+and imported to the scope of a block where it's being called
+(since attribute name collides with rust's built-in `custom_test_frameworks`) via:
 
 ```rust
 use test_case::test_case;
@@ -29,31 +28,17 @@ use test_case::test_case;
 ## Example usage:
 
 ```rust
-// The next two lines are not needed for 2018 edition or newer
-#[cfg(test)]
-extern crate test_case;
-
 #[cfg(test)]
 mod tests {
     use test_case::test_case;
 
-    // Not needed for this example, but useful in general
-    use super::*;
-
-    #[test_case(4,  2  ; "when operands are swapped")]
     #[test_case(-2, -4 ; "when both operands are negative")]
     #[test_case(2,  4  ; "when both operands are positive")]
+    #[test_case(4,  2  ; "when operands are swapped")]
     fn multiplication_tests(x: i8, y: i8) {
         let actual = (x * y).abs();
 
         assert_eq!(8, actual)
-    }
-
-    // You can still use regular tests too
-    #[test]
-    fn addition_test() {
-        let actual = -2 + 8;
-        assert_eq!(6, actual)
     }
 }
 ```
@@ -64,7 +49,6 @@ Output from `cargo test` for this example:
 $ cargo test
 
 running 4 tests
-test tests::addition_test ... ok
 test tests::multiplication_tests::when_both_operands_are_negative ... ok
 test tests::multiplication_tests::when_both_operands_are_positive ... ok
 test tests::multiplication_tests::when_operands_are_swapped ... ok
@@ -72,195 +56,145 @@ test tests::multiplication_tests::when_operands_are_swapped ... ok
 test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 ```
 
-## Examples
+## Advanced use
 
-If your only assertion is just `assert_eq!`, you can pass the expectation as macro attribute using `=>` syntax:
+For `#[test_case(body)]` the body is built as follows:
+
+`body` := `$arguments ($expected_result)? ($description)?`
+
+### Arguments
+
+`arguments` := `$expr(,$expr)*(,)?`
+
+Comma separated list of one or more [expressions][1], eg.:
+```rust
+#[test_case(a, b, c,)]
+#[test_case(())]
+#[test_case(a_method_that_produces_arg(1, 2, 3), "a string")]
+```
+
+### Expected result
+
+`expected_result` := `=> ($modifier)* $validator`
+
+Optional part that provides assertions to instantiated tests.
+
+When using `expected_result` version of `test_case` tested function **must** return a type
+that can be matched with validator. Each validator description states how to ensure
+that the type returned by function can be matched.
+
+#### Modifiers
+
+`modifier` := `ignore | inconclusive`
+
+Both `ignore` and `inconclusive` keywords indicate that test case should be skipped. This is equivalent to using
+`#[ignore]` attribute on normal test. Eg.:
 
 ```rust
-#[test_case( 2 => 2 ; "returns given number for positive input")]
-#[test_case(-2 => 2 ; "returns opposite number for non-positive input")]
-#[test_case( 0 => 0 ; "returns 0 for 0")]
-fn abs_tests(x: i8) -> i8 {
-   if x > 0 { x } else { -x }
+#[test_case(0.0 => ignore 0.0)] // not yet implemented
+```
+
+#### Validator
+
+There are numerous validators provided by `test_case`:
+
+`validator` := `$simple|$matching|$panicking|$with|$using`
+
+##### Simple
+
+`simple` := `$expr`
+
+Accepts any [expression][1] that evaluates to function return type and
+compares it against whatever tested block returns via `assert_eq`. Eg.:
+
+```rust
+#[test_case("2.0" => 2.0)]
+fn parses_a_string(arg_in: &str) -> f64 {
+    body omitted...
+}
+```
+##### Matching
+
+`matching` := `matches $pattern`
+
+A [pattern][3] following keyword `matches`.
+Result of a function is compared to `pattern` via [MatchExpression][2]. Eg.:
+
+```rust
+#[test_case("2.0" => matches Ok(_))]
+#[test_case("1.0" => matches Ok(v) if v == 1.0f64)]
+#[test_case("abc" => matches Err(_))]
+```
+
+##### Panicking
+
+`panicking` := `panics ($expr)?`
+
+Indicates that test instance should panic. Works identical to `#[should_panic]` test attribute.
+Optional expression after the keyword is treated like `expected` in [should_panic][4]. Eg.:
+
+```rust
+#[test_case(0 => panics "division by zero")]
+```
+
+##### With
+
+`with` := `with $closure`
+
+Allows manual assertions of the result of testing function.
+Closure must indicate argument type and it has to be implicitly convertible from type returned by testing function.
+Eg.:
+
+```rust
+#[test_case(2.0 => 0.0)]
+#[test_case(0.0 => with |i: f64| assert!(i.is_nan()))]
+fn test_division(i: f64) -> f64 {
+    0.0 / i
 }
 ```
 
-Which is equivalent to
+##### Using
+
+`using` := `using $path`
+
+Work similar to `with` attribute, with the difference being that instead of a closure
+it accepts path to a function that should validate result of the testing function. Eg.:
 
 ```rust
-#[test_case( 2, 2 ; "returns given number for positive input")]
-#[test_case(-2, 2 ; "returns opposite number for non-positive input")]
-#[test_case( 0, 0 ; "returns 0 for 0")]
-fn abs_tests(x: i8, expected: i8){
-   let actual = if x > 0 { x } else { -x };
+fn is_power_of_two(input: u64) {
+    assert!(input.is_power_of_two())
+}
 
-   assert_eq!(expected, actual);
+#[test_case(1 => using self::is_power_of_two)]
+fn some_test(input: u64) -> u64 {
+    "body omitted..."
 }
 ```
 
-Attributes and expectation may be any expresion unless they contain `=>`, e.g.
+## Notes about async & additional attributes
+
+If `test_case` is used with `async` tests, eg. `#[tokio::test]`, or user wants to pass other attributes to each
+test instance then additional attributes have to be added past first occurrence of `#[test_case]`. Eg.:
 
 ```rust
-#[test_case(None,        None    => 0 ; "treats none as 0")]
-#[test_case(Some(2),     Some(3) => 5)]
-#[test_case(Some(2 + 3), Some(4) => 2 + 3 + 4)]
-fn fancy_addition(x: Option<i8>, y: Option<i8>) -> i8 {
-    x.unwrap_or(0) + y.unwrap_or(0)
-}
-```
-
-Note: in fact, `=>` is not prohibited, but the parser will always treat last `=>` sign as beginning of expectation definition.
-
-Test case names are optional. They are set using `;` followed by string literal at the end of macro attributes.
-
-Example generated code:
-
-```rust
-mod fancy_addition {
-    #[allow(unused_imports)]
-    use super::*;
-
-    fn fancy_addition(x: Option<i8>, y: Option<i8>) -> i8 {
-        x.unwrap_or(0) + y.unwrap_or(0)
-    }
-
-    #[test]
-    fn treats_none_as_0() {
-        let expected = 0;
-        let actual = fancy_addition(None, None);
-
-        assert_eq!(expected, actual);
-    }
-
-    #[test]
-    fn some_2_some_3() {
-        let expected = 5;
-        let actual = fancy_addition(Some(2), Some(3));
-
-        assert_eq!(expected, actual);
-    }
-
-    #[test]
-    fn some_2_3_some_4() {
-        let expected = 2 + 3 + 4;
-        let actual = fancy_addition(Some(2 + 3), Some(4));
-
-        assert_eq!(expected, actual);
-    }
-}
-```
-
-## Modifiers
-
-### inconclusive
-
-#### Context ignored test cases (deprecated, will be dropped in 2.0.0)
-
-If test case name (passed using `;` syntax described above) contains a word "inconclusive", generated test will be marked with `#[ignore]`.
-
-#### Keyword 'inconclusive'
-
-If test expectation is preceded by keyword `inconclusive` the test will be ignored as if it's description would contain word `inconclusive`
-
-```rust
-#[test_case("42")]
-#[test_case("XX" ; "inconclusive - parsing letters temporarily doesn't work, but it's ok")]
-#[test_case("na" => inconclusive ())]
-fn parses_input(input: &str) {
-    // ...
-}
-```
-
-Generated code:
-```rust
-mod parses_input {
-    // ...
-
-    #[test]
-    pub fn _42() {
-        // ...
-    }
-
-    #[test]
-    #[ignore]
-    pub fn inconclusive_parsing_letters_temporarily_doesn_t_work_but_it_s_ok() {
-        // ...
-    }
-
-```
-### matches
-
-If test expectation is preceded by `matches` keyword, the result will be tested whether it fits within provided pattern.
-
-```rust
-#[test_case("foo", "bar" => matches ("foo", _) ; "first element of zipped tuple is correct")]
-#[test_case("foo", "bar" => matches (_, "bar") ; "second element of zipped tuple is correct")]
-fn zip_test<'a>(left: &'a str, right: &'a str) -> (&'a str, &'a str) {
-    (left, right)
-}
-```
-
-### panics
-
-If test case expectation is preceded by `panics` keyword and the expectation itself is `&str` **or** expresion that evaluates to `&str` then test case will be expected to panic during execution.
-
-```rust
-
-#[test_case("foo" => panics "invalid input")]
-#[test_case("bar")]
-fn test_panicking(input: &str) {
-    if input == "foo" {
-        panic!("invalid input")
-    }
-}
-```
-
-### is|it (feature = "hamcrest_assertions")
-
-This feature requires addition of hamcrest2 crate to your Cargo.toml:
-
-```toml
-test-case = { version = "1.1.0", features = ["hamcrest_assertions"] }
-hamcrest2 = "0.3.0"
-```
-
-After that you can use test cases with new keywords `is` and `it` which will allow you to use hamcrest2 assertions ([doc](https://docs.rs/hamcrest2/0.3.0/hamcrest2/))
-
-```rust
-
-#[test_case(&[1, 3] => is empty())]
-#[test_case(&[2, 3] => it contains(2))]
-#[test_case(&[2, 3] => it not(contains(3)))]
-#[test_case(&[2, 4] => it contains(vec!(2, 4)))]
-#[test_case(&[2, 3] => is len(1))]
-fn removes_odd_numbers(collection: &[u8]) -> &Vec<u8> {
-    Box::leak(Box::new(collection.into_iter().filter(|x| *x % 2 == 0).copied().collect()))
-}
-```
-
-## async in test cases
-
-Test cases can work with `tokio`, `async-std` and other runtimes, provided `#[test...]` attribute from mentioned libraries is used as a last attribute.
-
-eg.
-
-```rust
-
-#[test_case("Hello, world" => true)]
+#[test_case(...)]
 #[tokio::test]
-async fn runs_async_task(input: &str) -> bool {
-    some_async_fn(input).await
-}
+#[allow(clippy::non_camel_case_types)]
+async fn xyz() { }
 ```
 
+[1]: https://doc.rust-lang.org/reference/expressions.html
+[2]: https://doc.rust-lang.org/reference/expressions/match-expr.html
+[3]: https://doc.rust-lang.org/reference/patterns.html
+[4]: https://doc.rust-lang.org/book/ch11-01-writing-tests.html#checking-for-panics-with-should_panic
 
-## License
+# License
 
 Licensed under of MIT license ([LICENSE-MIT](LICENSE-MIT) or https://opensource.org/licenses/MIT)
 
-### Contribution
+# Contributing
 
-All contributions and comments are more than welcome! Don't be afraid to open an issue or PR whenever you find a bug or have an idea to improve this crate.
+Project roadmap is available at [link](https://github.com/frondeus/test-case/issues/74). All contributions are welcome.
 
 Recommended tools:
 * `cargo readme` - to regenerate README.md based on template and lib.rs comments

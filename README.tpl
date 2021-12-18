@@ -8,13 +8,13 @@
 
 {{readme}}
 
-## License
+# License
 
 Licensed under of MIT license ([LICENSE-MIT](LICENSE-MIT) or https://opensource.org/licenses/MIT)
 
-### Contribution
+# Contributing
 
-All contributions and comments are more than welcome! Don't be afraid to open an issue or PR whenever you find a bug or have an idea to improve this crate.
+Project roadmap is available at [link](https://github.com/frondeus/test-case/issues/74). All contributions are welcome.
 
 Recommended tools:
 * `cargo readme` - to regenerate README.md based on template and lib.rs comments
@@ -23,3 +23,4 @@ Recommended tools:
 * `cargo fmt`    - to format code
 * `cargo clippy` - for all insights and tips
 * `cargo fix`    - for fixing warnings
+
