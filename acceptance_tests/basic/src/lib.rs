@@ -239,7 +239,7 @@ mod test_cases {
     #[test_case(1.0 => is greater_or_equal_than 1.0 ; "geq1")]
     #[test_case(1.0 => is geq 1.0 ; "geq2")]
     #[test_case(1.0 => is almost_equal_to 2.1 precision 0.15 ; "almost_eq1")]
-    #[test_case(1.0 => is almost 2.0 precision f64::EPSILON ; "almost_eq2")]
+    #[test_case(1.0 => is almost 2.0 precision 0.01 ; "almost_eq2")]
     fn complex_tests(input: f64) -> f64 {
         input * 2.0
     }
