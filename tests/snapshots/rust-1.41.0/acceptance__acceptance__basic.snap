@@ -38,10 +38,10 @@ test test_cases::name::test_3_6_9 ... ok
 test test_cases::nested::nested_test_case::_1_1_expects ... ok
 test test_cases::nested::using_fn_from_super::_20_22_expects ... ok
 test test_cases::nested::using_fn_from_super::_42_expects ... ok
-test test_cases::panicing::_expects_panicking_some_it_has_to_panic_ - should panic ... ok
-test test_cases::panics_without_value::_expects_panicking_none - should panic ... ok
+test test_cases::panicing::_expects_panicking_some_it_has_to_panic_ ... ok
+test test_cases::panics_without_value::_expects_panicking_none ... ok
 test test_cases::pattern_matching_result::simpleenum_var2_expects_matching_simpleenum_var2 ... ok
-test test_cases::pattern_matching_result_fails::simpleenum_var1_expects_matching_simpleenum_var2 - should panic ... ok
+test test_cases::pattern_matching_result_fails::simpleenum_var1_expects_matching_simpleenum_var2 ... ok
 test test_cases::power_of_two_with_using::_1_expects_use_assert_is_power_of_two ... ok
 test test_cases::power_of_two_with_using::_2_expects_use_crate_test_cases_assert_is_power_of_two ... ok
 test test_cases::power_of_two_with_using::_4_expects_use_some_mod_assert_is_power_of_two ... ok
@@ -53,7 +53,7 @@ test test_cases::result_and_name::_4_5_expects_9 ... ok
 test test_cases::result_and_name::test_no_1 ... ok
 test test_cases::result_expresion_with_name::test_result_expression ... ok
 test test_cases::result_expression::_2_2_expects_2_2 ... ok
-test test_cases::result_which_panics::_2_2_expects_2_3 - should panic ... ok
+test test_cases::result_which_panics::_2_2_expects_2_3 ... ok
 test test_cases::result_with_mod_sep::_42_expects_std_string_string_new_ ... ok
 test test_cases::test_generics::source1_expects_1 ... ok
 test test_cases::test_generics::source2_expects_2 ... ok
