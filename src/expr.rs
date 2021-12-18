@@ -116,10 +116,10 @@ impl TestCaseExpression {
         extra_keywords: HashSet<Modifier>,
         mapping: Mapping,
     ) -> syn::Result<TestCaseExpression>
-        where
-            Mapping: FnOnce(Inner) -> TestCaseResult,
-            Keyword: Parse,
-            Inner: Parse,
+    where
+        Mapping: FnOnce(Inner) -> TestCaseResult,
+        Keyword: Parse,
+        Inner: Parse,
     {
         let _: Keyword = input.parse()?;
         Ok(Self {
@@ -135,10 +135,10 @@ impl TestCaseExpression {
         extra_keywords: HashSet<Modifier>,
         mapping: Mapping,
     ) -> syn::Result<TestCaseExpression>
-        where
-            Mapping: FnOnce(Option<Inner>) -> TestCaseResult,
-            Keyword: Parse,
-            Inner: Parse,
+    where
+        Mapping: FnOnce(Option<Inner>) -> TestCaseResult,
+        Keyword: Parse,
+        Inner: Parse,
     {
         let _: Keyword = input.parse()?;
         Ok(Self {
