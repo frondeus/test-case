@@ -9,7 +9,7 @@ mod acceptance {
 
     fn get_snapshot_directory() -> String {
         PathBuf::from("snapshots")
-            .join(env::var("SNAPSHOT_DIR").unwrap_or("rust-stable".to_string()))
+            .join(env::var("SNAPSHOT_DIR").unwrap_or_else(|_| "rust-stable".to_string()))
             .to_str()
             .unwrap()
             .to_string()

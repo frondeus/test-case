@@ -27,7 +27,7 @@ mod kw {
     syn::custom_keyword!(contains_in_order);
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum OrderingToken {
     Eq,
     Lt,
@@ -36,58 +36,113 @@ pub enum OrderingToken {
     Geq,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum PathToken {
     Any,
     Dir,
     File,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
+pub struct Ord {
+    pub token: OrderingToken,
+    pub expected_value: Box<Expr>,
+}
+
+#[derive(Debug, PartialEq)]
+pub struct AlmostEqual {
+    pub expected_value: Box<Expr>,
+    pub precision: Box<Expr>,
+}
+
+#[derive(Debug, PartialEq)]
+pub struct Path {
+    pub token: PathToken,
+}
+
+#[derive(Debug, PartialEq)]
+pub struct Contains {
+    pub expected_element: Box<Expr>,
+}
+
+#[derive(Debug, PartialEq)]
+pub struct ContainsInOrder {
+    pub expected_slice: Box<Expr>,
+}
+
+#[derive(Debug, PartialEq)]
 pub enum ComplexTestCase {
     // Not(Box<ComplexTestCase>),
     // And(Vec<ComplexTestCase>),
     // Or(Vec<ComplexTestCase>),
-    Ord(OrderingToken, Box<Expr>),
-    AlmostEqual(Box<Expr>, Box<Expr>),
-    Path(PathToken),
-    Contains(Box<Expr>),
-    ContainsInOrder(Box<Expr>),
+    Ord(Ord),
+    AlmostEqual(AlmostEqual),
+    Path(Path),
+    Contains(Contains),
+    ContainsInOrder(ContainsInOrder),
 }
 
 impl Parse for ComplexTestCase {
     fn parse(input: ParseStream) -> syn::Result<Self> {
         if input.parse::<kw::eq>().is_ok() || input.parse::<kw::equal_to>().is_ok() {
-            Ok(ComplexTestCase::Ord(OrderingToken::Eq, input.parse()?))
+            Ok(ComplexTestCase::Ord(Ord {
+                token: OrderingToken::Eq,
+                expected_value: input.parse()?,
+            }))
         } else if input.parse::<kw::lt>().is_ok() || input.parse::<kw::less_than>().is_ok() {
-            Ok(ComplexTestCase::Ord(OrderingToken::Lt, input.parse()?))
+            Ok(ComplexTestCase::Ord(Ord {
+                token: OrderingToken::Lt,
+                expected_value: input.parse()?,
+            }))
         } else if input.parse::<kw::gt>().is_ok() || input.parse::<kw::greater_than>().is_ok() {
-            Ok(ComplexTestCase::Ord(OrderingToken::Gt, input.parse()?))
+            Ok(ComplexTestCase::Ord(Ord {
+                token: OrderingToken::Gt,
+                expected_value: input.parse()?,
+            }))
         } else if input.parse::<kw::leq>().is_ok()
             || input.parse::<kw::less_or_equal_than>().is_ok()
         {
-            Ok(ComplexTestCase::Ord(OrderingToken::Leq, input.parse()?))
+            Ok(ComplexTestCase::Ord(Ord {
+                token: OrderingToken::Leq,
+                expected_value: input.parse()?,
+            }))
         } else if input.parse::<kw::geq>().is_ok()
             || input.parse::<kw::greater_or_equal_than>().is_ok()
         {
-            Ok(ComplexTestCase::Ord(OrderingToken::Geq, input.parse()?))
+            Ok(ComplexTestCase::Ord(Ord {
+                token: OrderingToken::Geq,
+                expected_value: input.parse()?,
+            }))
         } else if input.parse::<kw::almost>().is_ok()
             || input.parse::<kw::almost_equal_to>().is_ok()
         {
             let target = input.parse()?;
             let _ = input.parse::<kw::precision>()?;
             let precision = input.parse()?;
-            Ok(ComplexTestCase::AlmostEqual(target, precision))
+            Ok(ComplexTestCase::AlmostEqual(AlmostEqual {
+                expected_value: target,
+                precision: precision,
+            }))
         } else if input.parse::<kw::existing_path>().is_ok() {
-            Ok(ComplexTestCase::Path(PathToken::Any))
+            Ok(ComplexTestCase::Path(Path {
+                token: PathToken::Any,
+            }))
         } else if input.parse::<kw::directory>().is_ok() || input.parse::<kw::dir>().is_ok() {
-            Ok(ComplexTestCase::Path(PathToken::Dir))
+            Ok(ComplexTestCase::Path(Path {
+                token: PathToken::Dir,
+            }))
         } else if input.parse::<kw::file>().is_ok() {
-            Ok(ComplexTestCase::Path(PathToken::File))
+            Ok(ComplexTestCase::Path(Path {
+                token: PathToken::File,
+            }))
         } else if input.parse::<kw::contains>().is_ok() {
-            Ok(ComplexTestCase::Contains(input.parse()?))
+            Ok(ComplexTestCase::Contains(Contains {
+                expected_element: input.parse()?,
+            }))
         } else if input.parse::<kw::contains_in_order>().is_ok() {
-            Ok(ComplexTestCase::ContainsInOrder(input.parse()?))
+            Ok(ComplexTestCase::ContainsInOrder(ContainsInOrder {
+                expected_slice: input.parse()?,
+            }))
         } else {
             proc_macro_error::abort!(input.span(), "cannot parse complex expression")
         }
@@ -119,13 +174,23 @@ impl Display for PathToken {
 impl Display for ComplexTestCase {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            ComplexTestCase::Ord(ord, expr) => write!(f, "{} {}", ord, fmt_syn(expr)),
-            ComplexTestCase::AlmostEqual(target, precision) => {
+            ComplexTestCase::Ord(Ord {
+                token: ord,
+                expected_value: expr,
+            }) => write!(f, "{} {}", ord, fmt_syn(expr)),
+            ComplexTestCase::AlmostEqual(AlmostEqual {
+                expected_value: target,
+                precision,
+            }) => {
                 write!(f, "almost {} p {}", fmt_syn(target), fmt_syn(precision))
             }
-            ComplexTestCase::Path(token) => write!(f, "{}", token),
-            ComplexTestCase::Contains(elem) => write!(f, "{}", fmt_syn(elem)),
-            ComplexTestCase::ContainsInOrder(elems) => write!(f, "{}", fmt_syn(elems)),
+            ComplexTestCase::Path(Path { token }) => write!(f, "{}", token),
+            ComplexTestCase::Contains(Contains {
+                expected_element: elem,
+            }) => write!(f, "{}", fmt_syn(elem)),
+            ComplexTestCase::ContainsInOrder(ContainsInOrder {
+                expected_slice: elems,
+            }) => write!(f, "{}", fmt_syn(elems)),
         }
     }
 }
@@ -133,13 +198,21 @@ impl Display for ComplexTestCase {
 impl ComplexTestCase {
     pub fn assertion(&self) -> TokenStream {
         match self {
-            ComplexTestCase::Ord(ord, expr) => ord_assertion(ord, expr),
-            ComplexTestCase::AlmostEqual(expr, precision) => {
-                almost_equal_assertion(expr, precision)
-            }
-            ComplexTestCase::Path(kind) => path_assertion(kind),
-            ComplexTestCase::Contains(element) => contains_assertion(element),
-            ComplexTestCase::ContainsInOrder(elements) => contains_in_order_assertion(elements),
+            ComplexTestCase::Ord(Ord {
+                token: ord,
+                expected_value: expr,
+            }) => ord_assertion(ord, expr),
+            ComplexTestCase::AlmostEqual(AlmostEqual {
+                expected_value: expr,
+                precision,
+            }) => almost_equal_assertion(expr, precision),
+            ComplexTestCase::Path(Path { token: kind }) => path_assertion(kind),
+            ComplexTestCase::Contains(Contains {
+                expected_element: element,
+            }) => contains_assertion(element),
+            ComplexTestCase::ContainsInOrder(ContainsInOrder {
+                expected_slice: elements,
+            }) => contains_in_order_assertion(elements),
         }
     }
 }
@@ -183,5 +256,170 @@ fn ord_assertion(ord: &OrderingToken, expr: &Expr) -> TokenStream {
 
     quote! {
         assert!(_result #ts #expr)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::complex_expr::{
+        AlmostEqual, ComplexTestCase, Contains, ContainsInOrder, OrderingToken, Path, PathToken,
+    };
+    use syn::{parse_quote, LitFloat, LitInt, LitStr};
+
+    macro_rules! assert_ord {
+        ($actual:tt, $token:path, $value:tt) => {
+            if let ComplexTestCase::Ord(ord) = $actual {
+                assert_eq!(ord.token, $token);
+                let lit = ord.expected_value;
+                let actual_expr: LitFloat = parse_quote! { #lit };
+                assert_eq!(actual_expr.base10_parse::<f64>().unwrap(), $value)
+            } else {
+                panic!("invalid enum variant")
+            }
+        };
+    }
+
+    macro_rules! assert_almost_eq {
+        ($actual:tt, $value:tt, $precision:tt) => {
+            if let ComplexTestCase::AlmostEqual(AlmostEqual {
+                expected_value,
+                precision,
+            }) = $actual
+            {
+                let expected_value: LitFloat = parse_quote! { #expected_value };
+                assert_eq!(expected_value.base10_parse::<f64>().unwrap(), $value);
+                let precision: LitFloat = parse_quote! { #precision };
+                assert_eq!(precision.base10_parse::<f64>().unwrap(), $precision);
+            } else {
+                panic!("invalid enum variant")
+            }
+        };
+    }
+
+    #[test]
+    fn parses_ord_token_stream() {
+        let actual: ComplexTestCase = parse_quote! { equal_to 1.0 };
+        assert_ord!(actual, OrderingToken::Eq, 1.0);
+        let actual: ComplexTestCase = parse_quote! { eq 0.0 };
+        assert_ord!(actual, OrderingToken::Eq, 0.0);
+
+        let actual: ComplexTestCase = parse_quote! { less_than 2.0 };
+        assert_ord!(actual, OrderingToken::Lt, 2.0);
+        let actual: ComplexTestCase = parse_quote! { lt 2.0 };
+        assert_ord!(actual, OrderingToken::Lt, 2.0);
+
+        let actual: ComplexTestCase = parse_quote! { greater_than 2.0 };
+        assert_ord!(actual, OrderingToken::Gt, 2.0);
+        let actual: ComplexTestCase = parse_quote! { gt 2.0 };
+        assert_ord!(actual, OrderingToken::Gt, 2.0);
+
+        let actual: ComplexTestCase = parse_quote! { less_or_equal_than 2.0 };
+        assert_ord!(actual, OrderingToken::Leq, 2.0);
+        let actual: ComplexTestCase = parse_quote! { leq 2.0 };
+        assert_ord!(actual, OrderingToken::Leq, 2.0);
+
+        let actual: ComplexTestCase = parse_quote! { greater_or_equal_than 2.0 };
+        assert_ord!(actual, OrderingToken::Geq, 2.0);
+        let actual: ComplexTestCase = parse_quote! { geq 2.0 };
+        assert_ord!(actual, OrderingToken::Geq, 2.0);
+    }
+
+    #[test]
+    fn can_parse_eq_other_types() {
+        let actual: ComplexTestCase = parse_quote! { equal_to "abcde" };
+        if let ComplexTestCase::Ord(ord) = actual {
+            assert_eq!(ord.token, OrderingToken::Eq);
+            let lit = ord.expected_value;
+            let actual_expr: LitStr = parse_quote! { #lit };
+            assert_eq!(actual_expr.value(), "abcde")
+        } else {
+            panic!("invalid enum variant")
+        }
+
+        let actual: ComplexTestCase = parse_quote! { equal_to 1 };
+        if let ComplexTestCase::Ord(ord) = actual {
+            assert_eq!(ord.token, OrderingToken::Eq);
+            let lit = ord.expected_value;
+            let actual_expr: LitInt = parse_quote! { #lit };
+            assert_eq!(actual_expr.base10_parse::<i64>().unwrap(), 1)
+        } else {
+            panic!("invalid enum variant")
+        }
+    }
+
+    #[test]
+    fn parses_almost_equal_token_stream() {
+        let actual: ComplexTestCase = parse_quote! { almost_equal_to 1.0 precision 0.1 };
+        assert_almost_eq!(actual, 1.0, 0.1);
+        let actual: ComplexTestCase = parse_quote! { almost_equal_to 1.0 precision 0.0f32 };
+        assert_almost_eq!(actual, 1.0, 0.0);
+    }
+
+    #[test]
+    fn parses_path_token_stream() {
+        let actual: ComplexTestCase = parse_quote! { existing_path };
+        assert_eq!(
+            actual,
+            ComplexTestCase::Path(Path {
+                token: PathToken::Any
+            })
+        );
+        let actual: ComplexTestCase = parse_quote! { file };
+        assert_eq!(
+            actual,
+            ComplexTestCase::Path(Path {
+                token: PathToken::File
+            })
+        );
+        let actual: ComplexTestCase = parse_quote! { dir };
+        assert_eq!(
+            actual,
+            ComplexTestCase::Path(Path {
+                token: PathToken::Dir
+            })
+        );
+        let actual: ComplexTestCase = parse_quote! { directory };
+        assert_eq!(
+            actual,
+            ComplexTestCase::Path(Path {
+                token: PathToken::Dir
+            })
+        );
+    }
+
+    #[test]
+    fn parses_contains_token_stream() {
+        let actual: ComplexTestCase = parse_quote! { contains 1.0 };
+        assert_eq!(
+            actual,
+            ComplexTestCase::Contains(Contains {
+                expected_element: Box::new(parse_quote! { 1.0 })
+            })
+        );
+        let actual: ComplexTestCase = parse_quote! { contains "abcde" };
+        assert_eq!(
+            actual,
+            ComplexTestCase::Contains(Contains {
+                expected_element: Box::new(parse_quote! { "abcde" })
+            })
+        );
+        let actual: ComplexTestCase = parse_quote! { contains true };
+        assert_eq!(
+            actual,
+            ComplexTestCase::Contains(Contains {
+                expected_element: Box::new(parse_quote! { true })
+            })
+        );
+    }
+
+    #[test]
+    fn parses_contains_in_order_token_stream() {
+        let actual: ComplexTestCase = parse_quote! { contains_in_order [1, 2, 3] };
+        assert_eq!(
+            actual,
+            ComplexTestCase::ContainsInOrder(ContainsInOrder {
+                expected_slice: Box::new(parse_quote! { [1, 2, 3] })
+            })
+        )
     }
 }

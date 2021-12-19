@@ -15,3 +15,17 @@ impl Parse for TestCaseComment {
         })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::comment::TestCaseComment;
+    use proc_macro2::TokenStream;
+    use syn::parse_quote;
+
+    #[test]
+    fn parses_token_stream() {
+        let input: TokenStream = parse_quote! { ; "abcdef" };
+        let actual: TestCaseComment = syn::parse2(input).unwrap();
+        assert_eq!(actual.comment.value(), "abcdef")
+    }
+}
