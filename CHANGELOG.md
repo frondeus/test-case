@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.0.0 (WIP)
+### New features
+* `=> with |x: T| assert!(x)` custom inline test assertions
+* `=> using path::to::fn` custom fn test assertions
+* `ignore` and `inconclusive` can be combined with other keywords (eg.: `=> ignore matches Ok(_)`)
+
+### Improvements
+* Code refactoring
+
+### Breaking changes
+* Deprecation of `inconclusive` within test description string - it will no longer act like modifier keyword
+* Deprecation of `hamcrest2` integration (`it` and `is` are kept, complex assertions now have different syntax)
+
 ## V1.2.1
 * Disabled clippy warning when test-case was generating `assert_eq(bool, bool)` expression.
 
