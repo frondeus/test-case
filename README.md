@@ -98,7 +98,7 @@ Both `ignore` and `inconclusive` keywords indicate that test case should be skip
 
 There are numerous validators provided by `test_case`:
 
-`validator` := `$simple|$matching|$panicking|$with|$using`
+`validator` := `$simple|$matching|$panicking|$with|$using|$complex`
 
 ##### Simple
 
@@ -170,6 +170,51 @@ fn some_test(input: u64) -> u64 {
     "body omitted..."
 }
 ```
+
+##### Complex
+
+`complex` := `(it|is) $complex_expression`
+
+`complex_expression` := `$cmp_assertion|$path_assertion|$collection_assertion`
+
+`cmp_assertion` := `$ord_assertion|$almost_eq_assertion`
+`path_assertion` := `existing_path|file|dir|directory`
+`collection_assertion` := `contains $expr|contains_in_order $expr`
+`ord_assertion` := `(eq|equal_to|lt|less_than|gt|greater_than|leq|less_or_equal_than|geq|greater_or_equal_than) $expr`
+`almost_eq_assertion` := `(almost_equal_to|almost) $expr precision $expr`
+
+Complex assertions are created as an extension to `test_case` allowing for more flexibility in comparisons. Eg.:
+
+```rust
+#[test_case(args => is lt 2*3.14)]
+fn take_piece_of_circle(...) -> f64 {
+    "body omitted..."
+}
+
+#[test_case(args => is existing_path)]
+fn installation_created_path(...) -> PathBuf {
+    "body omitted..."
+}
+
+#[test_case(args => is almost_equal_to 2.0 precision 0.00001)]
+fn some_volatile_computation(...) -> f64 {
+    "body omitted..."
+}
+
+#[test_case(args => it contains "Jack")]
+fn list_of_users(...) -> Vec<String> {
+    "body omitted..."
+}
+
+#[test_case(args => it contains_in_order [1, 2, 3])]
+fn sorts_asc(...) -> Vec<i32> {
+    "body omitted..."
+}
+```
+
+`it` and `is` have equivalent interpretation. Both variants exist in order to make test cases easier to read.
+
+> complex assertions are WIP content, use at own discretion.
 
 ## Notes about async & additional attributes
 

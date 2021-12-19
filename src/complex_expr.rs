@@ -121,7 +121,7 @@ impl Parse for ComplexTestCase {
             let precision = input.parse()?;
             Ok(ComplexTestCase::AlmostEqual(AlmostEqual {
                 expected_value: target,
-                precision: precision,
+                precision,
             }))
         } else if input.parse::<kw::existing_path>().is_ok() {
             Ok(ComplexTestCase::Path(Path {
