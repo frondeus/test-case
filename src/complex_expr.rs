@@ -275,7 +275,7 @@ fn ord_assertion(token: &OrderingToken, expected_value: &Expr) -> TokenStream {
 
 fn not_assertion(not: &ComplexTestCase) -> TokenStream {
     match not {
-        ComplexTestCase::Not(not) => not_assertion(not),
+        ComplexTestCase::Not(not) => negate(not_assertion(not)),
         ComplexTestCase::Ord(Ord {
             token,
             expected_value,

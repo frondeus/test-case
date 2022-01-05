@@ -260,7 +260,7 @@ mod test_cases {
 
     #[test_case(1.0 => is not eq 2.5)]
     #[test_case(1.0 => is not almost 2.1 precision 0.01)]
-    #[test_case(1.0 => is not not eq 2.0)] // Yeah, that's legal
+    #[test_case(1.0 => is not not not not lt 3.0)] // Yeah, that's legal
     fn not_complex(input: f32) -> f32 { input * 1.0 }
 
     #[test_case("Cargo.yaml".parse().unwrap() => is not existing_path)]
@@ -275,5 +275,4 @@ mod test_cases {
     fn not_contains_tests(items: Vec<u64>) -> Vec<u64> {
         items
     }
-
 }
