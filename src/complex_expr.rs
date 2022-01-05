@@ -463,4 +463,10 @@ mod tests {
             })
         )
     }
+
+    #[test]
+    fn parses_negation() {
+        let actual: ComplexTestCase = parse_quote! { not eq 1.0 };
+        assert!(matches!(actual, ComplexTestCase::Not(_)))
+    }
 }
