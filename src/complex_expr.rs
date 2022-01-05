@@ -153,12 +153,12 @@ impl Display for ComplexTestCase {
                 fmt_syn(expected_value),
                 fmt_syn(precision)
             ),
-            ComplexTestCase::Path(Path { token }) => write!(f, "{}", token),
+            ComplexTestCase::Path(Path { token }) => write!(f, "path {}", token),
             ComplexTestCase::Contains(Contains { expected_element }) => {
-                write!(f, "{}", fmt_syn(expected_element))
+                write!(f, "contains {}", fmt_syn(expected_element))
             }
             ComplexTestCase::ContainsInOrder(ContainsInOrder { expected_slice }) => {
-                write!(f, "{}", fmt_syn(expected_slice))
+                write!(f, "contains in order {}", fmt_syn(expected_slice))
             }
         }
     }
@@ -266,11 +266,11 @@ impl ComplexTestCase {
 
 fn and_assertion(cases: &[ComplexTestCase]) -> TokenStream {
     let ts = cases[0].boolean_check();
-    let mut ts: TokenStream = parse_quote! { {#ts} };
+    let mut ts: TokenStream = parse_quote! { #ts };
 
     for case in cases.iter().skip(1) {
         let case = case.boolean_check();
-        let case: TokenStream = parse_quote! { && {#case} };
+        let case: TokenStream = parse_quote! { && #case };
         ts.append_all(case);
     }
 
@@ -279,11 +279,11 @@ fn and_assertion(cases: &[ComplexTestCase]) -> TokenStream {
 
 fn or_assertion(cases: &[ComplexTestCase]) -> TokenStream {
     let ts = cases[0].boolean_check();
-    let mut ts: TokenStream = parse_quote! { {#ts} };
+    let mut ts: TokenStream = parse_quote! { #ts };
 
     for case in cases.iter().skip(1) {
         let case = case.boolean_check();
-        let case: TokenStream = parse_quote! { || {#case} };
+        let case: TokenStream = parse_quote! { || #case };
         ts.append_all(case);
     }
 

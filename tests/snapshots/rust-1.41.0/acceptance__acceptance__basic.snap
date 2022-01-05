@@ -4,15 +4,28 @@ expression: lines
 
 ---
 running 0 tests
-running 78 tests
+running 91 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
-test result: ok. 75 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out
+test result: ok. 88 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out
 test test_cases::abs_tests::returns_0_for_0 ... ok
 test test_cases::abs_tests::returns_given_number_for_positive_input ... ok
 test test_cases::abs_tests::returns_opposite_number_for_non_positive_input ... ok
 test test_cases::arg_expressions::_2_4_6_to_string_expects ... ok
 test test_cases::bar::_expects_string_default_ ... ok
 test test_cases::basic_test::_1_expects ... ok
+test test_cases::combinators::_0_3_expects_complex_gt_0_0_and_lt_1_0_or_gt_1_2 ... ok
+test test_cases::combinators::_0_7_expects_complex_gt_0_0_and_lt_1_0_or_gt_1_2 ... ok
+test test_cases::combinators::_1_0_expects_complex_gt_0_0_and_lt_5_0 ... ok
+test test_cases::combinators::_1_0_expects_complex_gt_0_0_or_lt_0_0 ... ok
+test test_cases::combinators::_1_0_expects_complex_gt_0_0_or_lt_1_5_and_lt_2_0 ... ok
+test test_cases::combinators::_2_0_expects_complex_gt_0_0_or_lt_0_0 ... ok
+test test_cases::combinators::_2_0_expects_complex_gt_0_0_or_lt_0_0_and_lt_1_0 ... ok
+test test_cases::combinators_with_arrays::vec_1_2_3_expects_complex_contains_1_and_contains_2_and_contains_in_order_2_3_ ... ok
+test test_cases::combinators_with_arrays::vec_1_2_3_expects_complex_contains_1_and_contains_3_or_contains_5 ... ok
+test test_cases::combinators_with_arrays::vec_1_2_3_expects_complex_contains_1_or_contains_4 ... ok
+test test_cases::combinators_with_arrays::vec_1_2_3_expects_complex_contains_1_or_contains_4_and_contains_2 ... ok
+test test_cases::combinators_with_arrays::vec_1_2_3_expects_complex_contains_6_and_contains_7_or_contains_1 ... ok
+test test_cases::combinators_with_arrays::vec_1_2_3_expects_complex_contains_6_and_contains_7_or_contains_1_and_contains_in_order_1_2_3_ ... ok
 test test_cases::complex_tests::almost_eq1 ... ok
 test test_cases::complex_tests::almost_eq2 ... ok
 test test_cases::complex_tests::eq1 ... ok
@@ -26,10 +39,10 @@ test test_cases::complex_tests::leq2 ... ok
 test test_cases::complex_tests::lt1 ... ok
 test test_cases::complex_tests::lt2 ... ok
 test test_cases::const_in_arg::this_is_desc_not_an_argument ... ok
-test test_cases::contains_tests::vec_1_2_3_4_expects_complex_1 ... ok
-test test_cases::contains_tests::vec_1_2_3_4_expects_complex_3_4_ ... ok
-test test_cases::create_path::_cargo_toml_expects_complex_path ... ok
-test test_cases::create_path::_src_lib_rs_expects_complex_file ... ok
+test test_cases::contains_tests::vec_1_2_3_4_expects_complex_contains_1 ... ok
+test test_cases::contains_tests::vec_1_2_3_4_expects_complex_contains_in_order_3_4_ ... ok
+test test_cases::create_path::_cargo_toml_expects_complex_path_path ... ok
+test test_cases::create_path::_src_lib_rs_expects_complex_path_file ... ok
 test test_cases::create_path::long_dir ... ok
 test test_cases::create_path::short_dir ... ok
 test test_cases::divide_by_zero_f64_with_lambda::_0_0_expects_with_v_f64_assert_v_is_nan_ ... ok
@@ -38,6 +51,7 @@ test test_cases::fancy_addition::some_2_3_some_4_expects_2_3_4 ... ok
 test test_cases::fancy_addition::some_2_some_3_expects_5 ... ok
 test test_cases::fancy_addition::treats_none_as_0 ... ok
 test test_cases::impl_trait::_foo_expects ... ok
+test test_cases::in_parens::_2_0_expects_complex_eq_2_0 ... ok
 test test_cases::inconclusives::_expects_inconclusive_ ... ignored
 test test_cases::inconclusives::inconclusive_test ... ignored
 test test_cases::inconclusives::test_is_not_ran ... ignored
@@ -58,12 +72,11 @@ test test_cases::nested::using_fn_from_super::_20_22_expects ... ok
 test test_cases::nested::using_fn_from_super::_42_expects ... ok
 test test_cases::not_complex::_1_0_expects_complex_not_almost_2_1_p_0_01 ... ok
 test test_cases::not_complex::_1_0_expects_complex_not_eq_2_5 ... ok
-test test_cases::not_complex::_1_0_expects_complex_not_not_not_not_lt_3_0 ... ok
-test test_cases::not_contains_tests::vec_1_2_3_4_expects_complex_not_3_2_ ... ok
-test test_cases::not_contains_tests::vec_1_2_3_4_expects_complex_not_5 ... ok
-test test_cases::not_path::_cargo_toml_parse_unwrap_expects_complex_not_dir ... ok
-test test_cases::not_path::_cargo_yaml_parse_unwrap_expects_complex_not_path ... ok
-test test_cases::not_path::_src_parse_unwrap_expects_complex_not_file ... ok
+test test_cases::not_contains_tests::vec_1_2_3_4_expects_complex_not_contains_5 ... ok
+test test_cases::not_contains_tests::vec_1_2_3_4_expects_complex_not_contains_in_order_3_2_ ... ok
+test test_cases::not_path::_cargo_toml_parse_unwrap_expects_complex_not_path_dir ... ok
+test test_cases::not_path::_cargo_yaml_parse_unwrap_expects_complex_not_path_path ... ok
+test test_cases::not_path::_src_parse_unwrap_expects_complex_not_path_file ... ok
 test test_cases::panicing::_expects_panicking_some_it_has_to_panic_ ... ok
 test test_cases::panics_without_value::_expects_panicking_none ... ok
 test test_cases::pattern_matching_result::simpleenum_var2_expects_matching_simpleenum_var2 ... ok

@@ -1,3 +1,4 @@
+#[cfg(test)]
 mod test_cases {
     use test_case::test_case;
 
@@ -283,7 +284,21 @@ mod test_cases {
     #[test_case(1.0 => is gt 0.0 and lt 5.0)]
     #[test_case(1.0 => is gt 0.0 or lt 0.0)]
     #[test_case(-2.0 => is gt 0.0 or lt 0.0)]
+    #[test_case(-2.0 => is (gt 0.0 or lt 0.0) and lt -1.0)]
+    #[test_case(1.0 => is (gt 0.0 or lt -1.5) and lt 2.0)]
+    #[test_case(0.3 => is (gt 0.0 and lt 1.0) or gt 1.2)]
+    #[test_case(0.7 => is (gt 0.0 and lt 1.0) or gt 1.2)]
     fn combinators(v: f32) -> f32 {
         v * 2.0
+    }
+
+    #[test_case(vec![1, 2, 3] => it contains 1 and contains 2 and contains_in_order [2, 3])]
+    #[test_case(vec![1, 2, 3] => it contains 1 or contains 4)]
+    #[test_case(vec![1, 2, 3] => it (contains 1 or contains 4) and contains 2)]
+    #[test_case(vec![1, 2, 3] => it (contains 1 and contains 3) or contains 5)]
+    #[test_case(vec![1, 2, 3] => it (contains 6 and contains 7) or contains 1)]
+    #[test_case(vec![1, 2, 3] => it (contains 6 and contains 7) or (contains 1 and contains_in_order [1, 2, 3]))]
+    fn combinators_with_arrays(a: Vec<u8>) -> Vec<u8> {
+        a
     }
 }
