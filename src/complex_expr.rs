@@ -1,9 +1,11 @@
 use crate::utils::fmt_syn;
+use proc_macro2::Group;
 use proc_macro2::TokenStream;
 use quote::quote;
 use std::fmt::{Display, Formatter};
+use syn::group::parse_parens;
 use syn::parse::{Parse, ParseStream};
-use syn::{parse_quote, Expr};
+use syn::{parenthesized, parse_quote, Expr};
 
 mod kw {
     syn::custom_keyword!(eq);
@@ -26,6 +28,8 @@ mod kw {
     syn::custom_keyword!(contains);
     syn::custom_keyword!(contains_in_order);
     syn::custom_keyword!(not);
+    syn::custom_keyword!(and);
+    syn::custom_keyword!(or);
 }
 
 #[derive(Debug, PartialEq)]
@@ -74,8 +78,8 @@ pub struct ContainsInOrder {
 #[derive(Debug, PartialEq)]
 pub enum ComplexTestCase {
     Not(Box<ComplexTestCase>),
-    // And(Vec<ComplexTestCase>),
-    // Or(Vec<ComplexTestCase>),
+    And(Vec<ComplexTestCase>),
+    Or(Vec<ComplexTestCase>),
     Ord(Ord),
     AlmostEqual(AlmostEqual),
     Path(Path),
@@ -85,69 +89,79 @@ pub enum ComplexTestCase {
 
 impl Parse for ComplexTestCase {
     fn parse(input: ParseStream) -> syn::Result<Self> {
-        if input.parse::<kw::eq>().is_ok() || input.parse::<kw::equal_to>().is_ok() {
-            Ok(ComplexTestCase::Ord(Ord {
+        let item = if let Ok(group) = Group::parse(input) {
+            syn::parse2(group.stream())?
+        } else if input.parse::<kw::eq>().is_ok() || input.parse::<kw::equal_to>().is_ok() {
+            ComplexTestCase::Ord(Ord {
                 token: OrderingToken::Eq,
                 expected_value: input.parse()?,
-            }))
+            })
         } else if input.parse::<kw::lt>().is_ok() || input.parse::<kw::less_than>().is_ok() {
-            Ok(ComplexTestCase::Ord(Ord {
+            ComplexTestCase::Ord(Ord {
                 token: OrderingToken::Lt,
                 expected_value: input.parse()?,
-            }))
+            })
         } else if input.parse::<kw::gt>().is_ok() || input.parse::<kw::greater_than>().is_ok() {
-            Ok(ComplexTestCase::Ord(Ord {
+            ComplexTestCase::Ord(Ord {
                 token: OrderingToken::Gt,
                 expected_value: input.parse()?,
-            }))
+            })
         } else if input.parse::<kw::leq>().is_ok()
             || input.parse::<kw::less_or_equal_than>().is_ok()
         {
-            Ok(ComplexTestCase::Ord(Ord {
+            ComplexTestCase::Ord(Ord {
                 token: OrderingToken::Leq,
                 expected_value: input.parse()?,
-            }))
+            })
         } else if input.parse::<kw::geq>().is_ok()
             || input.parse::<kw::greater_or_equal_than>().is_ok()
         {
-            Ok(ComplexTestCase::Ord(Ord {
+            ComplexTestCase::Ord(Ord {
                 token: OrderingToken::Geq,
                 expected_value: input.parse()?,
-            }))
+            })
         } else if input.parse::<kw::almost>().is_ok()
             || input.parse::<kw::almost_equal_to>().is_ok()
         {
             let target = input.parse()?;
             let _ = input.parse::<kw::precision>()?;
             let precision = input.parse()?;
-            Ok(ComplexTestCase::AlmostEqual(AlmostEqual {
+            ComplexTestCase::AlmostEqual(AlmostEqual {
                 expected_value: target,
                 precision,
-            }))
+            })
         } else if input.parse::<kw::existing_path>().is_ok() {
-            Ok(ComplexTestCase::Path(Path {
+            ComplexTestCase::Path(Path {
                 token: PathToken::Any,
-            }))
+            })
         } else if input.parse::<kw::directory>().is_ok() || input.parse::<kw::dir>().is_ok() {
-            Ok(ComplexTestCase::Path(Path {
+            ComplexTestCase::Path(Path {
                 token: PathToken::Dir,
-            }))
+            })
         } else if input.parse::<kw::file>().is_ok() {
-            Ok(ComplexTestCase::Path(Path {
+            ComplexTestCase::Path(Path {
                 token: PathToken::File,
-            }))
+            })
         } else if input.parse::<kw::contains>().is_ok() {
-            Ok(ComplexTestCase::Contains(Contains {
+            ComplexTestCase::Contains(Contains {
                 expected_element: input.parse()?,
-            }))
+            })
         } else if input.parse::<kw::contains_in_order>().is_ok() {
-            Ok(ComplexTestCase::ContainsInOrder(ContainsInOrder {
+            ComplexTestCase::ContainsInOrder(ContainsInOrder {
                 expected_slice: input.parse()?,
-            }))
+            })
         } else if input.parse::<kw::not>().is_ok() {
-            Ok(ComplexTestCase::Not(Box::new(input.parse()?)))
+            ComplexTestCase::Not(Box::new(input.parse()?))
         } else {
             proc_macro_error::abort!(input.span(), "cannot parse complex expression")
+        };
+
+        if input.peek(kw::and) {
+            todo!()
+        } else if input.peek(kw::or) {
+            todo!()
+        } else {
+            Ok(item)
         }
     }
 }
@@ -178,6 +192,8 @@ impl Display for ComplexTestCase {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             ComplexTestCase::Not(not) => write!(f, "not {}", not),
+            ComplexTestCase::And(cases) => write!(f, "and {:?}", cases),
+            ComplexTestCase::Or(cases) => write!(f, "or {:?}", cases),
             ComplexTestCase::Ord(Ord {
                 token,
                 expected_value,
@@ -208,6 +224,8 @@ impl ComplexTestCase {
     pub fn assertion(&self) -> TokenStream {
         let tokens = match self {
             ComplexTestCase::Not(not) => not_assertion(not),
+            ComplexTestCase::And(cases) => todo!(),
+            ComplexTestCase::Or(cases) => todo!(),
             ComplexTestCase::Ord(Ord {
                 token,
                 expected_value,
@@ -276,6 +294,8 @@ fn ord_assertion(token: &OrderingToken, expected_value: &Expr) -> TokenStream {
 fn not_assertion(not: &ComplexTestCase) -> TokenStream {
     match not {
         ComplexTestCase::Not(not) => negate(not_assertion(not)),
+        ComplexTestCase::And(cases) => todo!(),
+        ComplexTestCase::Or(cases) => todo!(),
         ComplexTestCase::Ord(Ord {
             token,
             expected_value,
@@ -472,4 +492,24 @@ mod tests {
             _ => panic!("test failed"),
         };
     }
+
+    #[test]
+    fn parses_grouping() {
+        let actual: ComplexTestCase = parse_quote! { (eq 1.0) };
+        assert_ord!(actual, OrderingToken::Eq, 1.0);
+        let actual: ComplexTestCase = parse_quote! { (((eq 1.0))) };
+        assert_ord!(actual, OrderingToken::Eq, 1.0);
+        let actual: ComplexTestCase = parse_quote! { ({[(eq 1.0)]}) };
+        assert_ord!(actual, OrderingToken::Eq, 1.0)
+    }
+
+    // #[test]
+    // fn parses_logic() {
+    //     let actual: ComplexTestCase = parse_quote! { lt 1.0 and gt 0.0 };
+    //     let actual: ComplexTestCase = parse_quote! { lt 0.0 or gt 1.0 };
+    //     let actual: ComplexTestCase = parse_quote! { lt 1.0 and gt 0.0 and eq 0.5 };
+    //     let actual: ComplexTestCase = parse_quote! { lt 0.0 or gt 1.0 or eq 2.0 };
+    //     let actual: ComplexTestCase = parse_quote! { (lt 0.0 or gt 1.0) and eq 2.0 };
+    //     let actual: ComplexTestCase = parse_quote! { (lt 0.0 or gt 1.0) and eq 2.0 };
+    // }
 }

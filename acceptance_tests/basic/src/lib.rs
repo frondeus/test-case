@@ -275,4 +275,9 @@ mod test_cases {
     fn not_contains_tests(items: Vec<u64>) -> Vec<u64> {
         items
     }
+
+    #[test_case(2.0 => it (eq 2.0))]
+    fn in_parens(_: f32) -> f32 {
+        2.0
+    }
 }
