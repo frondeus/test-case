@@ -1,7 +1,7 @@
 use crate::utils::fmt_syn;
 use proc_macro2::Group;
 use proc_macro2::TokenStream;
-use quote::quote;
+use quote::{quote, TokenStreamExt};
 use std::fmt::{Display, Formatter};
 use syn::parse::{Parse, ParseStream};
 use syn::{parse_quote, Expr};
@@ -100,14 +100,6 @@ impl Parse for ComplexTestCase {
     }
 }
 
-fn parse_kw_repeat<Keyword: Parse>(first: ComplexTestCase, input: ParseStream) -> syn::Result<Vec<ComplexTestCase>> {
-    let mut acc = vec![first];
-    while let Ok(_) = input.parse::<Keyword>() {
-        acc.push(ComplexTestCase::parse_single_item(input)?);
-    }
-    Ok(acc)
-}
-
 impl Display for OrderingToken {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -134,8 +126,20 @@ impl Display for ComplexTestCase {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             ComplexTestCase::Not(not) => write!(f, "not {}", not),
-            ComplexTestCase::And(cases) => write!(f, "and {:?}", cases),
-            ComplexTestCase::Or(cases) => write!(f, "or {:?}", cases),
+            ComplexTestCase::And(cases) => {
+                write!(f, "{}", cases[0])?;
+                for case in cases[1..].iter() {
+                    write!(f, " and {}", case)?;
+                }
+                Ok(())
+            }
+            ComplexTestCase::Or(cases) => {
+                write!(f, "{}", cases[0])?;
+                for case in cases[1..].iter() {
+                    write!(f, " or {}", case)?;
+                }
+                Ok(())
+            }
             ComplexTestCase::Ord(Ord {
                 token,
                 expected_value,
@@ -143,14 +147,12 @@ impl Display for ComplexTestCase {
             ComplexTestCase::AlmostEqual(AlmostEqual {
                 expected_value,
                 precision,
-            }) => {
-                write!(
-                    f,
-                    "almost {} p {}",
-                    fmt_syn(expected_value),
-                    fmt_syn(precision)
-                )
-            }
+            }) => write!(
+                f,
+                "almost {} p {}",
+                fmt_syn(expected_value),
+                fmt_syn(precision)
+            ),
             ComplexTestCase::Path(Path { token }) => write!(f, "{}", token),
             ComplexTestCase::Contains(Contains { expected_element }) => {
                 write!(f, "{}", fmt_syn(expected_element))
@@ -164,10 +166,16 @@ impl Display for ComplexTestCase {
 
 impl ComplexTestCase {
     pub fn assertion(&self) -> TokenStream {
-        let tokens = match self {
+        let tokens = self.boolean_check();
+
+        quote! { assert!(#tokens) }
+    }
+
+    fn boolean_check(&self) -> TokenStream {
+        match self {
             ComplexTestCase::Not(not) => not_assertion(not),
-            ComplexTestCase::And(cases) => todo!(),
-            ComplexTestCase::Or(cases) => todo!(),
+            ComplexTestCase::And(cases) => and_assertion(cases),
+            ComplexTestCase::Or(cases) => or_assertion(cases),
             ComplexTestCase::Ord(Ord {
                 token,
                 expected_value,
@@ -183,9 +191,7 @@ impl ComplexTestCase {
             ComplexTestCase::ContainsInOrder(ContainsInOrder { expected_slice }) => {
                 contains_in_order_assertion(expected_slice)
             }
-        };
-
-        quote! { assert!(#tokens) }
+        }
     }
 
     fn parse_single_item(input: ParseStream) -> syn::Result<ComplexTestCase> {
@@ -258,6 +264,49 @@ impl ComplexTestCase {
     }
 }
 
+fn and_assertion(cases: &[ComplexTestCase]) -> TokenStream {
+    let ts = cases[0].boolean_check();
+    let mut ts: TokenStream = parse_quote! { {#ts} };
+
+    for case in cases.iter().skip(1) {
+        let case = case.boolean_check();
+        let case: TokenStream = parse_quote! { && {#case} };
+        ts.append_all(case);
+    }
+
+    ts
+}
+
+fn or_assertion(cases: &[ComplexTestCase]) -> TokenStream {
+    let ts = cases[0].boolean_check();
+    let mut ts: TokenStream = parse_quote! { {#ts} };
+
+    for case in cases.iter().skip(1) {
+        let case = case.boolean_check();
+        let case: TokenStream = parse_quote! { || {#case} };
+        ts.append_all(case);
+    }
+
+    ts
+}
+
+fn parse_kw_repeat<Keyword: Parse>(
+    first: ComplexTestCase,
+    input: ParseStream,
+) -> syn::Result<Vec<ComplexTestCase>> {
+    let mut acc = vec![first];
+    while let Ok(_) = input.parse::<Keyword>() {
+        acc.push(ComplexTestCase::parse_single_item(input)?);
+    }
+    Ok(acc)
+}
+
+fn negate(tokens: TokenStream) -> TokenStream {
+    quote! {
+        !{#tokens}
+    }
+}
+
 fn contains_in_order_assertion(expected_slice: &Expr) -> TokenStream {
     parse_quote! {
         {
@@ -304,9 +353,11 @@ fn ord_assertion(token: &OrderingToken, expected_value: &Expr) -> TokenStream {
 
 fn not_assertion(not: &ComplexTestCase) -> TokenStream {
     match not {
-        ComplexTestCase::Not(not) => negate(not_assertion(not)),
-        ComplexTestCase::And(cases) => todo!(),
-        ComplexTestCase::Or(cases) => todo!(),
+        ComplexTestCase::Not(_) => {
+            proc_macro_error::abort_call_site!("multiple negations on single item are forbidden")
+        }
+        ComplexTestCase::And(cases) => negate(and_assertion(cases)),
+        ComplexTestCase::Or(cases) => negate(or_assertion(cases)),
         ComplexTestCase::Ord(Ord {
             token,
             expected_value,
@@ -322,12 +373,6 @@ fn not_assertion(not: &ComplexTestCase) -> TokenStream {
         ComplexTestCase::ContainsInOrder(ContainsInOrder { expected_slice }) => {
             negate(contains_in_order_assertion(expected_slice))
         }
-    }
-}
-
-fn negate(tokens: TokenStream) -> TokenStream {
-    quote! {
-        !{#tokens}
     }
 }
 
@@ -517,13 +562,37 @@ mod tests {
         assert_ord!(actual, OrderingToken::Lt, 1.0)
     }
 
-    // #[test]
-    // fn parses_logic() {
-    //     let actual: ComplexTestCase = parse_quote! { lt 1.0 and gt 0.0 };
-    //     let actual: ComplexTestCase = parse_quote! { lt 0.0 or gt 1.0 };
-    //     let actual: ComplexTestCase = parse_quote! { lt 1.0 and gt 0.0 and eq 0.5 };
-    //     let actual: ComplexTestCase = parse_quote! { lt 0.0 or gt 1.0 or eq 2.0 };
-    //     let actual: ComplexTestCase = parse_quote! { (lt 0.0 or gt 1.0) and eq 2.0 };
-    //     let actual: ComplexTestCase = parse_quote! { (lt 0.0 or gt 1.0) and eq 2.0 };
-    // }
+    #[test]
+    fn parses_logic() {
+        let actual: ComplexTestCase = parse_quote! { lt 1.0 and gt 0.0 };
+        match actual {
+            ComplexTestCase::And(v) if v.len() == 2 => {}
+            _ => panic!("test failed"),
+        }
+        let actual: ComplexTestCase = parse_quote! { lt 0.0 or gt 1.0 };
+        match actual {
+            ComplexTestCase::Or(v) if v.len() == 2 => {}
+            _ => panic!("test failed"),
+        }
+        let actual: ComplexTestCase = parse_quote! { lt 1.0 and gt 0.0 and eq 0.5 };
+        match actual {
+            ComplexTestCase::And(v) if v.len() == 3 => {}
+            _ => panic!("test failed"),
+        }
+        let actual: ComplexTestCase = parse_quote! { lt 0.0 or gt 1.0 or eq 2.0 };
+        match actual {
+            ComplexTestCase::Or(v) if v.len() == 3 => {}
+            _ => panic!("test failed"),
+        }
+        let actual: ComplexTestCase = parse_quote! { (lt 0.0 or gt 1.0) and eq 2.0 };
+        match actual {
+            ComplexTestCase::And(v) if v.len() == 2 => {}
+            _ => panic!("test failed"),
+        }
+        let actual: ComplexTestCase = parse_quote! { (lt 1.0 and gt 0.0) or eq 2.0 };
+        match actual {
+            ComplexTestCase::Or(v) if v.len() == 2 => {}
+            _ => panic!("test failed"),
+        }
+    }
 }

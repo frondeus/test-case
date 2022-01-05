@@ -260,7 +260,6 @@ mod test_cases {
 
     #[test_case(1.0 => is not eq 2.5)]
     #[test_case(1.0 => is not almost 2.1 precision 0.01)]
-    #[test_case(1.0 => is not not not not lt 3.0)] // Yeah, that's legal
     fn not_complex(input: f32) -> f32 { input * 1.0 }
 
     #[test_case("Cargo.yaml".parse().unwrap() => is not existing_path)]
@@ -279,5 +278,12 @@ mod test_cases {
     #[test_case(2.0 => it (eq 2.0))]
     fn in_parens(_: f32) -> f32 {
         2.0
+    }
+
+    #[test_case(1.0 => is gt 0.0 and lt 5.0)]
+    #[test_case(1.0 => is gt 0.0 or lt 0.0)]
+    #[test_case(-2.0 => is gt 0.0 or lt 0.0)]
+    fn combinators(v: f32) -> f32 {
+        v * 2.0
     }
 }

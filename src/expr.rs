@@ -79,13 +79,11 @@ impl Display for TestCaseResult {
         match self {
             TestCaseResult::Simple(expr) => write!(f, "{}", fmt_syn(expr)),
             TestCaseResult::Matching(expr) => write!(f, "matching {}", fmt_syn(expr)),
-            TestCaseResult::Panicking(expr) => {
-                write!(
-                    f,
-                    "panicking {:?}",
-                    expr.as_ref().map(|inner| fmt_syn(&inner))
-                )
-            }
+            TestCaseResult::Panicking(expr) => write!(
+                f,
+                "panicking {:?}",
+                expr.as_ref().map(|inner| fmt_syn(&inner))
+            ),
             TestCaseResult::With(expr) => write!(f, "with {}", fmt_syn(expr)),
             TestCaseResult::UseFn(path) => write!(f, "use {}", fmt_syn(path)),
             TestCaseResult::Complex(complex) => write!(f, "complex {}", complex),
