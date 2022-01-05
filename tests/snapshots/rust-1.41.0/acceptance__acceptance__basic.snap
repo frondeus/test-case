@@ -4,9 +4,9 @@ expression: lines
 
 ---
 running 0 tests
-running 70 tests
+running 78 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
-test result: ok. 67 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out
+test result: ok. 75 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out
 test test_cases::abs_tests::returns_0_for_0 ... ok
 test test_cases::abs_tests::returns_given_number_for_positive_input ... ok
 test test_cases::abs_tests::returns_opposite_number_for_non_positive_input ... ok
@@ -56,6 +56,14 @@ test test_cases::name::test_3_6_9 ... ok
 test test_cases::nested::nested_test_case::_1_1_expects ... ok
 test test_cases::nested::using_fn_from_super::_20_22_expects ... ok
 test test_cases::nested::using_fn_from_super::_42_expects ... ok
+test test_cases::not_complex::_1_0_expects_complex_not_almost_2_1_p_0_01 ... ok
+test test_cases::not_complex::_1_0_expects_complex_not_eq_2_5 ... ok
+test test_cases::not_complex::_1_0_expects_complex_not_not_eq_2_0 ... ok
+test test_cases::not_contains_tests::vec_1_2_3_4_expects_complex_not_3_2_ ... ok
+test test_cases::not_contains_tests::vec_1_2_3_4_expects_complex_not_5 ... ok
+test test_cases::not_path::_cargo_toml_parse_unwrap_expects_complex_not_dir ... ok
+test test_cases::not_path::_cargo_yaml_parse_unwrap_expects_complex_not_path ... ok
+test test_cases::not_path::_src_parse_unwrap_expects_complex_not_file ... ok
 test test_cases::panicing::_expects_panicking_some_it_has_to_panic_ ... ok
 test test_cases::panics_without_value::_expects_panicking_none ... ok
 test test_cases::pattern_matching_result::simpleenum_var2_expects_matching_simpleenum_var2 ... ok

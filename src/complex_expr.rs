@@ -25,6 +25,7 @@ mod kw {
     syn::custom_keyword!(file);
     syn::custom_keyword!(contains);
     syn::custom_keyword!(contains_in_order);
+    syn::custom_keyword!(not);
 }
 
 #[derive(Debug, PartialEq)]
@@ -72,7 +73,7 @@ pub struct ContainsInOrder {
 
 #[derive(Debug, PartialEq)]
 pub enum ComplexTestCase {
-    // Not(Box<ComplexTestCase>),
+    Not(Box<ComplexTestCase>),
     // And(Vec<ComplexTestCase>),
     // Or(Vec<ComplexTestCase>),
     Ord(Ord),
@@ -143,6 +144,8 @@ impl Parse for ComplexTestCase {
             Ok(ComplexTestCase::ContainsInOrder(ContainsInOrder {
                 expected_slice: input.parse()?,
             }))
+        } else if input.parse::<kw::not>().is_ok() {
+            Ok(ComplexTestCase::Not(Box::new(input.parse()?)))
         } else {
             proc_macro_error::abort!(input.span(), "cannot parse complex expression")
         }
@@ -174,79 +177,90 @@ impl Display for PathToken {
 impl Display for ComplexTestCase {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
+            ComplexTestCase::Not(not) => write!(f, "not {}", not),
             ComplexTestCase::Ord(Ord {
-                token: ord,
-                expected_value: expr,
-            }) => write!(f, "{} {}", ord, fmt_syn(expr)),
+                token,
+                expected_value,
+            }) => write!(f, "{} {}", token, fmt_syn(expected_value)),
             ComplexTestCase::AlmostEqual(AlmostEqual {
-                expected_value: target,
+                expected_value,
                 precision,
             }) => {
-                write!(f, "almost {} p {}", fmt_syn(target), fmt_syn(precision))
+                write!(
+                    f,
+                    "almost {} p {}",
+                    fmt_syn(expected_value),
+                    fmt_syn(precision)
+                )
             }
             ComplexTestCase::Path(Path { token }) => write!(f, "{}", token),
-            ComplexTestCase::Contains(Contains {
-                expected_element: elem,
-            }) => write!(f, "{}", fmt_syn(elem)),
-            ComplexTestCase::ContainsInOrder(ContainsInOrder {
-                expected_slice: elems,
-            }) => write!(f, "{}", fmt_syn(elems)),
+            ComplexTestCase::Contains(Contains { expected_element }) => {
+                write!(f, "{}", fmt_syn(expected_element))
+            }
+            ComplexTestCase::ContainsInOrder(ContainsInOrder { expected_slice }) => {
+                write!(f, "{}", fmt_syn(expected_slice))
+            }
         }
     }
 }
 
 impl ComplexTestCase {
     pub fn assertion(&self) -> TokenStream {
-        match self {
+        let tokens = match self {
+            ComplexTestCase::Not(not) => not_assertion(not),
             ComplexTestCase::Ord(Ord {
-                token: ord,
-                expected_value: expr,
-            }) => ord_assertion(ord, expr),
+                token,
+                expected_value,
+            }) => ord_assertion(token, expected_value),
             ComplexTestCase::AlmostEqual(AlmostEqual {
-                expected_value: expr,
+                expected_value,
                 precision,
-            }) => almost_equal_assertion(expr, precision),
-            ComplexTestCase::Path(Path { token: kind }) => path_assertion(kind),
-            ComplexTestCase::Contains(Contains {
-                expected_element: element,
-            }) => contains_assertion(element),
-            ComplexTestCase::ContainsInOrder(ContainsInOrder {
-                expected_slice: elements,
-            }) => contains_in_order_assertion(elements),
-        }
-    }
-}
-
-fn contains_in_order_assertion(elements: &Expr) -> TokenStream {
-    parse_quote! {
-        let mut _tc_outcome = false;
-        for i in 0..=_result.len() - #elements.len() {
-            if #elements == _result[i..i+#elements.len()] {
-                _tc_outcome = true;
+            }) => almost_equal_assertion(expected_value, precision),
+            ComplexTestCase::Path(Path { token }) => path_assertion(token),
+            ComplexTestCase::Contains(Contains { expected_element }) => {
+                contains_assertion(expected_element)
             }
-        }
-        assert!(_tc_outcome, "contains_in_order failed")
+            ComplexTestCase::ContainsInOrder(ContainsInOrder { expected_slice }) => {
+                contains_in_order_assertion(expected_slice)
+            }
+        };
+
+        quote! { assert!(#tokens) }
     }
 }
 
-fn contains_assertion(element: &Expr) -> TokenStream {
-    parse_quote! { assert!(_result.iter().find(|i| i.eq(&&#element)).is_some()) }
+fn contains_in_order_assertion(expected_slice: &Expr) -> TokenStream {
+    parse_quote! {
+        {
+            let mut _tc_outcome = false;
+            for i in 0..=_result.len() - #expected_slice.len() {
+                if #expected_slice == _result[i..i+#expected_slice.len()] {
+                    _tc_outcome = true;
+                }
+            }
+            _tc_outcome
+        }
+    }
+}
+
+fn contains_assertion(expected_element: &Expr) -> TokenStream {
+    parse_quote! { _result.iter().find(|i| i.eq(&&#expected_element)).is_some() }
 }
 
 fn path_assertion(token: &PathToken) -> TokenStream {
     match token {
-        PathToken::Any => parse_quote! { assert!(std::path::Path::new(&_result).exists()) },
-        PathToken::Dir => parse_quote! { assert!(std::path::Path::new(&_result).is_dir()) },
-        PathToken::File => parse_quote! { assert!(std::path::Path::new(&_result).is_file()) },
+        PathToken::Any => parse_quote! { std::path::Path::new(&_result).exists() },
+        PathToken::Dir => parse_quote! { std::path::Path::new(&_result).is_dir() },
+        PathToken::File => parse_quote! { std::path::Path::new(&_result).is_file() },
     }
 }
 
-fn almost_equal_assertion(expr: &Expr, precision: &Expr) -> TokenStream {
-    quote! { assert!((_result - #expr).abs() < #precision) }
+fn almost_equal_assertion(expected_value: &Expr, precision: &Expr) -> TokenStream {
+    quote! { (_result - #expected_value).abs() < #precision }
 }
 
-fn ord_assertion(ord: &OrderingToken, expr: &Expr) -> TokenStream {
-    let ts: TokenStream = match ord {
+fn ord_assertion(token: &OrderingToken, expected_value: &Expr) -> TokenStream {
+    let ts: TokenStream = match token {
         OrderingToken::Eq => parse_quote! { == },
         OrderingToken::Lt => parse_quote! { < },
         OrderingToken::Gt => parse_quote! { > },
@@ -255,7 +269,34 @@ fn ord_assertion(ord: &OrderingToken, expr: &Expr) -> TokenStream {
     };
 
     quote! {
-        assert!(_result #ts #expr)
+        _result #ts #expected_value
+    }
+}
+
+fn not_assertion(not: &ComplexTestCase) -> TokenStream {
+    match not {
+        ComplexTestCase::Not(not) => not_assertion(not),
+        ComplexTestCase::Ord(Ord {
+            token,
+            expected_value,
+        }) => negate(ord_assertion(token, expected_value)),
+        ComplexTestCase::AlmostEqual(AlmostEqual {
+            expected_value,
+            precision,
+        }) => negate(almost_equal_assertion(expected_value, precision)),
+        ComplexTestCase::Path(Path { token }) => negate(path_assertion(token)),
+        ComplexTestCase::Contains(Contains { expected_element }) => {
+            negate(contains_assertion(expected_element))
+        }
+        ComplexTestCase::ContainsInOrder(ContainsInOrder { expected_slice }) => {
+            negate(contains_in_order_assertion(expected_slice))
+        }
+    }
+}
+
+fn negate(tokens: TokenStream) -> TokenStream {
+    quote! {
+        !{#tokens}
     }
 }
 

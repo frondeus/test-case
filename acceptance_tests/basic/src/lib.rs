@@ -257,4 +257,23 @@ mod test_cases {
     fn contains_tests(items: Vec<u64>) -> Vec<u64> {
         items
     }
+
+    #[test_case(1.0 => is not eq 2.5)]
+    #[test_case(1.0 => is not almost 2.1 precision 0.01)]
+    #[test_case(1.0 => is not not eq 2.0)] // Yeah, that's legal
+    fn not_complex(input: f32) -> f32 { input * 1.0 }
+
+    #[test_case("Cargo.yaml".parse().unwrap() => is not existing_path)]
+    #[test_case("Cargo.toml".parse().unwrap() => is not dir)]
+    #[test_case("src/".parse().unwrap() => is not file)]
+    fn not_path(path: std::path::PathBuf) -> String {
+        path.to_string_lossy().to_string()
+    }
+
+    #[test_case(vec![1, 2, 3, 4] => it not contains 5)]
+    #[test_case(vec![1, 2, 3, 4] => it not contains_in_order [3, 2])]
+    fn not_contains_tests(items: Vec<u64>) -> Vec<u64> {
+        items
+    }
+
 }
