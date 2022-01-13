@@ -295,7 +295,7 @@ fn parse_kw_repeat<Keyword: Parse>(
     input: ParseStream,
 ) -> syn::Result<Vec<ComplexTestCase>> {
     let mut acc = vec![first];
-    while let Ok(_) = input.parse::<Keyword>() {
+    while input.parse::<Keyword>().is_ok() {
         acc.push(ComplexTestCase::parse_single_item(input)?);
     }
     Ok(acc)
