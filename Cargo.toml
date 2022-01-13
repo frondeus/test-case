@@ -34,6 +34,7 @@ version_check = "0.9"
 insta       = "1.8"
 itertools   = "0.10"
 lazy_static = "1.4"
+indexmap    = "=1.7" # insta dependency that has MSRV 1.49 on 1.8, so we manually keep it <1.8
 
 [[test]]
 name = "acceptance"
