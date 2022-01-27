@@ -54,7 +54,7 @@ jobs:
         toolchain:
           - nightly
           - stable
-          - 1.41.0
+          - 1.49.0
 
     steps:
       - name: Checkout source code

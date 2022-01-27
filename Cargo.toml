@@ -28,10 +28,10 @@ quote            = "1.0"
 syn              = { version = "1.0", features = ["full", "extra-traits"] }
 
 [dev-dependencies]
-insta       = "<1.12"
+insta       = "1.12"
 itertools   = "0.10"
 lazy_static = "1.4"
-indexmap    = "<1.8" # insta dependency that has MSRV 1.49 on 1.8, so we manually keep it <1.8
+indexmap    = "1.8"
 
 [[test]]
 name = "acceptance"
