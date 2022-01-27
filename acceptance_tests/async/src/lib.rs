@@ -1,3 +1,4 @@
+#[cfg(test)]
 mod test_cases {
     use test_case::test_case;
 

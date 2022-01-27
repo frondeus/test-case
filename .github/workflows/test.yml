@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - master
+      - develop
 
 jobs:
   validate:
@@ -33,7 +34,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: clippy
-          args: --all-features -- -D warnings
+          args: --all-features --tests -- -D warnings
 
       - name: Fmt
         uses: actions-rs/cargo@v1

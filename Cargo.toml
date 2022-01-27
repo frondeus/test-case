@@ -23,7 +23,7 @@ path       = "src/lib.rs"
 [dependencies]
 cfg-if           = "1.0"
 proc-macro2      = { version = "1.0", features = [] }
-proc-macro-error = "1.0.4"
+proc-macro-error = "1.0"
 quote            = "1.0"
 syn              = { version = "1.0", features = ["full", "extra-traits"] }
 
@@ -34,6 +34,7 @@ version_check = "0.9"
 insta       = "1.8"
 itertools   = "0.10"
 lazy_static = "1.4"
+indexmap    = "=1.7" # insta dependency that has MSRV 1.49 on 1.8, so we manually keep it <1.8
 
 [[test]]
 name = "acceptance"
