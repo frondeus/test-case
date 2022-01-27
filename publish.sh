@@ -1,8 +1,14 @@
 #!/bin/bash
 
-cargo clippy --all-targets --all-features -- -D warnings
-cargo fmt --all
-cargo test --all --all-features
+set -eo xtrace
+
+cargo clean
+
+cargo +nightly clippy --all-targets --all-features -- -D warnings
+cargo +nightly fmt --all
+SNAPSHOT_DIR=rust-stable cargo +stable test --workspace --all-features
+SNAPSHOT_DIR=rust-nightly cargo +nightly test --workspace --all-features
+SNAPSHOT_DIR=rust-1.41.0 cargo +1.41 test --workspace --all-features
 
 nvim Cargo.toml
 cargo build

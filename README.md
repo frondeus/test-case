@@ -175,7 +175,9 @@ fn some_test(input: u64) -> u64 {
 
 `complex` := `(it|is) $complex_expression`
 
-`complex_expression` := `$cmp_assertion|$path_assertion|$collection_assertion`
+`complex_expression` := `not $complex_expression_inner | $complex_expression_inner (and $complex_expression_inner)* | $complex_expression_inner (or $complex_expression_inner)*`
+
+`complex_expression_inner` := `$cmp_assertion|$path_assertion|$collection_assertion|\($complex_expression\)`
 
 `cmp_assertion` := `$ord_assertion|$almost_eq_assertion`
 `path_assertion` := `existing_path|file|dir|directory`

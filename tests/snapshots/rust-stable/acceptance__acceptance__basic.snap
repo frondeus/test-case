@@ -1,11 +1,10 @@
 ---
 source: tests/acceptance_tests.rs
+assertion_line: 41
 expression: lines
 
 ---
-running 0 tests
 running 91 tests
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 test result: ok. 88 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out
 test test_cases::abs_tests::returns_0_for_0 ... ok
 test test_cases::abs_tests::returns_given_number_for_positive_input ... ok
