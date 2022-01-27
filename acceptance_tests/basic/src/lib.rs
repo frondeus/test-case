@@ -198,6 +198,15 @@ mod test_cases {
         input
     }
 
+    fn wrapped_pretty_assert(expected: u64) -> impl Fn(u64) {
+        move |actual: u64| { pretty_assertions::assert_eq!(actual, expected) }
+    }
+
+    #[test_case(1 => using wrapped_pretty_assert(1))]
+    fn pretty_assertions_usage(input: u64) -> u64 {
+        input
+    }
+
     struct Target { i: i64 }
 
     struct Source1;

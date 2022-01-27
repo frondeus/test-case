@@ -9,5 +9,6 @@ name = "async"
 path = "src/lib.rs"
 doctest = false
 
-[dependencies]
+[dev-dependencies]
 test-case = { path = "../../" }
+pretty_assertions = "1.0.0"

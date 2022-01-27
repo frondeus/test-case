@@ -6,7 +6,7 @@ use quote::ToTokens;
 use std::collections::HashSet;
 use std::fmt::{Display, Formatter};
 use syn::parse::{Parse, ParseStream};
-use syn::{parse_quote, Attribute, Expr, Pat, Path, Token};
+use syn::{parse_quote, Attribute, Expr, Pat, Token};
 
 pub mod kw {
     syn::custom_keyword!(matches);
@@ -35,7 +35,7 @@ pub enum TestCaseResult {
     // test_case(a, b, c => with |v: T| assert!(v.is_nan()))
     With(Expr),
     // test_case(a, b, c => using assert_nan)
-    UseFn(Path),
+    UseFn(Expr),
     // test_case(a, b, c => is close to 4 precision 0.1)
     Complex(ComplexTestCase),
 }
@@ -85,7 +85,7 @@ impl Display for TestCaseResult {
                 expr.as_ref().map(|inner| fmt_syn(&inner))
             ),
             TestCaseResult::With(expr) => write!(f, "with {}", fmt_syn(expr)),
-            TestCaseResult::UseFn(path) => write!(f, "use {}", fmt_syn(path)),
+            TestCaseResult::UseFn(expr) => write!(f, "use {}", fmt_syn(expr)),
             TestCaseResult::Complex(complex) => write!(f, "complex {}", complex),
         }
     }
