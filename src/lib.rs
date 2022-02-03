@@ -258,7 +258,7 @@ extern crate proc_macro;
 
 use proc_macro::TokenStream;
 
-use syn::{parse_macro_input, ItemFn};
+use syn::{parse_macro_input, ItemFn, ReturnType};
 
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
@@ -348,6 +348,10 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
                     .into()
                 }
             };
+            if let Err(err) = check_return(&test_case, &item) {
+                return err;
+            }
+
             test_cases.push(test_case);
             attrs_to_remove.push(idx);
         }
@@ -358,6 +362,21 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
     }
 
     render_test_cases(&test_cases, item)
+}
+
+fn check_return(test_case: &TestCase, item: &ItemFn) -> Result<(), TokenStream> {
+    let fn_ret = &item.sig.output;
+    match fn_ret {
+        ReturnType::Type(_, ret_type) if  !test_case.expects_return() =>  {
+            Err(syn::Error::new(
+                ret_type.span(),
+                format!("Test function {} has a return-type but no exected clause in the test-case. This is currently unsupported. See test-case documentation for more details.", item.sig.ident),
+            )
+            .to_compile_error()
+            .into())
+        },
+        _ => Ok(())
+    }
 }
 
 #[allow(unused_mut)]

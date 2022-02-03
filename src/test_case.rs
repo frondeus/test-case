@@ -67,6 +67,18 @@ impl TestCase {
         crate::utils::escape_test_name(case_desc)
     }
 
+    pub fn expects_return(&self) -> bool {
+        match self.expected {
+            Some(Expected::Pattern(_)) => true,
+            Some(Expected::Panic(_)) => false,
+            Some(Expected::Expr(_)) => true,
+            Some(Expected::Ignore(_)) => false,
+            #[cfg(any(feature = "hamcrest_assertions", test))]
+            Some(Expected::Hamcrest(_)) => true,
+            None => false,
+        }
+    }
+
     pub fn render(&self, mut item: ItemFn) -> TokenStream2 {
         let item_name = item.sig.ident.clone();
         let arg_values = self.args.iter();
