@@ -258,7 +258,7 @@ extern crate proc_macro;
 
 use proc_macro::TokenStream;
 
-use syn::{parse_macro_input, ItemFn, ReturnType};
+use syn::{parse_macro_input, ItemFn};
 
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
@@ -348,6 +348,8 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
                     .into()
                 }
             };
+
+            #[cfg(not(feature = "allow_return"))]
             if let Err(err) = check_return(&test_case, &item) {
                 return err;
             }
@@ -364,7 +366,10 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
     render_test_cases(&test_cases, item)
 }
 
+#[cfg(not(feature = "allow_return"))]
 fn check_return(test_case: &TestCase, item: &ItemFn) -> Result<(), TokenStream> {
+    use syn::ReturnType;
+
     let fn_ret = &item.sig.output;
     match fn_ret {
         ReturnType::Type(_, ret_type) if  !test_case.expects_return() =>  {

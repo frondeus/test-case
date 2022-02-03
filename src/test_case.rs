@@ -67,6 +67,7 @@ impl TestCase {
         crate::utils::escape_test_name(case_desc)
     }
 
+    #[cfg(not(feature = "allow_return"))]
     pub fn expects_return(&self) -> bool {
         match self.expected {
             Some(Expected::Pattern(_)) => true,

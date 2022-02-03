@@ -7,3 +7,6 @@ edition = "2021"
 
 [dependencies]
 test-case = { path = "../.." }
+
+[features]
+allow_return = ["test-case/allow_return"]

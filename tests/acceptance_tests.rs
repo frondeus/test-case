@@ -87,12 +87,26 @@ mod acceptance {
                 .output()
                 .expect("cargo command failed to start");
 
-            let stderr = retrieve_stderr(&output);
+            assert!(!output.status.success());
 
             // We need to check stderr for the expected compile
             // failure, but that includes other volatile output, so
             // resort to manual inspection for now.
+            let stderr = retrieve_stderr(&output);
             assert!(stderr.contains("Test function return_no_expect has a return-type but no exected clause in the test-case."));
+        });
+    }
+
+    #[test]
+    fn allow_return_check() {
+        with_settings!({snapshot_path => get_snapshot_directory()}, {
+            let output = Command::new("cargo")
+                .current_dir(PathBuf::from("acceptance_tests").join("return_check"))
+                .args(&["test", "--features", "allow_return"])
+                .output()
+                .expect("cargo command failed to start");
+
+            assert!(output.status.success());
         });
     }
 
