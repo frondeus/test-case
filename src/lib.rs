@@ -262,7 +262,7 @@
 //! #[test_case( 0 => Ok(_) ; "Test with 0")]
 //! ```
 //!
-//! Previously, tests relying on the return error being checked would silently pass; as of 1.2.2 attempting to return a `Result<>` without an appropriate return check in the expression will result in a compilation error. However if you wish to keep the old behaviour for some reason the feature flag `allow_return` will disable the check.
+//! Previously, tests relying on the return error being checked would silently pass; as of 1.2.2 attempting to return a `Result<>` without an appropriate return check in the expression will result in a compilation error. However if you wish to keep the old behaviour for some reason the feature flag `allow_result` will disable the check.
 //!
 
 extern crate proc_macro;
@@ -360,8 +360,8 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
                 }
             };
 
-            #[cfg(not(feature = "allow_return"))]
-            if let Err(err) = check_return(&test_case, &item) {
+            #[cfg(not(feature = "allow_result"))]
+            if let Err(err) = check_for_result(&test_case, &item) {
                 return err;
             }
 
@@ -377,8 +377,8 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
     render_test_cases(&test_cases, item)
 }
 
-#[cfg(not(feature = "allow_return"))]
-fn check_return(test_case: &TestCase, item: &ItemFn) -> Result<(), TokenStream> {
+#[cfg(not(feature = "allow_result"))]
+fn check_for_result(test_case: &TestCase, item: &ItemFn) -> Result<(), TokenStream> {
     use syn::ReturnType;
 
     let fn_ret = &item.sig.output;

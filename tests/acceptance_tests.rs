@@ -98,11 +98,11 @@ mod acceptance {
     }
 
     #[test]
-    fn allow_return_check() {
+    fn allow_result_check() {
         with_settings!({snapshot_path => get_snapshot_directory()}, {
             let output = Command::new("cargo")
                 .current_dir(PathBuf::from("acceptance_tests").join("return_check"))
-                .args(&["test", "--features", "allow_return"])
+                .args(&["test", "--features", "allow_result"])
                 .output()
                 .expect("cargo command failed to start");
 

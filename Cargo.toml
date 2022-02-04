@@ -42,4 +42,4 @@ path = "tests/acceptance_tests.rs"
 [features]
 default = []
 hamcrest_assertions = []
-allow_return = []
+allow_result = []

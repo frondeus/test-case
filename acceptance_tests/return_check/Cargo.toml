@@ -9,4 +9,4 @@ edition = "2021"
 test-case = { path = "../.." }
 
 [features]
-allow_return = ["test-case/allow_return"]
+allow_result = ["test-case/allow_result"]
