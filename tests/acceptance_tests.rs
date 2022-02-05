@@ -109,5 +109,4 @@ mod acceptance {
             assert!(output.status.success());
         });
     }
-
 }

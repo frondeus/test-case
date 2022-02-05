@@ -360,9 +360,12 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
                 }
             };
 
-            #[cfg(not(feature = "allow_result"))]
-            if let Err(err) = check_for_result(&test_case, &item) {
-                return err;
+            cfg_if::cfg_if! {
+                if #[cfg(not(feature = "allow_result"))] {
+                    if let Err(err) = check_for_result(&test_case, &item) {
+                        return err;
+                    }
+                }
             }
 
             test_cases.push(test_case);
