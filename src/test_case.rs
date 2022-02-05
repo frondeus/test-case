@@ -33,7 +33,7 @@ impl Parse for TestCase {
         let expected = if arrow.is_some() {
             let expected: Expected = input.parse()?;
 
-            test_case_name += &format!(" {}", expected.to_string());
+            test_case_name += &format!(" {}", expected);
 
             Some(expected)
         } else {
