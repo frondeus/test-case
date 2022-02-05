@@ -9,14 +9,14 @@ mod acceptance {
 
     fn get_snapshot_directory() -> String {
         PathBuf::from("snapshots")
-            .join(env::var("SNAPSHOT_DIR").unwrap_or("rust-stable".to_string()))
+            .join(env::var("SNAPSHOT_DIR").unwrap_or_else(|_| "rust-stable".to_string()))
             .to_str()
             .unwrap()
             .to_string()
     }
 
-    fn retrieve_output(output: &Vec<u8>) -> String {
-        String::from_utf8_lossy(&output)
+    fn retrieve_output(output: &[u8]) -> String {
+        String::from_utf8_lossy(output)
             .to_string()
             .lines()
             .filter(|s| !s.is_empty())
