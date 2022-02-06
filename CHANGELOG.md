@@ -1,5 +1,9 @@
 # Changelog
 
+## V1.2.2
+* `test-case` no longer allows returning values from tested function without `=>` pattern (thanks to @tarka)
+    * Behaviour can be reenabled via `allow_result` feature 
+
 ## V1.2.1
 * Disabled clippy warning when test-case was generating `assert_eq(bool, bool)` expression.
 
@@ -35,7 +39,7 @@
   #[test_case(false => None                         ; "But this should return None")]
   ```
 
-  `inconclusive` ignores one specific test case.- thanks to @luke_biel
+  `inconclusive` ignores one specific test case.- thanks to @luke-biel
   ```rust
   #[test_case("42")]
   #[test_case("XX" ; "inconclusive - parsing letters temporarily doesn't work, but it's ok")]
@@ -48,7 +52,7 @@
 * Added keeping trailing underscores in names - thanks to @rzumer
 ### Minor improvements
 * Moved `lazy-static` dependency to `dev-dependencies`
-* Fixed README - thanks to @luke_biel and @drwilco
+* Fixed README - thanks to @luke-biel and @drwilco
 ### Upgraded dependencies
 * Upgraded `insta` to `0.12.0`
 
