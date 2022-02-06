@@ -9,14 +9,14 @@ mod acceptance {
 
     fn get_snapshot_directory() -> String {
         PathBuf::from("snapshots")
-            .join(env::var("SNAPSHOT_DIR").unwrap_or("rust-stable".to_string()))
+            .join(env::var("SNAPSHOT_DIR").unwrap_or_else(|_| "rust-stable".to_string()))
             .to_str()
             .unwrap()
             .to_string()
     }
 
-    fn retrieve_stdout(output: &Output) -> String {
-        String::from_utf8_lossy(&output.stdout)
+    fn retrieve_output(output: &[u8]) -> String {
+        String::from_utf8_lossy(output)
             .to_string()
             .lines()
             .filter(|s| !s.is_empty())
@@ -26,6 +26,14 @@ mod acceptance {
             })
             .sorted()
             .join("\n")
+    }
+
+    fn retrieve_stdout(output: &Output) -> String {
+        retrieve_output(&output.stdout)
+    }
+
+    fn retrieve_stderr(output: &Output) -> String {
+        retrieve_output(&output.stderr)
     }
 
     #[test]
@@ -67,6 +75,38 @@ mod acceptance {
 
             let lines = retrieve_stdout(&output);
             insta::assert_display_snapshot!(lines);
+        });
+    }
+
+    #[test]
+    fn return_check() {
+        with_settings!({snapshot_path => get_snapshot_directory()}, {
+            let output = Command::new("cargo")
+                .current_dir(PathBuf::from("acceptance_tests").join("return_check"))
+                .args(&["test"])
+                .output()
+                .expect("cargo command failed to start");
+
+            assert!(!output.status.success());
+
+            // We need to check stderr for the expected compile
+            // failure, but that includes other volatile output, so
+            // resort to manual inspection for now.
+            let stderr = retrieve_stderr(&output);
+            assert!(stderr.contains("Test function return_no_expect has a return-type but no exected clause in the test-case."));
+        });
+    }
+
+    #[test]
+    fn allow_result_check() {
+        with_settings!({snapshot_path => get_snapshot_directory()}, {
+            let output = Command::new("cargo")
+                .current_dir(PathBuf::from("acceptance_tests").join("return_check"))
+                .args(&["test", "--features", "allow_result"])
+                .output()
+                .expect("cargo command failed to start");
+
+            assert!(output.status.success());
         });
     }
 }

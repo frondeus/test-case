@@ -33,7 +33,7 @@ impl Parse for TestCase {
         let expected = if arrow.is_some() {
             let expected: Expected = input.parse()?;
 
-            test_case_name += &format!(" {}", expected.to_string());
+            test_case_name += &format!(" {}", expected);
 
             Some(expected)
         } else {
@@ -65,6 +65,19 @@ impl TestCase {
             .map(LitStr::value)
             .unwrap_or_else(|| self.test_case_name.clone());
         crate::utils::escape_test_name(case_desc)
+    }
+
+    #[cfg(not(feature = "allow_result"))]
+    pub fn expects_return(&self) -> bool {
+        match self.expected {
+            Some(Expected::Pattern(_)) => true,
+            Some(Expected::Panic(_)) => false,
+            Some(Expected::Expr(_)) => true,
+            Some(Expected::Ignore(_)) => false,
+            #[cfg(any(feature = "hamcrest_assertions", test))]
+            Some(Expected::Hamcrest(_)) => true,
+            None => false,
+        }
     }
 
     pub fn render(&self, mut item: ItemFn) -> TokenStream2 {

@@ -253,6 +253,17 @@ async fn runs_async_task(input: &str) -> bool {
 }
 ```
 
+## Porting from Rust `#[test]`s with `Result` types
+
+It is important to note that test-case does not support the [Rust 2018+ idiom](https://doc.rust-lang.org/rust-by-example/testing/unit_testing.html#tests-and-) of failing tests by returning a `Result<T, E>` with an error type.
+The simplest way to remedy this is to append `... => Ok(_)` to each `#[test-case(...)` expression, e.g:
+
+```rust
+#[test_case( 0 => Ok(_) ; "Test with 0")]
+```
+
+Previously, tests relying on the return error being checked would silently pass; as of 1.2.2 attempting to return a `Result<>` without an appropriate return check in the expression will result in a compilation error. However if you wish to keep the old behaviour for some reason the feature flag `allow_result` will disable the check.
+
 
 ## License
 

@@ -253,6 +253,17 @@
 //! }
 //! ```
 //!
+//! # Porting from Rust `#[test]`s with `Result` types
+//!
+//! It is important to note that test-case does not support the [Rust 2018+ idiom](https://doc.rust-lang.org/rust-by-example/testing/unit_testing.html#tests-and-) of failing tests by returning a `Result<T, E>` with an error type.
+//! The simplest way to remedy this is to append `... => Ok(_)` to each `#[test-case(...)` expression, e.g:
+//!
+//! ```rust
+//! #[test_case( 0 => Ok(_) ; "Test with 0")]
+//! ```
+//!
+//! Previously, tests relying on the return error being checked would silently pass; as of 1.2.2 attempting to return a `Result<>` without an appropriate return check in the expression will result in a compilation error. However if you wish to keep the old behaviour for some reason the feature flag `allow_result` will disable the check.
+//!
 
 extern crate proc_macro;
 
@@ -348,6 +359,15 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
                     .into()
                 }
             };
+
+            cfg_if::cfg_if! {
+                if #[cfg(not(feature = "allow_result"))] {
+                    if let Err(err) = check_for_result(&test_case, &item) {
+                        return err;
+                    }
+                }
+            }
+
             test_cases.push(test_case);
             attrs_to_remove.push(idx);
         }
@@ -358,6 +378,24 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
     }
 
     render_test_cases(&test_cases, item)
+}
+
+#[cfg(not(feature = "allow_result"))]
+fn check_for_result(test_case: &TestCase, item: &ItemFn) -> Result<(), TokenStream> {
+    use syn::ReturnType;
+
+    let fn_ret = &item.sig.output;
+    match fn_ret {
+        ReturnType::Type(_, ret_type) if  !test_case.expects_return() =>  {
+            Err(syn::Error::new(
+                ret_type.span(),
+                format!("Test function {} has a return-type but no exected clause in the test-case. This is currently unsupported. See test-case documentation for more details.", item.sig.ident),
+            )
+            .to_compile_error()
+            .into())
+        },
+        _ => Ok(())
+    }
 }
 
 #[allow(unused_mut)]
