@@ -74,6 +74,7 @@ mod acceptance {
                 .expect("cargo command failed to start");
 
             let lines = retrieve_stdout(&output);
+            eprintln!("{}", retrieve_stderr(&output));
             insta::assert_display_snapshot!(lines);
         });
     }
