@@ -360,16 +360,18 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
                 }
             };
 
-            cfg_if::cfg_if! {
-                if #[cfg(not(feature = "allow_result"))] {
-                    if let Err(err) = check_for_result(&test_case, &item) {
-                        return err;
-                    }
-                }
-            }
-
             test_cases.push(test_case);
             attrs_to_remove.push(idx);
+        }
+    }
+
+    cfg_if::cfg_if! {
+        if #[cfg(not(feature = "allow_result"))] {
+            for test_case in test_cases.iter() {
+                if let Err(err) = check_for_result(test_case, &item) {
+                    return err;
+                }
+            }
         }
     }
 
