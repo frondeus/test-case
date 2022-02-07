@@ -65,10 +65,10 @@ mod acceptance {
     }
 
     #[test]
-    fn r#async() {
+    fn async_tests() {
         with_settings!({snapshot_path => get_snapshot_directory()}, {
             let output = Command::new("cargo")
-                .current_dir(PathBuf::from("acceptance_tests").join("r#async"))
+                .current_dir(PathBuf::from("acceptance_tests").join("async"))
                 .args(&["test"])
                 .output()
                 .expect("cargo command failed to start");
