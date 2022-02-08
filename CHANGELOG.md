@@ -1,5 +1,9 @@
 # Changelog
 
+## V1.2.3
+* Fix regression where `panics` and `inconclusive` were not allowed on `test_cases` returning a value
+* Fix case where `test_case` would allow to return a type when only single attribute was used
+
 ## V1.2.2
 * `test-case` no longer allows returning values from tested function without `=>` pattern (thanks to @tarka)
     * Behaviour can be reenabled via `allow_result` feature 
