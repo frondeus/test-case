@@ -65,10 +65,10 @@ mod acceptance {
     }
 
     #[test]
-    fn r#async() {
+    fn async_tests() {
         with_settings!({snapshot_path => get_snapshot_directory()}, {
             let output = Command::new("cargo")
-                .current_dir(PathBuf::from("acceptance_tests").join("r#async"))
+                .current_dir(PathBuf::from("acceptance_tests").join("async"))
                 .args(&["test"])
                 .output()
                 .expect("cargo command failed to start");
@@ -94,6 +94,10 @@ mod acceptance {
             // resort to manual inspection for now.
             let stderr = retrieve_stderr(&output);
             assert!(stderr.contains("Test function return_no_expect has a return-type but no exected clause in the test-case."));
+            assert!(stderr.contains("fn return_no_expect_single(a: i32) -> Result<i32, String> {"));
+            assert!(!stderr.contains("fn return_with_panic(a: i32) -> i32 {"));
+            assert!(!stderr.contains("fn return_invalid_with_panic(a: i32) -> Result<i32, String> {")); // We cannot determine if a `panic` should have return type - thus we must allow this notation.
+            assert!(!stderr.contains("fn return_inconclusive(a: i32) -> i32 {")); // Same goes for `inconclusive`
         });
     }
 
