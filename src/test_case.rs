@@ -1,5 +1,5 @@
 use crate::comment::TestCaseComment;
-use crate::expr::TestCaseExpression;
+use crate::expr::{TestCaseExpression, TestCaseResult};
 use crate::utils::fmt_syn;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
@@ -7,7 +7,7 @@ use syn::parse::{Parse, ParseStream};
 use syn::punctuated::Punctuated;
 use syn::{parse_quote, Error, Expr, Ident, ItemFn, ReturnType, Token};
 
-#[cfg_attr(test, derive(Debug))]
+#[derive(Debug)]
 pub struct TestCase {
     args: Punctuated<Expr, Token![,]>,
     expression: Option<TestCaseExpression>,
@@ -73,8 +73,15 @@ impl TestCase {
         };
 
         let expected = if let Some(expr) = self.expression.as_ref() {
+            attrs.extend(expr.attributes());
+
             signature.extend(quote! { fn #test_case_name() });
-            expr.assertion()
+
+            if let TestCaseResult::Panicking(_) = expr.result {
+                TokenStream2::new()
+            } else {
+                expr.assertion()
+            }
         } else {
             signature.extend(if let ReturnType::Type(_, typ) = item.sig.output {
                 quote! { fn #test_case_name() -> #typ }

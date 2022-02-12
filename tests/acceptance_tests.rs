@@ -94,7 +94,7 @@ mod acceptance {
 
             let mut lines = retrieve_stdout(&output);
             lines.push_str(&retrieve_stderr(&output));
-            let lines = lines.lines().filter(|line| !line.contains("waiting")).join("\n");
+            let lines = lines.lines().filter(|line| !line.contains("waiting") && !line.contains("Finished") && !line.contains("Compiling")).join("\n");
 
             insta::assert_display_snapshot!(lines);
         });

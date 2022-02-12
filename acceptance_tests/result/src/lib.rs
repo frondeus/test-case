@@ -22,4 +22,15 @@ mod tests {
             Err("is even".to_string().into())
         }
     }
+
+    #[test_case(12 => panics)]
+    #[test_case(13 => panics "with text")]
+    fn panics_supported(_value: u64) -> Result<(), Box<dyn Error>> {
+        panic!("with text")
+    }
+
+    #[test_case(12 => ignore matches Ok(_))] // `(12 => ignore)` is not supported
+    fn ignore_supported(_value: u64) -> Result<(), Box<dyn Error>> {
+        todo!()
+    }
 }

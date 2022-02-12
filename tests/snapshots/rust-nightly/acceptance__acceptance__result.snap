@@ -1,6 +1,6 @@
 ---
 source: tests/acceptance_tests.rs
-assertion_line: 97
+assertion_line: 114
 expression: lines
 
 ---
@@ -17,11 +17,14 @@ Error: "is odd"
 failures:
 failures:
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
-running 4 tests
-test result: FAILED. 2 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out
+running 7 tests
+test result: FAILED. 4 passed; 2 failed; 1 ignored; 0 measured; 0 filtered out
+test tests::ignore_supported::_12_expects_inconclusivematching_ok_ ... ignored
 test tests::is_even::_12_expects ... ok
 test tests::is_even::_13_expects ... FAILED
 test tests::is_odd_boxed::_12_expects ... FAILED
 test tests::is_odd_boxed::_13_expects ... ok
+test tests::panics_supported::_12_expects_panicking_none - should panic ... ok
+test tests::panics_supported::_13_expects_panicking_some_with_text_ - should panic ... ok
 thread 'tests::is_even::_13_expects' panicked at 'assertion failed: `(left == right)`
 thread 'tests::is_odd_boxed::_12_expects' panicked at 'assertion failed: `(left == right)`
