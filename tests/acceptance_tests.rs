@@ -41,6 +41,20 @@ mod acceptance {
             .join("\n")
     }
 
+    fn sanitize_lines(s: String) -> String {
+        s.lines()
+            .filter(|line| {
+                !line.contains("note")
+                    && !line.contains("error")
+                    && !line.contains("waiting")
+                    && !line.contains("Finished")
+                    && !line.contains("Compiling")
+            })
+            .map(|line| line.replace('\\', "/"))
+            .map(|line| line.replace(".exe", "")) // remove executable extension on windows
+            .join("\n")
+    }
+
     #[test]
     fn basic() {
         with_settings!({snapshot_path => get_snapshot_directory()}, {
@@ -50,11 +64,7 @@ mod acceptance {
                 .output()
                 .expect("cargo command failed to start");
 
-            let lines = retrieve_stdout(&output);
-            let lines = lines
-                .lines()
-                .filter(|line| !line.contains("note"))
-                .join("\n");
+            let lines = sanitize_lines(retrieve_stdout(&output));
             insta::assert_display_snapshot!(lines);
         });
     }
@@ -68,11 +78,7 @@ mod acceptance {
                 .output()
                 .expect("cargo command failed to start");
 
-            let lines = retrieve_stdout(&output);
-            let lines = lines
-                .lines()
-                .filter(|line| !line.contains("note"))
-                .join("\n");
+            let lines = sanitize_lines(retrieve_stdout(&output));
             insta::assert_display_snapshot!(lines);
         });
     }
@@ -86,11 +92,7 @@ mod acceptance {
                 .output()
                 .expect("cargo command failed to start");
 
-            let lines = retrieve_stdout(&output);
-            let lines = lines
-                .lines()
-                .filter(|line| !line.contains("note"))
-                .join("\n");
+            let lines = sanitize_lines(retrieve_stdout(&output));
             insta::assert_display_snapshot!(lines);
         });
     }
@@ -106,11 +108,7 @@ mod acceptance {
 
             let mut lines = retrieve_stdout(&output);
             lines.push_str(&retrieve_stderr(&output));
-            let lines = lines
-                .lines()
-                .filter(|line| !line.contains("waiting") && !line.contains("Finished") && !line.contains("Compiling"))
-                .join("\n");
-
+            let lines = sanitize_lines(lines);
             insta::assert_display_snapshot!(lines);
         });
     }
@@ -124,11 +122,7 @@ mod acceptance {
                 .output()
                 .expect("cargo command failed to start");
 
-            let lines = retrieve_stdout(&output);
-            let lines = lines
-                .lines()
-                .filter(|line| !line.contains("note"))
-                .join("\n");
+            let lines = sanitize_lines(retrieve_stdout(&output));
             insta::assert_display_snapshot!(lines);
         });
     }
