@@ -51,6 +51,10 @@ mod acceptance {
                 .expect("cargo command failed to start");
 
             let lines = retrieve_stdout(&output);
+            let lines = lines
+                .lines()
+                .filter(|line| !line.contains("note"))
+                .join("\n");
             insta::assert_display_snapshot!(lines);
         });
     }
@@ -65,6 +69,10 @@ mod acceptance {
                 .expect("cargo command failed to start");
 
             let lines = retrieve_stdout(&output);
+            let lines = lines
+                .lines()
+                .filter(|line| !line.contains("note"))
+                .join("\n");
             insta::assert_display_snapshot!(lines);
         });
     }
@@ -79,6 +87,10 @@ mod acceptance {
                 .expect("cargo command failed to start");
 
             let lines = retrieve_stdout(&output);
+            let lines = lines
+                .lines()
+                .filter(|line| !line.contains("note"))
+                .join("\n");
             insta::assert_display_snapshot!(lines);
         });
     }
@@ -94,7 +106,10 @@ mod acceptance {
 
             let mut lines = retrieve_stdout(&output);
             lines.push_str(&retrieve_stderr(&output));
-            let lines = lines.lines().filter(|line| !line.contains("waiting") && !line.contains("Finished") && !line.contains("Compiling")).join("\n");
+            let lines = lines
+                .lines()
+                .filter(|line| !line.contains("waiting") && !line.contains("Finished") && !line.contains("Compiling"))
+                .join("\n");
 
             insta::assert_display_snapshot!(lines);
         });
@@ -110,7 +125,10 @@ mod acceptance {
                 .expect("cargo command failed to start");
 
             let lines = retrieve_stdout(&output);
-
+            let lines = lines
+                .lines()
+                .filter(|line| !line.contains("note"))
+                .join("\n");
             insta::assert_display_snapshot!(lines);
         });
     }

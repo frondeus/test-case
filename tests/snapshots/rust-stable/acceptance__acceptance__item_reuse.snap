@@ -1,6 +1,6 @@
 ---
 source: tests/acceptance_tests.rs
-assertion_line: 82
+assertion_line: 94
 expression: lines
 
 ---
@@ -10,7 +10,6 @@ expression: lines
 ---- internal_tested_function1::_3_expects_6 stdout ----
 failures:
 failures:
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 running 6 tests
 test internal_tested_function1::_2_expects_4 ... ok
 test internal_tested_function1::_3_expects_6 ... FAILED
