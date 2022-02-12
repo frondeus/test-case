@@ -351,12 +351,13 @@ fn render_test_cases(test_cases: &[TestCase], mut item: ItemFn) -> TokenStream {
     item.attrs.clear();
 
     let output = quote! {
+        #[allow(unused_attributes)]
+        #item
+
+        #[cfg(test)]
         mod #mod_name {
             #[allow(unused_imports)]
             use super::*;
-
-            #[allow(unused_attributes)]
-            #item
 
             #(#rendered_test_cases)*
         }

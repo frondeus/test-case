@@ -4,8 +4,15 @@ assertion_line: 41
 expression: lines
 
 ---
-running 92 tests
-test result: ok. 89 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out
+      panic message: `"It has to panic"`,
+    test_cases::panicing::_expects_panicking_some_this_should_fail_
+ expected substring: `"This should fail"`
+---- test_cases::panicing::_expects_panicking_some_this_should_fail_ stdout ----
+failures:
+failures:
+note: panic did not contain expected string
+running 94 tests
+test result: FAILED. 89 passed; 1 failed; 4 ignored; 0 measured; 0 filtered out
 test test_cases::abs_tests::returns_0_for_0 ... ok
 test test_cases::abs_tests::returns_given_number_for_positive_input ... ok
 test test_cases::abs_tests::returns_opposite_number_for_non_positive_input ... ok
@@ -52,6 +59,7 @@ test test_cases::fancy_addition::treats_none_as_0 ... ok
 test test_cases::impl_trait::_foo_expects ... ok
 test test_cases::in_parens::_2_0_expects_complex_eq_2_0 ... ok
 test test_cases::inconclusives::_expects_inconclusive_ ... ignored
+test test_cases::inconclusives::ignore_keyword ... ignored
 test test_cases::inconclusives::inconclusive_test ... ignored
 test test_cases::inconclusives::test_is_not_ran ... ignored
 test test_cases::keyword_test::true_expects ... ok
@@ -77,6 +85,7 @@ test test_cases::not_path::_cargo_toml_parse_unwrap_expects_complex_not_path_dir
 test test_cases::not_path::_cargo_yaml_parse_unwrap_expects_complex_not_path_path ... ok
 test test_cases::not_path::_src_parse_unwrap_expects_complex_not_path_file ... ok
 test test_cases::panicing::_expects_panicking_some_it_has_to_panic_ ... ok
+test test_cases::panicing::_expects_panicking_some_this_should_fail_ ... FAILED
 test test_cases::panics_without_value::_expects_panicking_none ... ok
 test test_cases::pattern_matching_result::simpleenum_var2_expects_matching_simpleenum_var2 ... ok
 test test_cases::pattern_matching_result_fails::simpleenum_var1_expects_matching_simpleenum_var2 ... ok
@@ -98,3 +107,4 @@ test test_cases::test_generics::source1_expects_1 ... ok
 test test_cases::test_generics::source2_expects_2 ... ok
 test test_cases::test_impl::source1_expects_1 ... ok
 test test_cases::test_impl::source2_expects_2 ... ok
+thread 'test_cases::panicing::_expects_panicking_some_this_should_fail_' panicked at 'It has to panic', src/lib.rs:162:9

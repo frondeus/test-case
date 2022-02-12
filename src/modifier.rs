@@ -18,7 +18,7 @@ impl Parse for Modifier {
             let _: kw::inconclusive = input.parse::<kw::inconclusive>()?;
             Ok(Self::Inconclusive)
         } else if input.peek(kw::ignore) {
-            let _: kw::inconclusive = input.parse()?;
+            let _: kw::ignore = input.parse()?;
             Ok(Self::Inconclusive)
         } else {
             Err(syn::Error::new(input.span(), "unknown modifier keyword"))

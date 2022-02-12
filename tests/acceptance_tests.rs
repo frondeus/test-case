@@ -43,16 +43,43 @@ mod acceptance {
     }
 
     #[test]
-    fn r#async() {
+    fn async_tests() {
         with_settings!({snapshot_path => get_snapshot_directory()}, {
             let output = Command::new("cargo")
-                .current_dir(PathBuf::from("acceptance_tests").join("async"))
+                .current_dir(PathBuf::from("acceptance_tests").join("async_tests"))
                 .args(&["test"])
                 .output()
                 .expect("cargo command failed to start");
 
             let lines = retrieve_stdout(&output);
             insta::assert_display_snapshot!(lines);
+        });
+    }
+
+    #[test]
+    fn test_item_reuse() {
+        with_settings!({snapshot_path => get_snapshot_directory()}, {
+            let output = Command::new("cargo")
+                .current_dir(PathBuf::from("acceptance_tests").join("test_item_reuse"))
+                .args(&["test"])
+                .output()
+                .expect("cargo command failed to start");
+
+            let lines = retrieve_stdout(&output);
+            insta::assert_display_snapshot!(lines);
+        });
+    }
+
+    #[test]
+    fn test_item_reuse_build() {
+        with_settings!({snapshot_path => get_snapshot_directory()}, {
+            let status = Command::new("cargo")
+                .current_dir(PathBuf::from("acceptance_tests").join("test_item_reuse"))
+                .args(&["build"])
+                .status()
+                .expect("cargo command failed to start");
+
+            assert!(status.success())
         });
     }
 }

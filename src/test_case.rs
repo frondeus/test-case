@@ -69,7 +69,7 @@ impl TestCase {
             quote! {
                 #(#attrs)*
                 async fn #test_case_name() {
-                    let _result = #item_name(#(#arg_values),*).await;
+                    let _result = super::#item_name(#(#arg_values),*).await;
                     #expected
                 }
             }
@@ -78,7 +78,7 @@ impl TestCase {
                 #[test]
                 #(#attrs)*
                 fn #test_case_name() {
-                    let _result = #item_name(#(#arg_values),*);
+                    let _result = super::#item_name(#(#arg_values),*);
                     #expected
                 }
             }
