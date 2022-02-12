@@ -6,7 +6,7 @@ expression: lines
 ---
     internal_tested_function1::_3_expects_6
   left: `6`,
- right: `0`', src/lib.rs:5:1
+ right: `0`', src/lib.rs:8:1
 ---- internal_tested_function1::_3_expects_6 stdout ----
 failures:
 failures:

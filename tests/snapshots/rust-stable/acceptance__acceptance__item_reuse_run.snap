@@ -1,0 +1,12 @@
+---
+source: tests/acceptance_tests.rs
+assertion_line: 99
+expression: lines
+
+---
+     Running `target/debug/test_item_reuse`
+    Finished dev [unoptimized + debuginfo] target(s) in 1.12s
+   Compiling test-case v2.0.0-rc2 (/home/luke-biel/Workspace/frondeus/test-case)
+   Compiling test_item_reuse v0.1.0 (/home/luke-biel/Workspace/frondeus/test-case/acceptance_tests/test_item_reuse)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+thread 'main' panicked at 'Can't', src/lib.rs:33:5

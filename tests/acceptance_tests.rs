@@ -28,6 +28,19 @@ mod acceptance {
             .join("\n")
     }
 
+    fn retrieve_stderr(output: &Output) -> String {
+        String::from_utf8_lossy(&output.stderr)
+            .to_string()
+            .lines()
+            .filter(|s| !s.is_empty())
+            .map(|line| match line.find("; finished in") {
+                Some(idx) => &line[0..idx],
+                None => line,
+            })
+            .sorted()
+            .join("\n")
+    }
+
     #[test]
     fn basic() {
         with_settings!({snapshot_path => get_snapshot_directory()}, {
@@ -71,15 +84,34 @@ mod acceptance {
     }
 
     #[test]
-    fn test_item_reuse_build() {
+    fn test_item_reuse_run() {
         with_settings!({snapshot_path => get_snapshot_directory()}, {
-            let status = Command::new("cargo")
+            let output = Command::new("cargo")
                 .current_dir(PathBuf::from("acceptance_tests").join("test_item_reuse"))
-                .args(&["build"])
-                .status()
+                .args(&["run"])
+                .output()
                 .expect("cargo command failed to start");
 
-            assert!(status.success())
+            let mut lines = retrieve_stdout(&output);
+            lines.push_str(&retrieve_stderr(&output));
+            let lines = lines.lines().filter(|line| !line.contains("waiting")).join("\n");
+
+            insta::assert_display_snapshot!(lines);
+        });
+    }
+
+    #[test]
+    fn test_result() {
+        with_settings!({snapshot_path => get_snapshot_directory()}, {
+            let output = Command::new("cargo")
+                .current_dir(PathBuf::from("acceptance_tests").join("result"))
+                .args(&["test"])
+                .output()
+                .expect("cargo command failed to start");
+
+            let lines = retrieve_stdout(&output);
+
+            insta::assert_display_snapshot!(lines);
         });
     }
 }
