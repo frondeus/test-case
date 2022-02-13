@@ -49,6 +49,7 @@ mod acceptance {
                     && !line.contains("waiting")
                     && !line.contains("Finished")
                     && !line.contains("Compiling")
+                    && !line.contains("termination value with a non-zero status code")
             })
             .map(|line| line.replace('\\', "/"))
             .map(|line| line.replace(".exe", "")) // remove executable extension on windows
