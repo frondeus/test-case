@@ -1,13 +1,13 @@
 use crate::comment::TestCaseComment;
-use crate::expr::TestCaseExpression;
+use crate::expr::{TestCaseExpression, TestCaseResult};
 use crate::utils::fmt_syn;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
 use syn::parse::{Parse, ParseStream};
 use syn::punctuated::Punctuated;
-use syn::{parse_quote, Error, Expr, Ident, ItemFn, Token};
+use syn::{parse_quote, Error, Expr, Ident, ItemFn, ReturnType, Token};
 
-#[cfg_attr(test, derive(Debug))]
+#[derive(Debug)]
 pub struct TestCase {
     args: Punctuated<Expr, Token![,]>,
     expression: Option<TestCaseExpression>,
@@ -50,11 +50,6 @@ impl TestCase {
         let arg_values = self.args.iter();
         let test_case_name = self.test_case_name();
 
-        let expected = self
-            .expression
-            .as_ref()
-            .map(|expr| expr.assertion())
-            .unwrap_or_else(TokenStream2::new);
         let mut attrs = self
             .expression
             .as_ref()
@@ -62,25 +57,46 @@ impl TestCase {
             .unwrap_or_else(Vec::new);
 
         attrs.push(parse_quote! { #[allow(clippy::bool_assert_comparison)] });
-
         attrs.append(&mut item.attrs);
 
-        if let Some(_asyncness) = item.sig.asyncness {
-            quote! {
-                #(#attrs)*
-                async fn #test_case_name() {
-                    let _result = #item_name(#(#arg_values),*).await;
-                    #expected
-                }
+        let (mut signature, body) = if item.sig.asyncness.is_some() {
+            (
+                quote! { async },
+                quote! { let _result = super::#item_name(#(#arg_values),*).await; },
+            )
+        } else {
+            attrs.insert(0, parse_quote! { #[test] });
+            (
+                TokenStream2::new(),
+                quote! { let _result = super::#item_name(#(#arg_values),*); },
+            )
+        };
+
+        let expected = if let Some(expr) = self.expression.as_ref() {
+            attrs.extend(expr.attributes());
+
+            signature.extend(quote! { fn #test_case_name() });
+
+            if let TestCaseResult::Panicking(_) = expr.result {
+                TokenStream2::new()
+            } else {
+                expr.assertion()
             }
         } else {
-            quote! {
-                #[test]
-                #(#attrs)*
-                fn #test_case_name() {
-                    let _result = #item_name(#(#arg_values),*);
-                    #expected
-                }
+            signature.extend(if let ReturnType::Type(_, typ) = item.sig.output {
+                quote! { fn #test_case_name() -> #typ }
+            } else {
+                quote! { fn #test_case_name() }
+            });
+
+            quote! { _result }
+        };
+
+        quote! {
+            #(#attrs)*
+            #signature {
+                #body
+                #expected
             }
         }
     }

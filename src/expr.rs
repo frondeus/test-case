@@ -20,8 +20,8 @@ pub mod kw {
 #[derive(Debug)]
 pub struct TestCaseExpression {
     _token: Token![=>],
-    extra_keywords: HashSet<Modifier>,
-    result: TestCaseResult,
+    pub extra_keywords: HashSet<Modifier>,
+    pub result: TestCaseResult,
 }
 
 #[derive(Debug)]
