@@ -29,7 +29,7 @@ git push origin
 
 set +o xtrace
 
-printf "Next step: Wait for CI\n" \
-"Next step: \`git tag vX.Y.Z; git push --tags\`\n" \
-"Next step: Create release in Github\n" \
-"Next step: \`cargo publish\`"
+echo "Next step: Wait for CI\n"
+echo "Next step: \`git tag vX.Y.Z; git push --tags\`\n"
+echo "Next step: Create release in Github\n"
+echo "Next step: \`cargo publish\`"
