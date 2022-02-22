@@ -17,7 +17,7 @@ Crate has to be added as a dependency to `Cargo.toml`:
 
 ```toml
 [dev-dependencies]
-test-case = "2.0.0-rc3"
+test-case = "2.0.0"
 ```
 
 and imported to the scope of a block where it's being called

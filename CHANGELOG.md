@@ -1,16 +1,17 @@
 # Changelog
 
-## 2.0.0 (WIP)
+## 2.0.0
 ### New features
 * `=> with |x: T| assert!(x)` custom inline test assertions
 * `=> using path::to::fn` custom fn test assertions
-* `ignore` and `inconclusive` can be combined with other keywords (eg.: `=> ignore matches Ok(_)`)
-* `=> it ...` complex expressions are a built-in
+* `ignore|inconclusive` can be combined with other keywords (eg.: `=> ignore matches Ok(_)`)
+* `=> it|is ...` syntax is a built-in (_previously required `hamcrest2` crate integration_)
 * Tested items are left in place where they were defined #77
-* Simple test cases allow `Result<(), _>` like `#[test]` macro would
+* Simple test cases allow `Result<(), _>` return types similar to native `#[test]` macro
 
 ### Improvements
-* Code refactoring
+* Significant code refactoring
+* Improved test case name selection
 
 ### Breaking changes
 * Deprecation of `inconclusive` within test description string - it will no longer act like modifier keyword
