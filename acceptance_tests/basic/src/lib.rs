@@ -138,7 +138,7 @@ mod test_cases {
         String::default()
     }
 
-    #[derive(Debug)]
+    #[derive(Debug, PartialEq)]
     #[allow(dead_code)]
     enum SimpleEnum {
         Var1,
@@ -148,6 +148,16 @@ mod test_cases {
     #[test_case(SimpleEnum::Var2 => matches SimpleEnum::Var2)]
     fn pattern_matching_result(e: SimpleEnum) -> SimpleEnum {
         e
+    }
+
+    #[test_case(SimpleEnum::Var1 => matches Ok(e) if e == SimpleEnum::Var1)]
+    #[test_case(SimpleEnum::Var2 => matches Err(e) if e == "var2")]
+    fn extended_pattern_matching_result(e: SimpleEnum) -> Result<SimpleEnum, &'static str> {
+        if e == SimpleEnum::Var1 {
+            Ok(e)
+        } else {
+            Err("var2")
+        }
     }
 
     #[should_panic(expected = "Expected SimpleEnum :: Var2 found Var1")]

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.1
+### Bug fixes
+* `matches Pattern if condition` parses correctly (`if condition` part wasn't allowed)
+
 ## 2.0.0
 ### New features
 * `=> with |x: T| assert!(x)` custom inline test assertions

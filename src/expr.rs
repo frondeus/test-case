@@ -28,8 +28,8 @@ pub struct TestCaseExpression {
 pub enum TestCaseResult {
     // test_case(a, b, c => result)
     Simple(Expr),
-    // test_case(a, b, c => matches Ok(_))
-    Matching(Pat),
+    // test_case(a, b, c => matches Ok(_) if true)
+    Matching(Pat, Option<Expr>),
     // test_case(a, b, c => panics "abcd")
     Panicking(Option<Expr>),
     // test_case(a, b, c => with |v: T| assert!(v.is_nan()))
@@ -46,7 +46,11 @@ impl Parse for TestCaseExpression {
         let extra_keywords = parse_kws(input);
 
         if input.parse::<kw::matches>().is_ok() {
-            parse_with_keyword::<_, _>(input, token, extra_keywords, TestCaseResult::Matching)
+            Ok(TestCaseExpression {
+                _token: token,
+                extra_keywords,
+                result: TestCaseResult::Matching(input.parse()?, input.parse::<Expr>().ok()),
+            })
         } else if input.parse::<kw::it>().is_ok() || input.parse::<kw::is>().is_ok() {
             parse_with_keyword::<_, _>(input, token, extra_keywords, TestCaseResult::Complex)
         } else if input.parse::<kw::using>().is_ok() {
@@ -78,7 +82,9 @@ impl Display for TestCaseResult {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             TestCaseResult::Simple(expr) => write!(f, "{}", fmt_syn(expr)),
-            TestCaseResult::Matching(expr) => write!(f, "matching {}", fmt_syn(expr)),
+            TestCaseResult::Matching(pat, expr) => {
+                write!(f, "matching {} {}", fmt_syn(pat), fmt_syn(expr))
+            }
             TestCaseResult::Panicking(expr) => write!(
                 f,
                 "panicking {:?}",
@@ -95,11 +101,11 @@ impl TestCaseExpression {
     pub fn assertion(&self) -> TokenStream2 {
         match &self.result {
             TestCaseResult::Simple(expr) => parse_quote! { assert_eq!(#expr, _result) },
-            TestCaseResult::Matching(pat) => {
+            TestCaseResult::Matching(pat, expr) => {
                 let pat_str = pat.to_token_stream().to_string();
                 parse_quote! {
                     match _result {
-                        #pat => (),
+                        #pat #expr => (),
                         e => panic!("Expected {} found {:?}", #pat_str, e)
                     }
                 }
