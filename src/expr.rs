@@ -6,6 +6,7 @@ use quote::ToTokens;
 use std::collections::HashSet;
 use std::fmt::{Display, Formatter};
 use syn::parse::{Parse, ParseStream};
+use syn::token::If;
 use syn::{parse_quote, Attribute, Expr, Pat, Token};
 
 pub mod kw {
@@ -29,7 +30,7 @@ pub enum TestCaseResult {
     // test_case(a, b, c => result)
     Simple(Expr),
     // test_case(a, b, c => matches Ok(_) if true)
-    Matching(Pat, Option<Expr>),
+    Matching(Pat, Option<Box<Expr>>),
     // test_case(a, b, c => panics "abcd")
     Panicking(Option<Expr>),
     // test_case(a, b, c => with |v: T| assert!(v.is_nan()))
@@ -46,10 +47,19 @@ impl Parse for TestCaseExpression {
         let extra_keywords = parse_kws(input);
 
         if input.parse::<kw::matches>().is_ok() {
+            let pattern = input.parse()?;
+            let guard = if input.peek(If) {
+                let _if_kw: If = input.parse()?;
+                let guard: Box<Expr> = input.parse()?;
+                Some(guard)
+            } else {
+                None
+            };
+
             Ok(TestCaseExpression {
                 _token: token,
                 extra_keywords,
-                result: TestCaseResult::Matching(input.parse()?, input.parse::<Expr>().ok()),
+                result: TestCaseResult::Matching(pattern, guard),
             })
         } else if input.parse::<kw::it>().is_ok() || input.parse::<kw::is>().is_ok() {
             parse_with_keyword::<_, _>(input, token, extra_keywords, TestCaseResult::Complex)
@@ -101,12 +111,24 @@ impl TestCaseExpression {
     pub fn assertion(&self) -> TokenStream2 {
         match &self.result {
             TestCaseResult::Simple(expr) => parse_quote! { assert_eq!(#expr, _result) },
-            TestCaseResult::Matching(pat, expr) => {
+            TestCaseResult::Matching(pat, guard) => {
                 let pat_str = pat.to_token_stream().to_string();
-                parse_quote! {
-                    match _result {
-                        #pat #expr => (),
-                        e => panic!("Expected {} found {:?}", #pat_str, e)
+
+                if let Some(guard) = guard {
+                    let guard_str = guard.to_token_stream().to_string();
+
+                    parse_quote! {
+                        match _result {
+                            #pat if #guard => (),
+                            e => panic!("Expected `{} if {}` found {:?}", #pat_str, #guard_str, e)
+                        }
+                    }
+                } else {
+                    parse_quote! {
+                        match _result {
+                            #pat => (),
+                            e => panic!("Expected `{}` found {:?}", #pat_str, e)
+                        }
                     }
                 }
             }

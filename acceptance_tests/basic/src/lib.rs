@@ -151,7 +151,9 @@ mod test_cases {
     }
 
     #[test_case(SimpleEnum::Var1 => matches Ok(e) if e == SimpleEnum::Var1)]
+    #[test_case(SimpleEnum::Var1 => matches Ok(e) if e == SimpleEnum::Var2; "ok should fail")]
     #[test_case(SimpleEnum::Var2 => matches Err(e) if e == "var2")]
+    #[test_case(SimpleEnum::Var2 => matches Err(e) if e == "var1"; "err should fail")]
     fn extended_pattern_matching_result(e: SimpleEnum) -> Result<SimpleEnum, &'static str> {
         if e == SimpleEnum::Var1 {
             Ok(e)
@@ -160,7 +162,7 @@ mod test_cases {
         }
     }
 
-    #[should_panic(expected = "Expected SimpleEnum :: Var2 found Var1")]
+    #[should_panic(expected = "Expected `SimpleEnum :: Var2` found Var1")]
     #[test_case(SimpleEnum::Var1 => matches SimpleEnum::Var2)]
     fn pattern_matching_result_fails(e: SimpleEnum) -> SimpleEnum {
         e
