@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.2
+### Bug fixes
+* Covered missing cases in `matches X if Y` *test_case* variant (fixes the fact that previous bug fix didn't produce guard code)
+
+
 ## 2.0.1
 ### Bug fixes
 * `matches Pattern if condition` parses correctly (`if condition` part wasn't allowed)
