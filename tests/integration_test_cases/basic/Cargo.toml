@@ -10,7 +10,7 @@ path = "src/lib.rs"
 doctest = false
 
 [dev-dependencies]
-test-case = { path = "../../crates/test-case" }
+test-case = { path = "../../../" }
 pretty_assertions = "1.0.0"
 
 [workspace]

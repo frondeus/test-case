@@ -1,8 +1,7 @@
 ---
-source: tests/acceptance_tests.rs
-assertion_line: 69
-expression: lines
-
+source: tests/integration_tests.rs
+assertion_line: 65
+expression: output
 ---
       panic message: `"It has to panic"`,
     test_cases::extended_pattern_matching_result::err_should_fail
@@ -15,7 +14,7 @@ expression: lines
 failures:
 failures:
 running 98 tests
-test result: FAILED. 91 passed; 3 failed; 4 ignored; 0 measured; 0 filtered out
+test result: FAILED. 91 passed; 3 failed; 4 ignored; 0 measured; 0 filtered out; finished in 0.00s
 test test_cases::abs_tests::returns_0_for_0 ... ok
 test test_cases::abs_tests::returns_given_number_for_positive_input ... ok
 test test_cases::abs_tests::returns_opposite_number_for_non_positive_input ... ok

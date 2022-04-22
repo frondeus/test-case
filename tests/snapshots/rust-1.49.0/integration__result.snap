@@ -1,9 +1,9 @@
 ---
-source: tests/acceptance_tests.rs
-assertion_line: 127
-expression: lines
-
+source: tests/integration_tests.rs
+assertion_line: 84
+expression: output
 ---
+     Running target/debug/deps/result-71d879353ab56059
     tests::is_even::_13_expects
     tests::is_odd_boxed::_12_expects
   left: `1`,

@@ -1,9 +1,9 @@
 ---
-source: tests/acceptance_tests.rs
-assertion_line: 97
-expression: lines
-
+source: tests/integration_tests.rs
+assertion_line: 74
+expression: output
 ---
+     Running target/debug/deps/test_item_reuse-1566ce916dc81da7
     internal_tested_function1::_3_expects_6
   left: `6`,
  right: `0`', src/lib.rs:8:1

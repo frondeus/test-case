@@ -9,6 +9,6 @@ path = "src/lib.rs"
 doctest = false
 
 [dependencies]
-test-case = { path = "../../crates/test-case" }
+test-case = { path = "../../../" }
 
 [workspace]
