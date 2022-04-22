@@ -25,7 +25,6 @@ test-case-macros = { path = "crates/test-case-macros" }
 [dev-dependencies]
 insta       = "1.12"
 itertools   = "0.10"
-lazy_static = "1.4"
 indexmap    = "1.8"
 
 [workspace]

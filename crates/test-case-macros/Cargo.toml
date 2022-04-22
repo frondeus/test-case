@@ -26,9 +26,3 @@ proc-macro2      = { version = "1.0", features = [] }
 proc-macro-error = "1.0"
 quote            = "1.0"
 syn              = { version = "1.0", features = ["full", "extra-traits"] }
-
-[dev-dependencies]
-insta       = "1.12"
-itertools   = "0.10"
-lazy_static = "1.4"
-indexmap    = "1.8"
