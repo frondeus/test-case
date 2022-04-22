@@ -48,6 +48,7 @@ fn sanitize_lines(s: String) -> String {
                 && !line.contains("Compiling")
                 && !line.contains("termination value with a non-zero status code")
                 && !line.contains("Running unittests")
+                && !line.contains("Running target")
                 && !line.is_empty()
         })
         .map(|line| line.replace('\\', "/"))

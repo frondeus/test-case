@@ -1,10 +1,9 @@
 ---
 source: tests/integration_tests.rs
-assertion_line: 64
+assertion_line: 65
 expression: output
 ---
       panic message: `"It has to panic"`,
-     Running target/debug/deps/basic-b6403aa66e0a2fca
     test_cases::extended_pattern_matching_result::err_should_fail
     test_cases::extended_pattern_matching_result::ok_should_fail
     test_cases::panicing::_expects_panicking_some_this_should_fail_
