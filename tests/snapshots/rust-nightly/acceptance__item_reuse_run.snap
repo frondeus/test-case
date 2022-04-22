@@ -1,7 +1,0 @@
----
-source: tests/integration_tests.rs
-assertion_line: 79
-expression: output
----
-     Running `target/debug/test_item_reuse`
-thread 'main' panicked at 'Can't', src/lib.rs:33:5

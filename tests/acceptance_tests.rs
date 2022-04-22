@@ -61,26 +61,66 @@ fn sanitize_lines(s: String) -> String {
 }
 
 #[test]
-fn basic() {
-    run_integration_test!("basic")
+fn cases_can_be_declared_on_async_methods() {
+    run_integration_test!("cases_can_be_declared_on_async_methods")
 }
 
 #[test]
-fn async_tests() {
-    run_integration_test!("async_tests")
+fn cases_can_be_declared_on_non_test_items() {
+    run_integration_test!("cases_can_be_declared_on_non_test_items")
 }
 
 #[test]
-fn test_item_reuse() {
-    run_integration_test!("test_item_reuse")
+fn cases_declared_on_non_test_items_can_be_used() {
+    run_integration_test!("cases_can_be_declared_on_non_test_items", "run")
 }
 
 #[test]
-fn test_item_reuse_run() {
-    run_integration_test!("test_item_reuse", "run")
+fn cases_can_be_ignored() {
+    run_integration_test!("cases_can_be_ignored")
 }
 
 #[test]
-fn test_result() {
-    run_integration_test!("result")
+fn cases_can_panic() {
+    run_integration_test!("cases_can_panic")
+}
+
+#[test]
+fn cases_can_return_result() {
+    run_integration_test!("cases_can_return_result")
+}
+
+#[test]
+fn cases_support_basic_features() {
+    run_integration_test!("cases_support_basic_features")
+}
+
+#[test]
+fn cases_support_complex_assertions() {
+    run_integration_test!("cases_support_complex_assertions")
+}
+
+#[test]
+fn cases_support_generics() {
+    run_integration_test!("cases_support_generics")
+}
+
+#[test]
+fn cases_support_keyword_using() {
+    run_integration_test!("cases_support_keyword_using")
+}
+
+#[test]
+fn cases_support_keyword_with() {
+    run_integration_test!("cases_support_keyword_with")
+}
+
+#[test]
+fn cases_support_multiple_calling_methods() {
+    run_integration_test!("cases_support_multiple_calling_methods")
+}
+
+#[test]
+fn cases_support_pattern_matching() {
+    run_integration_test!("cases_support_pattern_matching")
 }

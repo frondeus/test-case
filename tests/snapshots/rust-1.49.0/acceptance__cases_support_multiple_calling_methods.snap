@@ -1,0 +1,11 @@
+---
+source: tests/acceptance_tests.rs
+assertion_line: 120
+expression: output
+---
+running 4 tests
+test can_use_qualified_attribute::first_test ... ok
+test can_use_qualified_attribute::second_test ... ok
+test import::can_import_test_case_attribute::_2_expects ... ok
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+test short_version::can_use_case_attribute_same_as_test_case::_12u8_expects_12u16 ... ok
