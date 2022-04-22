@@ -5,10 +5,12 @@ authors = ["Łukasz Biel <lukasz.p.biel@gmail.com>"]
 edition = "2018"
 
 [lib]
-name = "async"
+name = "basic"
 path = "src/lib.rs"
 doctest = false
 
 [dev-dependencies]
-test-case = { path = "../../" }
+test-case = { path = "../../crates/test-case" }
 pretty_assertions = "1.0.0"
+
+[workspace]

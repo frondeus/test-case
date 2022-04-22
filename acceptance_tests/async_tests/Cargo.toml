@@ -10,7 +10,9 @@ path = "src/lib.rs"
 doctest = false
 
 [dev-dependencies]
-test-case = { path = "../../" }
+test-case = { path = "../../crates/test-case" }
 tokio = { version = "=0.2.25", features = [ "rt-threaded", "macros" ] }
 async-std = { version = "=1.6.0", features = ["attributes"] }
 async-attributes = "=1.1.1"
+
+[workspace]

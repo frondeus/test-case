@@ -1,0 +1,34 @@
+[package]
+name          = "test-case"
+version       = "2.0.2"
+edition       = "2018"
+authors       = ["Marcin Sas-Szymanski <marcin.sas-szymanski@anixe.pl>", "Wojciech Polak <frondeus@gmail.com>", "Łukasz Biel <lukasz.p.biel@gmail.com>"]
+description   = "Provides #[test_case(...)] procedural macro attribute for generating parametrized test cases easily"
+keywords      = ["test", "case", "tests", "unit", "testing"]
+categories    = ["development-tools", "development-tools::testing"]
+readme        = "README.md"
+license       = "MIT"
+repository    = "https://github.com/frondeus/test-case"
+documentation = "https://docs.rs/test-case"
+exclude       = ["tests/snapshots/**/*"]
+
+[badges]
+maintenance = { status = "actively-developed" }
+
+[lib]
+doctest    = false
+path       = "src/lib.rs"
+
+[dependencies]
+test-case-macros = { path = "../test-case-macros" }
+
+[dev-dependencies]
+insta       = "1.12"
+itertools   = "0.10"
+lazy_static = "1.4"
+indexmap    = "1.8"
+
+
+[[test]]
+name = "acceptance"
+path = "../../tests/acceptance_tests.rs"
