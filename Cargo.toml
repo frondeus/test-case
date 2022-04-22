@@ -32,5 +32,5 @@ indexmap    = "1.8"
 members = ["crates/*"]
 
 [[test]]
-name = "integration"
-path = "tests/integration_tests.rs"
+name = "acceptance"
+path = "tests/acceptance_tests.rs"

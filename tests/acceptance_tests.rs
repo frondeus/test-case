@@ -10,7 +10,7 @@ macro_rules! run_integration_test {
     ($case_name:expr, $cmd:expr) => {
         with_settings!({snapshot_path => get_snapshot_directory()}, {
             let subcommand = Command::new("cargo")
-                .current_dir(PathBuf::from("tests").join("integration_test_cases").join($case_name))
+                .current_dir(PathBuf::from("tests").join("acceptance_cases").join($case_name))
                 .args(&[$cmd])
                 .output()
                 .expect("Failed to spawn cargo subcommand");
