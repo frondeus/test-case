@@ -2,10 +2,10 @@
 
 use insta::with_settings;
 use itertools::Itertools;
+use regex::Regex;
 use std::env;
 use std::path::PathBuf;
 use std::process::Command;
-use regex::Regex;
 
 macro_rules! run_integration_test {
     ($case_name:expr, $cmd:expr) => {
