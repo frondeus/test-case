@@ -5,6 +5,7 @@ use itertools::Itertools;
 use std::env;
 use std::path::PathBuf;
 use std::process::Command;
+use regex::Regex;
 
 macro_rules! run_integration_test {
     ($case_name:expr, $cmd:expr) => {
@@ -38,6 +39,8 @@ fn get_snapshot_directory() -> String {
 }
 
 fn sanitize_lines(s: String) -> String {
+    let re_time = Regex::new(r"\d+\.\d{2}s").expect("Building regex");
+
     let mut s = s
         .lines()
         .filter(|line| {
@@ -49,10 +52,13 @@ fn sanitize_lines(s: String) -> String {
                 && !line.contains("termination value with a non-zero status code")
                 && !line.contains("Running unittests")
                 && !line.contains("Running target")
+                && !line.contains("Downloaded")
+                && !line.contains("Updating")
                 && !line.is_empty()
         })
         .map(|line| line.replace('\\', "/"))
         .map(|line| line.replace(".exe", ""))
+        .map(|line| re_time.replace_all(&line, "0.00s").to_string())
         .collect::<Vec<_>>();
 
     s.sort_unstable();
