@@ -53,6 +53,7 @@ fn sanitize_lines(s: String) -> String {
                 && !line.contains("Running unittests")
                 && !line.contains("Running target")
                 && !line.contains("Downloaded")
+                && !line.contains("Downloading")
                 && !line.contains("Updating")
                 && !line.is_empty()
         })
