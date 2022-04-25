@@ -74,3 +74,46 @@ fn combinators(v: f32) -> f32 {
 fn combinators_with_arrays(a: Vec<u8>) -> Vec<u8> {
     a
 }
+
+#[test_case(vec![0, 1, 3] => is len 3)]
+#[test_case(vec![0, 1] => it has_length 2)]
+fn len_vec(v: Vec<u8>) -> Vec<u8> {
+    v
+}
+
+#[test_case("abc" => is len 3)]
+#[test_case("ab" => it has_length 2)]
+fn len_str(v: &str) -> &str {
+    v
+}
+
+#[test_case("abc" => is len 3)]
+#[test_case("ab" => it has_length 2)]
+fn len_string(v: &str) -> String {
+    v.to_string()
+}
+
+#[test_case(b"abc" => is len 3)]
+#[test_case(b"ab" => it has_length 2)]
+fn len_byte_str(v: &[u8]) -> &[u8] {
+    v
+}
+
+#[test_case(vec![0, 1, 3] => is count 3)]
+#[test_case(vec![0, 1] => it has_count 2)]
+fn count_vec(v: Vec<u8>) -> Vec<u8> {
+    v
+}
+
+#[test_case(vec![0, 1, 3] => is count 3)]
+#[test_case("abcd".chars() => is count 4)]
+#[test_case(std::iter::once(2) => is count 1)]
+fn count_general<T>(v: impl IntoIterator<Item = T>) -> impl IntoIterator<Item = T> {
+    v
+}
+
+#[test_case(vec![0] => is empty)]
+#[test_case(vec![] => is empty)]
+fn empty(v: Vec<u8>) -> Vec<u8> {
+    v
+}
