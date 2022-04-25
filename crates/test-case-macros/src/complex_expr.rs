@@ -29,6 +29,11 @@ mod kw {
     syn::custom_keyword!(not);
     syn::custom_keyword!(and);
     syn::custom_keyword!(or);
+    syn::custom_keyword!(len);
+    syn::custom_keyword!(has_length);
+    syn::custom_keyword!(count);
+    syn::custom_keyword!(has_count);
+    syn::custom_keyword!(empty);
 }
 
 #[derive(Debug, PartialEq)]
@@ -75,6 +80,16 @@ pub struct ContainsInOrder {
 }
 
 #[derive(Debug, PartialEq)]
+pub struct Len {
+    pub expected_len: Box<Expr>,
+}
+
+#[derive(Debug, PartialEq)]
+pub struct Count {
+    pub expected_len: Box<Expr>,
+}
+
+#[derive(Debug, PartialEq)]
 pub enum ComplexTestCase {
     Not(Box<ComplexTestCase>),
     And(Vec<ComplexTestCase>),
@@ -84,6 +99,9 @@ pub enum ComplexTestCase {
     Path(Path),
     Contains(Contains),
     ContainsInOrder(ContainsInOrder),
+    Len(Len),
+    Count(Count),
+    Empty,
 }
 
 impl Parse for ComplexTestCase {
@@ -160,6 +178,15 @@ impl Display for ComplexTestCase {
             ComplexTestCase::ContainsInOrder(ContainsInOrder { expected_slice }) => {
                 write!(f, "contains in order {}", fmt_syn(expected_slice))
             }
+            ComplexTestCase::Len(Len { expected_len }) => {
+                write!(f, "len {}", fmt_syn(expected_len))
+            }
+            ComplexTestCase::Count(Count { expected_len }) => {
+                write!(f, "count {}", fmt_syn(expected_len))
+            }
+            ComplexTestCase::Empty => {
+                write!(f, "empty")
+            }
         }
     }
 }
@@ -191,6 +218,9 @@ impl ComplexTestCase {
             ComplexTestCase::ContainsInOrder(ContainsInOrder { expected_slice }) => {
                 contains_in_order_assertion(expected_slice)
             }
+            ComplexTestCase::Len(Len { expected_len }) => len_assertion(expected_len),
+            ComplexTestCase::Count(Count { expected_len }) => count_assertion(expected_len),
+            ComplexTestCase::Empty => empty_assertion(),
         }
     }
 
@@ -258,6 +288,16 @@ impl ComplexTestCase {
             })
         } else if input.parse::<kw::not>().is_ok() {
             ComplexTestCase::Not(Box::new(input.parse()?))
+        } else if input.parse::<kw::len>().is_ok() || input.parse::<kw::has_length>().is_ok() {
+            ComplexTestCase::Len(Len {
+                expected_len: input.parse()?,
+            })
+        } else if input.parse::<kw::count>().is_ok() || input.parse::<kw::has_count>().is_ok() {
+            ComplexTestCase::Count(Count {
+                expected_len: input.parse()?,
+            })
+        } else if input.parse::<kw::empty>().is_ok() {
+            ComplexTestCase::Empty
         } else {
             proc_macro_error::abort!(input.span(), "cannot parse complex expression")
         })
@@ -351,6 +391,24 @@ fn ord_assertion(token: &OrderingToken, expected_value: &Expr) -> TokenStream {
     }
 }
 
+fn len_assertion(expected_len: &Expr) -> TokenStream {
+    quote! {
+        _result.len() == #expected_len
+    }
+}
+
+fn count_assertion(expected_len: &Expr) -> TokenStream {
+    quote! {
+        std::iter::IntoIterator::into_iter(_result).count() == #expected_len
+    }
+}
+
+fn empty_assertion() -> TokenStream {
+    quote! {
+        _result.is_empty()
+    }
+}
+
 fn not_assertion(not: &ComplexTestCase) -> TokenStream {
     match not {
         ComplexTestCase::Not(_) => {
@@ -373,13 +431,17 @@ fn not_assertion(not: &ComplexTestCase) -> TokenStream {
         ComplexTestCase::ContainsInOrder(ContainsInOrder { expected_slice }) => {
             negate(contains_in_order_assertion(expected_slice))
         }
+        ComplexTestCase::Len(Len { expected_len }) => negate(len_assertion(expected_len)),
+        ComplexTestCase::Count(Count { expected_len }) => negate(count_assertion(expected_len)),
+        ComplexTestCase::Empty => negate(empty_assertion()),
     }
 }
 
 #[cfg(test)]
 mod tests {
     use crate::complex_expr::{
-        AlmostEqual, ComplexTestCase, Contains, ContainsInOrder, OrderingToken, Path, PathToken,
+        AlmostEqual, ComplexTestCase, Contains, ContainsInOrder, Count, Len, OrderingToken, Path,
+        PathToken,
     };
     use syn::{parse_quote, LitFloat, LitInt, LitStr};
 
@@ -540,6 +602,49 @@ mod tests {
                 expected_slice: Box::new(parse_quote! { [1, 2, 3] })
             })
         )
+    }
+
+    #[test]
+    fn parses_len_token_stream() {
+        let actual1: ComplexTestCase = parse_quote! { len 10 };
+        let actual2: ComplexTestCase = parse_quote! { has_length 11 };
+        assert_eq!(
+            actual1,
+            ComplexTestCase::Len(Len {
+                expected_len: Box::new(parse_quote! { 10 })
+            })
+        );
+
+        assert_eq!(
+            actual2,
+            ComplexTestCase::Len(Len {
+                expected_len: Box::new(parse_quote! { 11 })
+            })
+        )
+    }
+
+    #[test]
+    fn parses_count_token_stream() {
+        let actual1: ComplexTestCase = parse_quote! { count 10 };
+        let actual2: ComplexTestCase = parse_quote! { has_count 11 };
+        assert_eq!(
+            actual1,
+            ComplexTestCase::Count(Count {
+                expected_len: Box::new(parse_quote! { 10 })
+            })
+        );
+        assert_eq!(
+            actual2,
+            ComplexTestCase::Count(Count {
+                expected_len: Box::new(parse_quote! { 11 })
+            })
+        )
+    }
+
+    #[test]
+    fn parses_empty() {
+        let actual: ComplexTestCase = parse_quote! { empty };
+        assert_eq!(actual, ComplexTestCase::Empty,)
     }
 
     #[test]
