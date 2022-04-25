@@ -1,130 +1,133 @@
 #![cfg(test)]
 
-mod acceptance {
-    use insta::with_settings;
-    use itertools::Itertools;
-    use std::env;
-    use std::path::PathBuf;
-    use std::process::{Command, Output};
+use insta::with_settings;
+use itertools::Itertools;
+use regex::Regex;
+use std::env;
+use std::path::PathBuf;
+use std::process::Command;
 
-    fn get_snapshot_directory() -> String {
-        PathBuf::from("snapshots")
-            .join(env::var("SNAPSHOT_DIR").unwrap_or_else(|_| "rust-stable".to_string()))
-            .to_str()
-            .unwrap()
-            .to_string()
-    }
-
-    fn retrieve_stdout(output: &Output) -> String {
-        String::from_utf8_lossy(&output.stdout)
-            .to_string()
-            .lines()
-            .filter(|s| !s.is_empty())
-            .map(|line| match line.find("; finished in") {
-                Some(idx) => &line[0..idx],
-                None => line,
-            })
-            .sorted()
-            .join("\n")
-    }
-
-    fn retrieve_stderr(output: &Output) -> String {
-        String::from_utf8_lossy(&output.stderr)
-            .to_string()
-            .lines()
-            .filter(|s| !s.is_empty())
-            .map(|line| match line.find("; finished in") {
-                Some(idx) => &line[0..idx],
-                None => line,
-            })
-            .sorted()
-            .join("\n")
-    }
-
-    fn sanitize_lines(s: String) -> String {
-        s.lines()
-            .filter(|line| {
-                !line.contains("note")
-                    && !line.contains("error")
-                    && !line.contains("waiting")
-                    && !line.contains("Finished")
-                    && !line.contains("Compiling")
-                    && !line.contains("termination value with a non-zero status code")
-            })
-            .map(|line| line.replace('\\', "/"))
-            .map(|line| line.replace(".exe", "")) // remove executable extension on windows
-            .join("\n")
-    }
-
-    #[test]
-    fn basic() {
+macro_rules! run_integration_test {
+    ($case_name:expr, $cmd:expr) => {
         with_settings!({snapshot_path => get_snapshot_directory()}, {
-            let output = Command::new("cargo")
-                .current_dir(PathBuf::from("acceptance_tests").join("basic"))
-                .args(&["test"])
+            let subcommand = Command::new("cargo")
+                .current_dir(PathBuf::from("tests").join("acceptance_cases").join($case_name))
+                .args(&[$cmd])
                 .output()
-                .expect("cargo command failed to start");
+                .expect("Failed to spawn cargo subcommand");
 
-            let lines = sanitize_lines(retrieve_stdout(&output));
-            insta::assert_display_snapshot!(lines);
-        });
+            let mut output = String::new();
+            output.push_str(String::from_utf8_lossy(&subcommand.stdout).as_ref());
+            output.push_str(String::from_utf8_lossy(&subcommand.stderr).as_ref());
+
+            let output = sanitize_lines(output);
+
+            insta::assert_display_snapshot!(output);
+        })
+    };
+    ($case_name:expr) => {
+        run_integration_test!($case_name, "test")
     }
+}
 
-    #[test]
-    fn async_tests() {
-        with_settings!({snapshot_path => get_snapshot_directory()}, {
-            let output = Command::new("cargo")
-                .current_dir(PathBuf::from("acceptance_tests").join("async_tests"))
-                .args(&["test"])
-                .output()
-                .expect("cargo command failed to start");
+fn get_snapshot_directory() -> String {
+    PathBuf::from("snapshots")
+        .join(env::var("SNAPSHOT_DIR").unwrap_or_else(|_| "rust-stable".to_string()))
+        .to_str()
+        .unwrap()
+        .to_string()
+}
 
-            let lines = sanitize_lines(retrieve_stdout(&output));
-            insta::assert_display_snapshot!(lines);
-        });
-    }
+fn sanitize_lines(s: String) -> String {
+    let re_time = Regex::new(r"\d+\.\d{2}s").expect("Building regex");
 
-    #[test]
-    fn test_item_reuse() {
-        with_settings!({snapshot_path => get_snapshot_directory()}, {
-            let output = Command::new("cargo")
-                .current_dir(PathBuf::from("acceptance_tests").join("test_item_reuse"))
-                .args(&["test"])
-                .output()
-                .expect("cargo command failed to start");
+    let mut s = s
+        .lines()
+        .filter(|line| {
+            !line.contains("note")
+                && !line.contains("error")
+                && !line.contains("waiting")
+                && !line.contains("Finished")
+                && !line.contains("Compiling")
+                && !line.contains("termination value with a non-zero status code")
+                && !line.contains("Running unittests")
+                && !line.contains("Running target")
+                && !line.contains("Downloaded")
+                && !line.contains("Downloading")
+                && !line.contains("Updating")
+                && !line.is_empty()
+        })
+        .map(|line| line.replace('\\', "/"))
+        .map(|line| line.replace(".exe", ""))
+        .map(|line| re_time.replace_all(&line, "0.00s").to_string())
+        .collect::<Vec<_>>();
 
-            let lines = sanitize_lines(retrieve_stdout(&output));
-            insta::assert_display_snapshot!(lines);
-        });
-    }
+    s.sort_unstable();
 
-    #[test]
-    fn test_item_reuse_run() {
-        with_settings!({snapshot_path => get_snapshot_directory()}, {
-            let output = Command::new("cargo")
-                .current_dir(PathBuf::from("acceptance_tests").join("test_item_reuse"))
-                .args(&["run"])
-                .output()
-                .expect("cargo command failed to start");
+    s.into_iter().join("\n")
+}
 
-            let mut lines = retrieve_stdout(&output);
-            lines.push_str(&retrieve_stderr(&output));
-            let lines = sanitize_lines(lines);
-            insta::assert_display_snapshot!(lines);
-        });
-    }
+#[test]
+fn cases_can_be_declared_on_async_methods() {
+    run_integration_test!("cases_can_be_declared_on_async_methods")
+}
 
-    #[test]
-    fn test_result() {
-        with_settings!({snapshot_path => get_snapshot_directory()}, {
-            let output = Command::new("cargo")
-                .current_dir(PathBuf::from("acceptance_tests").join("result"))
-                .args(&["test"])
-                .output()
-                .expect("cargo command failed to start");
+#[test]
+fn cases_can_be_declared_on_non_test_items() {
+    run_integration_test!("cases_can_be_declared_on_non_test_items")
+}
 
-            let lines = sanitize_lines(retrieve_stdout(&output));
-            insta::assert_display_snapshot!(lines);
-        });
-    }
+#[test]
+fn cases_declared_on_non_test_items_can_be_used() {
+    run_integration_test!("cases_can_be_declared_on_non_test_items", "run")
+}
+
+#[test]
+fn cases_can_be_ignored() {
+    run_integration_test!("cases_can_be_ignored")
+}
+
+#[test]
+fn cases_can_panic() {
+    run_integration_test!("cases_can_panic")
+}
+
+#[test]
+fn cases_can_return_result() {
+    run_integration_test!("cases_can_return_result")
+}
+
+#[test]
+fn cases_support_basic_features() {
+    run_integration_test!("cases_support_basic_features")
+}
+
+#[test]
+fn cases_support_complex_assertions() {
+    run_integration_test!("cases_support_complex_assertions")
+}
+
+#[test]
+fn cases_support_generics() {
+    run_integration_test!("cases_support_generics")
+}
+
+#[test]
+fn cases_support_keyword_using() {
+    run_integration_test!("cases_support_keyword_using")
+}
+
+#[test]
+fn cases_support_keyword_with() {
+    run_integration_test!("cases_support_keyword_with")
+}
+
+#[test]
+fn cases_support_multiple_calling_methods() {
+    run_integration_test!("cases_support_multiple_calling_methods")
+}
+
+#[test]
+fn cases_support_pattern_matching() {
+    run_integration_test!("cases_support_pattern_matching")
 }

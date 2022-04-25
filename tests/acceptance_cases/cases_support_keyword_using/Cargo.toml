@@ -1,0 +1,17 @@
+[package]
+name = "cases_support_keyword_using"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "cases_support_keyword_using"
+path = "src/lib.rs"
+doctest = false
+
+[dev-dependencies]
+test-case = { path = "../../../" }
+pretty_assertions = "1.0.0"
+
+[workspace]

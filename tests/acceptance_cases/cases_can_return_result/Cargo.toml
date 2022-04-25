@@ -1,0 +1,14 @@
+[package]
+name = "cases_can_return_result"
+version = "0.1.0"
+edition = "2018"
+
+[lib]
+name = "cases_can_return_result"
+path = "src/lib.rs"
+doctest = false
+
+[dependencies]
+test-case = { path = "../../../" }
+
+[workspace]

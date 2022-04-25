@@ -1,0 +1,18 @@
+[package]
+name = "async_tests"
+version = "0.1.0"
+authors = ["Łukasz Biel <lukasz.p.biel@gmail.com>"]
+edition = "2018"
+
+[lib]
+name = "async"
+path = "src/lib.rs"
+doctest = false
+
+[dev-dependencies]
+test-case = { path = "../../../" }
+tokio = { version = "=0.2.25", features = [ "rt-threaded", "macros" ] }
+async-std = { version = "=1.6.0", features = ["attributes"] }
+async-attributes = "=1.1.1"
+
+[workspace]
