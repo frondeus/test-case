@@ -45,6 +45,7 @@ fn sanitize_lines(s: String) -> String {
         .lines()
         .filter(|line| {
             !line.contains("note")
+                && !line.contains("error: build failed")
                 && !line.contains("waiting")
                 && !line.contains("Finished")
                 && !line.contains("Compiling")
