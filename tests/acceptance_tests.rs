@@ -45,7 +45,8 @@ fn sanitize_lines(s: String) -> String {
         .lines()
         .filter(|line| {
             !line.contains("note")
-                && !line.contains("error: build failed")
+                && !line.contains("error: build failed") // For mac builds
+                && !line.contains("error: process didn't exit successfully") // For windows builds
                 && !line.contains("waiting")
                 && !line.contains("Finished")
                 && !line.contains("Compiling")
