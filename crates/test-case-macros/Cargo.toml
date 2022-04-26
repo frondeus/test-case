@@ -12,6 +12,9 @@ repository    = "https://github.com/frondeus/test-case"
 documentation = "https://docs.rs/test-case"
 exclude       = ["tests/snapshots/**/*"]
 
+[features]
+with-regex = []
+
 [badges]
 maintenance = { status = "actively-developed" }
 

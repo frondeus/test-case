@@ -12,6 +12,9 @@ repository    = "https://github.com/frondeus/test-case"
 documentation = "https://docs.rs/test-case"
 exclude       = ["tests/snapshots/**/*"]
 
+[features]
+with-regex = ["regex", "test-case-macros/with-regex"]
+
 [badges]
 maintenance = { status = "actively-developed" }
 
@@ -20,7 +23,8 @@ doctest    = false
 path       = "src/lib.rs"
 
 [dependencies]
-test-case-macros = { path = "crates/test-case-macros" }
+test-case-macros = { path = "crates/test-case-macros", default-features = false }
+regex = { version = "1.5", optional = true }
 
 [dev-dependencies]
 insta       = "1.12"
