@@ -34,6 +34,8 @@ mod kw {
     syn::custom_keyword!(count);
     syn::custom_keyword!(has_count);
     syn::custom_keyword!(empty);
+    syn::custom_keyword!(matching_regex);
+    syn::custom_keyword!(matches_regex);
 }
 
 #[derive(Debug, PartialEq)]
@@ -89,6 +91,12 @@ pub struct Count {
     pub expected_len: Box<Expr>,
 }
 
+#[cfg(feature = "with-regex")]
+#[derive(Debug, PartialEq)]
+pub struct Regex {
+    pub expected_regex: Box<Expr>,
+}
+
 #[derive(Debug, PartialEq)]
 pub enum ComplexTestCase {
     Not(Box<ComplexTestCase>),
@@ -102,6 +110,8 @@ pub enum ComplexTestCase {
     Len(Len),
     Count(Count),
     Empty,
+    #[cfg(feature = "with-regex")]
+    Regex(Regex),
 }
 
 impl Parse for ComplexTestCase {
@@ -187,6 +197,10 @@ impl Display for ComplexTestCase {
             ComplexTestCase::Empty => {
                 write!(f, "empty")
             }
+            #[cfg(feature = "with-regex")]
+            ComplexTestCase::Regex(Regex { expected_regex }) => {
+                write!(f, "regex {}", fmt_syn(expected_regex))
+            }
         }
     }
 }
@@ -221,6 +235,8 @@ impl ComplexTestCase {
             ComplexTestCase::Len(Len { expected_len }) => len_assertion(expected_len),
             ComplexTestCase::Count(Count { expected_len }) => count_assertion(expected_len),
             ComplexTestCase::Empty => empty_assertion(),
+            #[cfg(feature = "with-regex")]
+            ComplexTestCase::Regex(Regex { expected_regex }) => regex_assertion(expected_regex),
         }
     }
 
@@ -298,6 +314,18 @@ impl ComplexTestCase {
             })
         } else if input.parse::<kw::empty>().is_ok() {
             ComplexTestCase::Empty
+        } else if input.parse::<kw::matching_regex>().is_ok()
+            || input.parse::<kw::matches_regex>().is_ok()
+        {
+            cfg_if::cfg_if! {
+                if #[cfg(feature = "with-regex")] {
+                    ComplexTestCase::Regex(Regex {
+                        expected_regex: input.parse()?,
+                    })
+                } else {
+                    proc_macro_error::abort!(input.span(), "'with-regex' feature is required to use 'matches-regex' keyword");
+                }
+            }
         } else {
             proc_macro_error::abort!(input.span(), "cannot parse complex expression")
         })
@@ -409,6 +437,16 @@ fn empty_assertion() -> TokenStream {
     }
 }
 
+#[cfg(feature = "with-regex")]
+fn regex_assertion(expected_regex: &Expr) -> TokenStream {
+    quote! {
+        {
+            let re = ::test_case::Regex::new(#expected_regex).expect("Regex::new");
+            re.is_match(_result)
+        }
+    }
+}
+
 fn not_assertion(not: &ComplexTestCase) -> TokenStream {
     match not {
         ComplexTestCase::Not(_) => {
@@ -434,6 +472,8 @@ fn not_assertion(not: &ComplexTestCase) -> TokenStream {
         ComplexTestCase::Len(Len { expected_len }) => negate(len_assertion(expected_len)),
         ComplexTestCase::Count(Count { expected_len }) => negate(count_assertion(expected_len)),
         ComplexTestCase::Empty => negate(empty_assertion()),
+        #[cfg(feature = "with-regex")]
+        ComplexTestCase::Regex(Regex { expected_regex }) => negate(regex_assertion(expected_regex)),
     }
 }
 

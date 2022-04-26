@@ -45,7 +45,8 @@ fn sanitize_lines(s: String) -> String {
         .lines()
         .filter(|line| {
             !line.contains("note")
-                && !line.contains("error")
+                && !line.contains("error: build failed") // For mac builds
+                && !line.contains("error: process didn't exit successfully") // For windows builds
                 && !line.contains("waiting")
                 && !line.contains("Finished")
                 && !line.contains("Compiling")
@@ -130,4 +131,14 @@ fn cases_support_multiple_calling_methods() {
 #[test]
 fn cases_support_pattern_matching() {
     run_integration_test!("cases_support_pattern_matching")
+}
+
+#[test]
+fn cases_can_use_regex() {
+    run_integration_test!("cases_can_use_regex")
+}
+
+#[test]
+fn features_produce_human_readable_errors() {
+    run_integration_test!("features_produce_human_readable_errors")
 }
