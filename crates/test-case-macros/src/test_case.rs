@@ -33,7 +33,8 @@ impl TestCase {
             .unwrap_or_else(|| {
                 let mut acc = String::new();
                 for arg in &self.args {
-                    acc.push_str(&format!("{}_", fmt_syn(&arg)));
+                    acc.push_str(&fmt_syn(&arg));
+                    acc.push('_');
                 }
                 acc.push_str("expects");
                 if let Some(expression) = &self.expression {

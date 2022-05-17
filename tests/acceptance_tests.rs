@@ -7,8 +7,8 @@ use std::env;
 use std::path::PathBuf;
 use std::process::Command;
 
-macro_rules! run_integration_test {
-    ($case_name:expr, $cmd:expr) => {
+macro_rules! run_acceptance_test {
+    ($cmd:expr, $case_name:expr) => {
         with_settings!({snapshot_path => get_snapshot_directory()}, {
             let subcommand = Command::new("cargo")
                 .current_dir(PathBuf::from("tests").join("acceptance_cases").join($case_name))
@@ -26,7 +26,7 @@ macro_rules! run_integration_test {
         })
     };
     ($case_name:expr) => {
-        run_integration_test!($case_name, "test")
+        run_acceptance_test!("test", $case_name)
     }
 }
 
@@ -70,75 +70,75 @@ fn sanitize_lines(s: String) -> String {
 
 #[test]
 fn cases_can_be_declared_on_async_methods() {
-    run_integration_test!("cases_can_be_declared_on_async_methods")
+    run_acceptance_test!("cases_can_be_declared_on_async_methods")
 }
 
 #[test]
 fn cases_can_be_declared_on_non_test_items() {
-    run_integration_test!("cases_can_be_declared_on_non_test_items")
+    run_acceptance_test!("cases_can_be_declared_on_non_test_items")
 }
 
 #[test]
 fn cases_declared_on_non_test_items_can_be_used() {
-    run_integration_test!("cases_can_be_declared_on_non_test_items", "run")
+    run_acceptance_test!("run", "cases_can_be_declared_on_non_test_items")
 }
 
 #[test]
 fn cases_can_be_ignored() {
-    run_integration_test!("cases_can_be_ignored")
+    run_acceptance_test!("cases_can_be_ignored")
 }
 
 #[test]
 fn cases_can_panic() {
-    run_integration_test!("cases_can_panic")
+    run_acceptance_test!("cases_can_panic")
 }
 
 #[test]
 fn cases_can_return_result() {
-    run_integration_test!("cases_can_return_result")
+    run_acceptance_test!("cases_can_return_result")
 }
 
 #[test]
 fn cases_support_basic_features() {
-    run_integration_test!("cases_support_basic_features")
+    run_acceptance_test!("cases_support_basic_features")
 }
 
 #[test]
 fn cases_support_complex_assertions() {
-    run_integration_test!("cases_support_complex_assertions")
+    run_acceptance_test!("cases_support_complex_assertions")
 }
 
 #[test]
 fn cases_support_generics() {
-    run_integration_test!("cases_support_generics")
+    run_acceptance_test!("cases_support_generics")
 }
 
 #[test]
 fn cases_support_keyword_using() {
-    run_integration_test!("cases_support_keyword_using")
+    run_acceptance_test!("cases_support_keyword_using")
 }
 
 #[test]
 fn cases_support_keyword_with() {
-    run_integration_test!("cases_support_keyword_with")
+    run_acceptance_test!("cases_support_keyword_with")
 }
 
 #[test]
 fn cases_support_multiple_calling_methods() {
-    run_integration_test!("cases_support_multiple_calling_methods")
+    run_acceptance_test!("cases_support_multiple_calling_methods")
 }
 
 #[test]
 fn cases_support_pattern_matching() {
-    run_integration_test!("cases_support_pattern_matching")
+    run_acceptance_test!("cases_support_pattern_matching")
 }
 
 #[test]
 fn cases_can_use_regex() {
-    run_integration_test!("cases_can_use_regex")
+    run_acceptance_test!("cases_can_use_regex")
 }
 
 #[test]
 fn features_produce_human_readable_errors() {
-    run_integration_test!("features_produce_human_readable_errors")
+    run_acceptance_test!("features_produce_human_readable_errors")
 }

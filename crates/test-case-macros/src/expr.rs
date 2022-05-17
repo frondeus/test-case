@@ -27,6 +27,8 @@ pub struct TestCaseExpression {
 
 #[derive(Debug)]
 pub enum TestCaseResult {
+    // test_case(a, b, c => keywords)
+    Empty,
     // test_case(a, b, c => result)
     Simple(Expr),
     // test_case(a, b, c => matches Ok(_) if true)
@@ -70,10 +72,16 @@ impl Parse for TestCaseExpression {
         } else if input.parse::<kw::panics>().is_ok() {
             parse_with_keyword_ok::<_, _>(input, token, extra_keywords, TestCaseResult::Panicking)
         } else {
+            let result = match input.parse::<Expr>() {
+                Ok(expr) => TestCaseResult::Simple(expr),
+                Err(_) if !extra_keywords.is_empty() => TestCaseResult::Empty,
+                Err(e) => return Err(e),
+            };
+
             Ok(Self {
                 _token: token,
                 extra_keywords,
-                result: TestCaseResult::Simple(input.parse()?),
+                result,
             })
         }
     }
@@ -103,6 +111,7 @@ impl Display for TestCaseResult {
             TestCaseResult::With(expr) => write!(f, "with {}", fmt_syn(expr)),
             TestCaseResult::UseFn(expr) => write!(f, "use {}", fmt_syn(expr)),
             TestCaseResult::Complex(complex) => write!(f, "complex {}", complex),
+            TestCaseResult::Empty => write!(f, "empty"),
         }
     }
 }
@@ -136,6 +145,7 @@ impl TestCaseExpression {
             TestCaseResult::With(expr) => parse_quote! { let fun = #expr; fun(_result) },
             TestCaseResult::UseFn(path) => parse_quote! { #path(_result) },
             TestCaseResult::Complex(complex) => complex.assertion(),
+            TestCaseResult::Empty => TokenStream2::new(),
         }
     }
 
