@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.1.0
+### New features
+* Support `matches_regex` complex test-case (requires `with-regex` feature) (#98)
+* Support `len`, `count` and `empty` complex test-cases (#97)
+
+### Bug fixes
+* Support keyword `ignore` on void fn (#100)
+
+### Improvements
+* Move macros to separate subcrate so that test-case can export other things (#96)
+
 ## 2.0.2
 ### Bug fixes
 * Covered missing cases in `matches X if Y` *test_case* variant (fixes the fact that previous bug fix didn't produce guard code)

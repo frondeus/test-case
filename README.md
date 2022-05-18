@@ -17,7 +17,7 @@ Crate has to be added as a dependency to `Cargo.toml`:
 
 ```toml
 [dev-dependencies]
-test-case = "2.0.2"
+test-case = "2.1.0"
 ```
 
 and imported to the scope of a block where it's being called
@@ -61,7 +61,6 @@ test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 ## Documentation
 
 Most up to date documentation is available in our [wiki](https://github.com/frondeus/test-case/wiki).
-
 
 # License
 
