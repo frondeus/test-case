@@ -8,3 +8,9 @@ use test_case::test_case;
 fn inconclusives(_: ()) {
     unreachable!()
 }
+
+#[test_case(1 => ignore)]
+#[test_case(2 => ignore)]
+fn ignore_void(input: u8) {
+    assert_eq!(input, 1)
+}
