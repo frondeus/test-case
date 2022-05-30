@@ -1,5 +1,5 @@
-use crate::complex_expr::ComplexTestCase;
-use crate::modifier::{parse_kws, Modifier};
+use crate::test_case::complex_expr::ComplexTestCase;
+use crate::test_case::modifier::{parse_kws, Modifier};
 use crate::utils::fmt_syn;
 use crate::TokenStream2;
 use quote::ToTokens;

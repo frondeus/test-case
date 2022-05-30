@@ -1,11 +1,16 @@
-use crate::comment::TestCaseComment;
-use crate::expr::{TestCaseExpression, TestCaseResult};
+use crate::test_case::expr::{TestCaseExpression, TestCaseResult};
 use crate::utils::fmt_syn;
+use comment::TestCaseComment;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
 use syn::parse::{Parse, ParseStream};
 use syn::punctuated::Punctuated;
 use syn::{parse_quote, Error, Expr, Ident, ItemFn, ReturnType, Token};
+
+mod comment;
+mod complex_expr;
+mod expr;
+mod modifier;
 
 #[derive(Debug)]
 pub struct TestCase {

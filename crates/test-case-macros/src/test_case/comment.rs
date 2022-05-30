@@ -18,7 +18,7 @@ impl Parse for TestCaseComment {
 
 #[cfg(test)]
 mod tests {
-    use crate::comment::TestCaseComment;
+    use crate::test_case::comment::TestCaseComment;
     use proc_macro2::TokenStream;
     use syn::parse_quote;
 
