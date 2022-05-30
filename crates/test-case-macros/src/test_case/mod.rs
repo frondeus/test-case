@@ -14,9 +14,9 @@ mod modifier;
 
 #[derive(Debug)]
 pub struct TestCase {
-    args: Punctuated<Expr, Token![,]>,
-    expression: Option<TestCaseExpression>,
-    comment: Option<TestCaseComment>,
+    pub(crate) args: Punctuated<Expr, Token![,]>,
+    pub(crate) expression: Option<TestCaseExpression>,
+    pub(crate) comment: Option<TestCaseComment>,
 }
 
 impl Parse for TestCase {

@@ -1,5 +1,8 @@
 use crate::TestCase;
+use std::fs;
+use std::path::Path;
 use syn::parse::{Parse, ParseStream};
+use syn::{parse_quote, LitStr};
 
 mod kw {
     syn::custom_keyword!(file);
@@ -39,6 +42,29 @@ impl Parse for TestCaseForEach {
 
 impl TestCaseForEach {
     pub fn into_test_cases(self) -> Vec<TestCase> {
-        todo!()
+        match self {
+            TestCaseForEach::Files { path } => {
+                let pb = Path::new(&path.value()).canonicalize().unwrap();
+                let mut test_cases = Vec::new();
+                for entry in fs::read_dir(pb).unwrap() {
+                    let entry = entry.unwrap();
+                    let meta = entry.metadata().unwrap();
+                    let file_name = LitStr::new(entry.path().to_str().unwrap(), path.span());
+                    if meta.is_file() {
+                        test_cases.push(TestCase {
+                            args: parse_quote! { #file_name },
+                            expression: None,
+                            comment: None,
+                        })
+                    }
+                }
+
+                return test_cases;
+            }
+            TestCaseForEach::Specs { .. } => {}
+            TestCaseForEach::Variants { .. } => {}
+        }
+
+        vec![]
     }
 }

@@ -79,7 +79,7 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
 /// - `variant in $type`
 #[proc_macro_attribute]
 #[proc_macro_error::proc_macro_error]
-pub fn test_case_for_each_file(args: TokenStream, input: TokenStream) -> TokenStream {
+pub fn for_each(args: TokenStream, input: TokenStream) -> TokenStream {
     let for_each = parse_macro_input!(args as TestCaseForEach);
     let item = parse_macro_input!(input as ItemFn);
 

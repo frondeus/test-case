@@ -54,5 +54,7 @@
 pub use test_case_macros::test_case;
 pub use test_case_macros::test_case as case;
 
+pub use test_case_macros::for_each;
+
 #[cfg(feature = "with-regex")]
 pub use regex::*;
