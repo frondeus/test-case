@@ -3,11 +3,16 @@ source: tests/acceptance_tests.rs
 assertion_line: 143
 expression: output
 ---
+   |
+   |                       ^^^^
+  --> src/lib.rs:10:23
   |
   |                     ^^^^^^^^^^^^^^
  --> src/lib.rs:5:21
+10 | #[test_case::for_each(file in "src/")]
 5 | #[test_case(2 => is matching_regex "abc")]
 To learn more, run the command again with --verbose.
-error: aborting due to previous error
+error: Using `file` with for each test_case is experimental; `for-each-file` feature has to be enabled; see github wiki for more details.
+error: aborting due to 2 previous errors
 error: could not compile `features_produce_human_readable_errors`
 error: unexpected token

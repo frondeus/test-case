@@ -1,3 +1,4 @@
+#![cfg_attr(all(feature = "for-each-file", nightly), feature(track_path))]
 extern crate proc_macro;
 
 use proc_macro::TokenStream;

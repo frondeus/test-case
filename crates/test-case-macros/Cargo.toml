@@ -14,6 +14,8 @@ exclude       = ["tests/snapshots/**/*"]
 
 [features]
 with-regex = []
+for-each-file = []
+for-each-file-tracking = ["for-each-file"] # nightly only extension for for_each(file ...) attribute with added compiler path tracking
 
 [badges]
 maintenance = { status = "actively-developed" }

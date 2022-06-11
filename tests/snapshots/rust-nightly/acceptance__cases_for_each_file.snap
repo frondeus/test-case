@@ -1,0 +1,19 @@
+---
+source: tests/acceptance_tests.rs
+assertion_line: 148
+expression: output
+---
+    run_for_every_txt_in_path::_home_luke_biel_workspace_frondeus_test_case_tests_acceptance_cases_cases_for_each_file_tests_data_4_txt_expects
+  left: `3`,
+ right: `4`', src/lib.rs:14:5
+---- run_for_every_txt_in_path::_home_luke_biel_workspace_frondeus_test_case_tests_acceptance_cases_cases_for_each_file_tests_data_4_txt_expects stdout ----
+error: test failed, to rerun pass '--lib'
+failures:
+failures:
+running 4 tests
+test result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test run_for_every_txt_in_path::_home_luke_biel_workspace_frondeus_test_case_tests_acceptance_cases_cases_for_each_file_tests_data_1_txt_expects ... ok
+test run_for_every_txt_in_path::_home_luke_biel_workspace_frondeus_test_case_tests_acceptance_cases_cases_for_each_file_tests_data_2_txt_expects ... ok
+test run_for_every_txt_in_path::_home_luke_biel_workspace_frondeus_test_case_tests_acceptance_cases_cases_for_each_file_tests_data_3_txt_expects ... ok
+test run_for_every_txt_in_path::_home_luke_biel_workspace_frondeus_test_case_tests_acceptance_cases_cases_for_each_file_tests_data_4_txt_expects ... FAILED
+thread 'run_for_every_txt_in_path::_home_luke_biel_workspace_frondeus_test_case_tests_acceptance_cases_cases_for_each_file_tests_data_4_txt_expects' panicked at 'assertion failed: `(left == right)`

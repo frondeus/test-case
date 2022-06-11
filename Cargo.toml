@@ -14,6 +14,8 @@ exclude       = ["tests/snapshots/**/*"]
 
 [features]
 with-regex = ["regex", "test-case-macros/with-regex"]
+for-each-file = ["test-case-macros/for-each-file"]
+for-each-file-tracking = ["test-case-macros/for-each-file-tracking"]
 
 [badges]
 maintenance = { status = "actively-developed" }
