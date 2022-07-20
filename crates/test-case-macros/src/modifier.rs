@@ -15,7 +15,7 @@ pub enum Modifier {
 impl Parse for Modifier {
     fn parse(input: ParseStream) -> syn::Result<Self> {
         if input.peek(kw::inconclusive) {
-            let _: kw::inconclusive = input.parse::<kw::inconclusive>()?;
+            let _: kw::inconclusive = input.parse()?;
             Ok(Self::Inconclusive)
         } else if input.peek(kw::ignore) {
             let _: kw::ignore = input.parse()?;
