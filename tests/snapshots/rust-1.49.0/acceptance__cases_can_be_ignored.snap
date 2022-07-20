@@ -1,13 +1,15 @@
 ---
 source: tests/acceptance_tests.rs
-assertion_line: 88
 expression: output
 ---
-running 6 tests
+running 9 tests
+test descriptions::_expects_inconclusive_ ... ignored
+test descriptions::ignore_keyword ... ignored
+test descriptions::test_is_not_run ... ignored
 test ignore_void::_1_expects_inconclusiveempty ... ignored
 test ignore_void::_2_expects_inconclusiveempty ... ignored
 test inconclusives::_expects_inconclusive_ ... ignored
 test inconclusives::ignore_keyword ... ignored
 test inconclusives::inconclusive_test ... ignored
 test inconclusives::test_is_not_ran ... ignored
-test result: ok. 0 passed; 0 failed; 6 ignored; 0 measured; 0 filtered out
+test result: ok. 0 passed; 0 failed; 9 ignored; 0 measured; 0 filtered out
