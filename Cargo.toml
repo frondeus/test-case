@@ -23,7 +23,7 @@ doctest    = false
 path       = "src/lib.rs"
 
 [dependencies]
-test-case-macros = { version = "2.1.0", path = "crates/test-case-macros", default-features = false }
+test-case-macros = { version = "2.2.0", path = "crates/test-case-macros", default-features = false }
 regex = { version = "1.5", optional = true }
 
 [dev-dependencies]
