@@ -19,9 +19,6 @@ nvim src/lib.rs
 
 cargo readme > README.md
 
-cargo publish -p test-case-macros --dry-run --allow-dirty
-cargo publish -p test-case --dry-run --allow-dirty
-
 git add .
 git commit
 git push origin
