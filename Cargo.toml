@@ -27,10 +27,12 @@ test-case-macros = { version = "2.1.0", path = "crates/test-case-macros", defaul
 regex = { version = "1.5", optional = true }
 
 [dev-dependencies]
-insta       = "1.12"
-itertools   = "0.10"
-indexmap    = "1.8"
-regex       = "1.5"
+insta           = "1.12"
+itertools       = "0.10"
+indexmap        = "=1.8.2"
+serde_yaml      = "=0.8.25"
+linked-hash-map = "=0.5.4"
+regex           = "1.5"
 
 [workspace]
 members = ["crates/*"]
