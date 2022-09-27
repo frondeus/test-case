@@ -1,13 +1,13 @@
 ---
 source: tests/acceptance_tests.rs
-assertion_line: 91
+assertion_line: 93
 expression: output
 ---
       panic message: `"It has to panic"`,
     panicing::_expects_panicking_some_this_should_fail_
  expected substring: `"This should fail"`
 ---- panicing::_expects_panicking_some_this_should_fail_ stdout ----
-error: test failed, to rerun pass '--lib'
+error: test failed, to rerun pass `--lib`
 failures:
 failures:
 running 5 tests

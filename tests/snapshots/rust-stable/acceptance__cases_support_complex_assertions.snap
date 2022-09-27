@@ -1,6 +1,6 @@
 ---
 source: tests/acceptance_tests.rs
-assertion_line: 106
+assertion_line: 108
 expression: output
 ---
     empty::vec_0_expects_complex_empty

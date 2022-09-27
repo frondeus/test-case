@@ -1,6 +1,6 @@
 ---
 source: tests/acceptance_tests.rs
-assertion_line: 65
+assertion_line: 73
 expression: output
 ---
 running 2 tests

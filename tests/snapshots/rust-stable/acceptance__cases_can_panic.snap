@@ -1,6 +1,6 @@
 ---
 source: tests/acceptance_tests.rs
-assertion_line: 91
+assertion_line: 93
 expression: output
 ---
       panic message: `"It has to panic"`,

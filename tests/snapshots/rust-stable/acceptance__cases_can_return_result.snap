@@ -1,6 +1,6 @@
 ---
 source: tests/acceptance_tests.rs
-assertion_line: 96
+assertion_line: 98
 expression: output
 ---
     is_even::_13_expects

@@ -1,6 +1,6 @@
 ---
 source: tests/acceptance_tests.rs
-assertion_line: 141
+assertion_line: 143
 expression: output
 ---
   |
