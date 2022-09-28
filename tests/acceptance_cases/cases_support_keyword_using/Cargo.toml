@@ -12,6 +12,6 @@ doctest = false
 
 [dev-dependencies]
 test-case = { path = "../../../" }
-pretty_assertions = "1.0.0"
+pretty_assertions = "=1.2.1"
 
 [workspace]
