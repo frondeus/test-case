@@ -66,7 +66,7 @@ impl TestCase {
                 quote! { let _result = super::#item_name(#(#arg_values),*).await; },
             )
         } else {
-            attrs.insert(0, parse_quote! { #[test] });
+            attrs.insert(0, parse_quote! { #[::core::prelude::v1::test] });
             (
                 TokenStream2::new(),
                 quote! { let _result = super::#item_name(#(#arg_values),*); },
