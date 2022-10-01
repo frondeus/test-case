@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.2
+### Bugfixes
+* Use fully qualified `test` macro path to avoid conflicts in workspace (#105)
+
 ## 2.2.1
 ### Bugfixes
 * Ensure `test-case` depends on correct version of `test-case-macros`
