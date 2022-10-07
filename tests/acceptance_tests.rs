@@ -26,10 +26,11 @@ fn assert_display_snapshot(name: &str, actual: &str) {
     }
 }
 
+#[allow(clippy::needless_borrow)] // .args([cmd]) doesn't work on 1.49
 fn run_acceptance_test_body(cmd: &str, name: &str, snap_name: &str) {
     let subcommand = Command::new("cargo")
         .current_dir(PathBuf::from("tests").join("acceptance_cases").join(name))
-        .args([cmd])
+        .args(&[cmd])
         .output()
         .expect("Failed to spawn cargo subcommand");
 
