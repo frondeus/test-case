@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# This script is used to review acceptance tests made to the project
+# This script is used to review acceptance tests returning errors
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 REPO_DIR="${SCRIPT_DIR}/.."
