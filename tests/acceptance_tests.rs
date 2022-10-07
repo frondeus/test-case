@@ -22,7 +22,7 @@ fn assert_display_snapshot(name: &str, actual: &str) {
         )
         .expect("Failed to write actual snapshot file");
 
-        panic!("Expected and actual differ");
+        panic!("Expected and actual differ\nactual: \n---\n{}\n---\n", actual);
     }
 }
 
