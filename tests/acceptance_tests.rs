@@ -8,10 +8,12 @@ use std::process::Command;
 
 fn assert_display_snapshot(name: &str, actual: &str) {
     let expected_file = get_snapshot_directory().join(name).with_extension("snap");
-    let expected = std::fs::read_to_string(&expected_file).expect(&format!(
-        "Failed to read snapshot file {}",
-        expected_file.to_string_lossy()
-    ));
+    let expected = std::fs::read_to_string(&expected_file).unwrap_or_else(|_| {
+        panic!(
+            "Failed to read snapshot file {}",
+            expected_file.to_string_lossy()
+        )
+    });
 
     if expected != actual {
         std::fs::write(
@@ -27,7 +29,7 @@ fn assert_display_snapshot(name: &str, actual: &str) {
 fn run_acceptance_test_body(cmd: &str, name: &str, snap_name: &str) {
     let subcommand = Command::new("cargo")
         .current_dir(PathBuf::from("tests").join("acceptance_cases").join(name))
-        .args(&[cmd])
+        .args([cmd])
         .output()
         .expect("Failed to spawn cargo subcommand");
 
