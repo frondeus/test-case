@@ -8,11 +8,17 @@ use std::process::Command;
 
 fn assert_display_snapshot(name: &str, actual: &str) {
     let expected_file = get_snapshot_directory().join(name).with_extension("snap");
-    let expected = std::fs::read_to_string(&expected_file).expect(&format!("Failed to read snapshot file {}", expected_file.to_string_lossy()));
+    let expected = std::fs::read_to_string(&expected_file).expect(&format!(
+        "Failed to read snapshot file {}",
+        expected_file.to_string_lossy()
+    ));
 
     if expected != actual {
-        std::fs::write(get_snapshot_directory().join(name).with_extension("actual"), actual)
-            .expect("Failed to write actual snapshot file");
+        std::fs::write(
+            get_snapshot_directory().join(name).with_extension("actual"),
+            actual,
+        )
+        .expect("Failed to write actual snapshot file");
 
         panic!("Expected and actual differ");
     }
@@ -40,7 +46,7 @@ macro_rules! run_acceptance_test {
     };
     ($run_dir:expr) => {
         run_acceptance_test!("test", $run_dir, $run_dir)
-    }
+    };
 }
 
 fn get_snapshot_directory() -> PathBuf {
@@ -90,7 +96,11 @@ fn cases_can_be_declared_on_non_test_items() {
 
 #[test]
 fn cases_declared_on_non_test_items_can_be_used() {
-    run_acceptance_test!("run", "cases_can_be_declared_on_non_test_items", "cases_declared_on_non_test_items_can_be_used")
+    run_acceptance_test!(
+        "run",
+        "cases_can_be_declared_on_non_test_items",
+        "cases_declared_on_non_test_items_can_be_used"
+    )
 }
 
 #[test]
