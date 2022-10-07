@@ -22,7 +22,10 @@ fn assert_display_snapshot(name: &str, actual: &str) {
         )
         .expect("Failed to write actual snapshot file");
 
-        panic!("Expected and actual differ\nactual: \n---\n{}\n---\n", actual);
+        panic!(
+            "Expected and actual differ\nactual: \n---\n{}\n---\n",
+            actual
+        );
     }
 }
 
@@ -53,7 +56,8 @@ macro_rules! run_acceptance_test {
 }
 
 fn get_snapshot_directory() -> PathBuf {
-    PathBuf::from("tests/snapshots")
+    PathBuf::from("tests")
+        .join("snapshots")
         .join(env::var("SNAPSHOT_DIR").unwrap_or_else(|_| "rust-stable".to_string()))
 }
 
