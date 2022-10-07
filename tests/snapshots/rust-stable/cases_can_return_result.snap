@@ -1,0 +1,22 @@
+    is_even::_13_expects
+    is_odd_boxed::_12_expects
+  left: `1`,
+  left: `1`,
+---- is_even::_13_expects stdout ----
+---- is_odd_boxed::_12_expects stdout ----
+Error: "is even"
+Error: "is odd"
+error: test failed, to rerun pass '--lib'
+failures:
+failures:
+running 7 tests
+test ignore_supported::_12_expects_inconclusivematching_ok_ ... ignored
+test is_even::_12_expects ... ok
+test is_even::_13_expects ... FAILED
+test is_odd_boxed::_12_expects ... FAILED
+test is_odd_boxed::_13_expects ... ok
+test panics_supported::_12_expects_panicking_none - should panic ... ok
+test panics_supported::_13_expects_panicking_some_with_text_ - should panic ... ok
+test result: FAILED. 4 passed; 2 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+thread 'is_even::_13_expects' panicked at 'assertion failed: `(left == right)`
+thread 'is_odd_boxed::_12_expects' panicked at 'assertion failed: `(left == right)`

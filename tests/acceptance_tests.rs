@@ -1,41 +1,51 @@
 #![cfg(test)]
 
-use insta::with_settings;
 use itertools::Itertools;
 use regex::Regex;
 use std::env;
 use std::path::PathBuf;
 use std::process::Command;
 
-macro_rules! run_acceptance_test {
-    ($cmd:expr, $case_name:expr) => {
-        with_settings!({snapshot_path => get_snapshot_directory()}, {
-            let subcommand = Command::new("cargo")
-                .current_dir(PathBuf::from("tests").join("acceptance_cases").join($case_name))
-                .args(&[$cmd])
-                .output()
-                .expect("Failed to spawn cargo subcommand");
+fn assert_display_snapshot(name: &str, actual: &str) {
+    let expected_file = get_snapshot_directory().join(name).with_extension("snap");
+    let expected = std::fs::read_to_string(&expected_file).expect(&format!("Failed to read snapshot file {}", expected_file.to_string_lossy()));
 
-            let mut output = String::new();
-            output.push_str(String::from_utf8_lossy(&subcommand.stdout).as_ref());
-            output.push_str(String::from_utf8_lossy(&subcommand.stderr).as_ref());
+    if expected != actual {
+        std::fs::write(get_snapshot_directory().join(name).with_extension("actual"), actual)
+            .expect("Failed to write actual snapshot file");
 
-            let output = sanitize_lines(output);
-
-            insta::assert_display_snapshot!(output);
-        })
-    };
-    ($case_name:expr) => {
-        run_acceptance_test!("test", $case_name)
+        panic!("Expected and actual differ");
     }
 }
 
-fn get_snapshot_directory() -> String {
-    PathBuf::from("snapshots")
+fn run_acceptance_test_body(cmd: &str, name: &str, snap_name: &str) {
+    let subcommand = Command::new("cargo")
+        .current_dir(PathBuf::from("tests").join("acceptance_cases").join(name))
+        .args(&[cmd])
+        .output()
+        .expect("Failed to spawn cargo subcommand");
+
+    let mut actual = String::new();
+    actual.push_str(String::from_utf8_lossy(&subcommand.stdout).as_ref());
+    actual.push_str(String::from_utf8_lossy(&subcommand.stderr).as_ref());
+
+    let actual = sanitize_lines(actual);
+
+    assert_display_snapshot(snap_name, &actual);
+}
+
+macro_rules! run_acceptance_test {
+    ($cmd:expr, $run_dir:expr, $snap_name:expr) => {
+        run_acceptance_test_body($cmd, $run_dir, $snap_name)
+    };
+    ($run_dir:expr) => {
+        run_acceptance_test!("test", $run_dir, $run_dir)
+    }
+}
+
+fn get_snapshot_directory() -> PathBuf {
+    PathBuf::from("tests/snapshots")
         .join(env::var("SNAPSHOT_DIR").unwrap_or_else(|_| "rust-stable".to_string()))
-        .to_str()
-        .unwrap()
-        .to_string()
 }
 
 fn sanitize_lines(s: String) -> String {
@@ -80,7 +90,7 @@ fn cases_can_be_declared_on_non_test_items() {
 
 #[test]
 fn cases_declared_on_non_test_items_can_be_used() {
-    run_acceptance_test!("run", "cases_can_be_declared_on_non_test_items")
+    run_acceptance_test!("run", "cases_can_be_declared_on_non_test_items", "cases_declared_on_non_test_items_can_be_used")
 }
 
 #[test]

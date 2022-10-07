@@ -1,0 +1,6 @@
+  |
+  |                                    ^^^^^
+ --> src/lib.rs:5:36
+5 | #[test_case(2 => is matching_regex "abc")]
+error: 'with-regex' feature is required to use 'matches-regex' keyword
+error: could not compile `features_produce_human_readable_errors` due to previous error

@@ -1,0 +1,15 @@
+      panic message: `"It has to panic"`,
+    panicing::_expects_panicking_some_this_should_fail_
+ expected substring: `"This should fail"`
+---- panicing::_expects_panicking_some_this_should_fail_ stdout ----
+error: test failed, to rerun pass '--lib'
+failures:
+failures:
+running 5 tests
+test panicing::_expects_panicking_some_it_has_to_panic_ ... ok
+test panicing::_expects_panicking_some_this_should_fail_ ... FAILED
+test panics_without_value::_expects_panicking_none ... ok
+test pattern_matching_result_fails::simpleenum_var1_expects_matching_simpleenum_var2_ ... ok
+test result: FAILED. 4 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out
+test result_which_panics::_2_2_expects_2_3 ... ok
+thread 'panicing::_expects_panicking_some_this_should_fail_' panicked at 'It has to panic', src/lib.rs:20:5
