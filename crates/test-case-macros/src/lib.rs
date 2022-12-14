@@ -1,21 +1,33 @@
 extern crate proc_macro;
 
 use proc_macro::TokenStream;
-
-use syn::{parse_macro_input, ItemFn};
-
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
 use syn::parse_quote;
 use syn::spanned::Spanned;
+use syn::{parse_macro_input, ItemFn};
 use test_case::TestCase;
 
+#[cfg(feature = "with-assert-override")]
+mod assert_override;
 mod comment;
 mod complex_expr;
 mod expr;
 mod modifier;
 mod test_case;
 mod utils;
+
+#[cfg(feature = "with-assert-override")]
+mod assertions {
+    pub const ASSERT_OVERRIDE_ASSERT_EQ_PATH: &str =
+        "crate::__test_case_assert_override::assert_eq";
+    pub const ASSERT_OVERRIDE_ASSERT_PATH: &str = "crate::__test_case_assert_override::assert";
+}
+#[cfg(not(feature = "with-assert-override"))]
+mod assertions {
+    pub const ASSERT_OVERRIDE_ASSERT_EQ_PATH: &str = "core::assert_eq";
+    pub const ASSERT_OVERRIDE_ASSERT_PATH: &str = "core::assert";
+}
 
 /// Generates tests for given set of data
 ///
@@ -66,6 +78,15 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
     }
 
     render_test_cases(&test_cases, item)
+}
+
+/// Prepares crate for use with `#[test_case]` macro and custom implementations of `assert_eq` and `assert_ne`.
+#[cfg(feature = "with-assert-override")]
+#[proc_macro]
+pub fn test_case_assert_override(item: TokenStream) -> TokenStream {
+    let items = parse_macro_input!(item as crate::assert_override::AssertOverrides);
+
+    assert_override::assert_override_impl(items).into()
 }
 
 #[allow(unused_mut)]

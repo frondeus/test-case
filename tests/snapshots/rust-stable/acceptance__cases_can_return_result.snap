@@ -11,7 +11,7 @@ expression: output
 ---- is_odd_boxed::_12_expects stdout ----
 Error: "is even"
 Error: "is odd"
-error: test failed, to rerun pass '--lib'
+error: test failed, to rerun pass `--lib`
 failures:
 failures:
 running 7 tests

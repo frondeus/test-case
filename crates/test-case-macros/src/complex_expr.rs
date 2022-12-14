@@ -3,6 +3,8 @@ use proc_macro2::Group;
 use proc_macro2::TokenStream;
 use quote::{quote, TokenStreamExt};
 use std::fmt::{Display, Formatter};
+use std::str::FromStr;
+use syn::__private::TokenStream2;
 use syn::parse::{Parse, ParseStream};
 use syn::{parse_quote, Expr};
 
@@ -209,7 +211,10 @@ impl ComplexTestCase {
     pub fn assertion(&self) -> TokenStream {
         let tokens = self.boolean_check();
 
-        quote! { assert!(#tokens) }
+        let assert_fn_ident =
+            TokenStream2::from_str(crate::assertions::ASSERT_OVERRIDE_ASSERT_PATH).unwrap();
+
+        quote! { #assert_fn_ident!(#tokens) }
     }
 
     fn boolean_check(&self) -> TokenStream {

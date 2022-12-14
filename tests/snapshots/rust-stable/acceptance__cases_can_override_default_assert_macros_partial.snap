@@ -1,0 +1,22 @@
+---
+source: tests/acceptance_tests.rs
+assertion_line: 153
+expression: output
+---
+    test::_1_expects_2
+    test_2::_1_expects_complex_eq_2
+  left: `2`,
+ right: `1`', src/lib.rs:8:1
+---- test::_1_expects_2 stdout ----
+---- test_2::_1_expects_complex_eq_2 stdout ----
+error: test failed, to rerun pass `--lib`
+failures:
+failures:
+running 4 tests
+test result: FAILED. 2 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test test::_1_expects_1 ... ok
+test test::_1_expects_2 ... FAILED
+test test_2::_1_expects_complex_eq_1 ... ok
+test test_2::_1_expects_complex_eq_2 ... FAILED
+thread 'test::_1_expects_2' panicked at 'assertion failed: `(left == right)`
+thread 'test_2::_1_expects_complex_eq_2' panicked at 'assertion failed: _result == 2', src/lib.rs:14:1

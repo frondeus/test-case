@@ -5,6 +5,7 @@ use crate::TokenStream2;
 use quote::ToTokens;
 use std::collections::HashSet;
 use std::fmt::{Display, Formatter};
+use std::str::FromStr;
 use syn::parse::{Parse, ParseStream};
 use syn::token::If;
 use syn::{parse_quote, Attribute, Expr, Pat, Token};
@@ -118,8 +119,11 @@ impl Display for TestCaseResult {
 
 impl TestCaseExpression {
     pub fn assertion(&self) -> TokenStream2 {
+        let assert_fn_ident =
+            TokenStream2::from_str(crate::assertions::ASSERT_OVERRIDE_ASSERT_EQ_PATH).unwrap();
+
         match &self.result {
-            TestCaseResult::Simple(expr) => parse_quote! { assert_eq!(#expr, _result) },
+            TestCaseResult::Simple(expr) => parse_quote! { #assert_fn_ident!(#expr, _result) },
             TestCaseResult::Matching(pat, guard) => {
                 let pat_str = pat.to_token_stream().to_string();
 

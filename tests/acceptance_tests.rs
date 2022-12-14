@@ -142,3 +142,13 @@ fn cases_can_use_regex() {
 fn features_produce_human_readable_errors() {
     run_acceptance_test!("features_produce_human_readable_errors")
 }
+
+#[test]
+fn cases_can_override_default_assert_macros() {
+    run_acceptance_test!("cases_can_override_default_assert_macros")
+}
+
+#[test]
+fn cases_can_override_default_assert_macros_partial() {
+    run_acceptance_test!("cases_can_override_default_assert_macros_partial")
+}

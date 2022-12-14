@@ -14,6 +14,7 @@ exclude       = ["tests/snapshots/**/*"]
 
 [features]
 with-regex = []
+with-assert-override = []
 
 [badges]
 maintenance = { status = "actively-developed" }
