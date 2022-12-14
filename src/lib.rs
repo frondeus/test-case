@@ -54,5 +54,8 @@
 pub use test_case_macros::test_case;
 pub use test_case_macros::test_case as case;
 
+#[cfg(feature = "with-assert-override")]
+pub use test_case_macros::test_case_assert_override;
+
 #[cfg(feature = "with-regex")]
 pub use regex::*;

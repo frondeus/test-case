@@ -1,5 +1,5 @@
 [package]
-name = "cases_can_panic"
+name = "cases_can_override_default_assert_macros"
 version = "0.1.0"
 edition = "2018"
 
@@ -9,6 +9,6 @@ path = "src/lib.rs"
 doctest = false
 
 [dev-dependencies]
-test-case = { path = "../../../" }
+test-case = { path = "../../../", features = ["with-assert-override"] }
 
 [workspace]

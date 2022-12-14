@@ -5,7 +5,7 @@ expression: output
 ---
     empty::vec_0_expects_complex_empty
 ---- empty::vec_0_expects_complex_empty stdout ----
-error: test failed, to rerun pass '--lib'
+error: test failed, to rerun pass `--lib`
 failures:
 failures:
 running 54 tests
