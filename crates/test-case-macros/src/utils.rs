@@ -25,7 +25,7 @@ pub fn escape_test_name(input: impl AsRef<str>) -> Ident {
         .collect();
 
     if !ident.starts_with(|c: char| c == '_' || c.is_ascii_alphabetic()) {
-        ident = format!("_{}", ident);
+        ident = format!("_{ident}");
     }
 
     Ident::new(&ident, Span::call_site())

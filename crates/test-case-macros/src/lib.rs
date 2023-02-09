@@ -50,7 +50,7 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
                 Err(err) => {
                     return syn::Error::new(
                         attr.span(),
-                        format!("cannot parse test_case arguments: {}", err),
+                        format!("cannot parse test_case arguments: {err}"),
                     )
                     .to_compile_error()
                     .into()
