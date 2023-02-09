@@ -48,6 +48,12 @@
 //! test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 //! ```
 //!
+//! # MSRV Policy
+//!
+//! Starting with version 3.0 and up `test-case` introduces policy of only supporting latest stable Rust.
+//! These changes may happen overnight, so if your stack is lagging behind current stable release,
+//! it may be best to consider locking `test-case` version with `=` in your `Cargo.toml`.
+//!
 //! # Documentation
 //!
 //! Most up to date documentation is available in our [wiki](https://github.com/frondeus/test-case/wiki).

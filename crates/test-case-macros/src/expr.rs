@@ -90,7 +90,7 @@ impl Parse for TestCaseExpression {
 impl Display for TestCaseExpression {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         for kw in &self.extra_keywords {
-            write!(f, "{:?}", kw)?;
+            write!(f, "{kw:?}")?;
         }
         write!(f, "{}", self.result)
     }
@@ -110,7 +110,7 @@ impl Display for TestCaseResult {
             ),
             TestCaseResult::With(expr) => write!(f, "with {}", fmt_syn(expr)),
             TestCaseResult::UseFn(expr) => write!(f, "use {}", fmt_syn(expr)),
-            TestCaseResult::Complex(complex) => write!(f, "complex {}", complex),
+            TestCaseResult::Complex(complex) => write!(f, "complex {complex}"),
             TestCaseResult::Empty => write!(f, "empty"),
         }
     }

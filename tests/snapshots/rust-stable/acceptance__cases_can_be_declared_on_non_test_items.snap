@@ -7,7 +7,7 @@ expression: output
   left: `6`,
  right: `0`', src/lib.rs:8:1
 ---- internal_tested_function1::_3_expects_6 stdout ----
-error: test failed, to rerun pass '--lib'
+error: test failed, to rerun pass `--lib`
 failures:
 failures:
 running 6 tests

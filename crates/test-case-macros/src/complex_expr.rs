@@ -153,18 +153,18 @@ impl Display for PathToken {
 impl Display for ComplexTestCase {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            ComplexTestCase::Not(not) => write!(f, "not {}", not),
+            ComplexTestCase::Not(not) => write!(f, "not {not}"),
             ComplexTestCase::And(cases) => {
                 write!(f, "{}", cases[0])?;
                 for case in cases[1..].iter() {
-                    write!(f, " and {}", case)?;
+                    write!(f, " and {case}")?;
                 }
                 Ok(())
             }
             ComplexTestCase::Or(cases) => {
                 write!(f, "{}", cases[0])?;
                 for case in cases[1..].iter() {
-                    write!(f, " or {}", case)?;
+                    write!(f, " or {case}")?;
                 }
                 Ok(())
             }
@@ -181,7 +181,7 @@ impl Display for ComplexTestCase {
                 fmt_syn(expected_value),
                 fmt_syn(precision)
             ),
-            ComplexTestCase::Path(Path { token }) => write!(f, "path {}", token),
+            ComplexTestCase::Path(Path { token }) => write!(f, "path {token}"),
             ComplexTestCase::Contains(Contains { expected_element }) => {
                 write!(f, "contains {}", fmt_syn(expected_element))
             }

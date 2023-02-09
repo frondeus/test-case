@@ -13,7 +13,7 @@ expression: output
 ---- regex_test::_kumkwat_expects_complex_regex_r_ stdout ----
 ---- regex_test::_kumkwat_expects_complex_regex_r_abc_ stdout ----
 error: incomplete escape sequence, reached end of pattern prematurely
-error: test failed, to rerun pass '--lib'
+error: test failed, to rerun pass `--lib`
 failures:
 failures:
 regex parse error:
