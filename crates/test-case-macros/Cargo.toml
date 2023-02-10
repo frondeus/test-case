@@ -12,7 +12,7 @@ repository    = "https://github.com/frondeus/test-case"
 documentation = "https://docs.rs/test-case"
 
 [features]
-with-regex = []
+with-regex = ["test-case-core/with-regex"]
 
 [badges]
 maintenance = { status = "actively-developed" }
