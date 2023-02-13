@@ -73,3 +73,24 @@ jobs:
           SNAPSHOT_DIR: rust-${{ matrix.toolchain }}
         with:
           command: test
+
+  msrv-build:
+    name: Build crate with documented MSRV
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Install Rust MSRV version
+        run: scripts/force-msrv-toolchain.sh
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build

@@ -12,3 +12,6 @@ Cargo.lock
 .idea
 
 *.new
+
+# Ignore toolchain installed by script
+rust-toolchain
