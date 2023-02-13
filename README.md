@@ -1,6 +1,5 @@
 [![Crates.io](https://img.shields.io/crates/v/test-case.svg)](https://crates.io/crates/test-case)
 [![Crates.io](https://img.shields.io/crates/d/test-case.svg)](https://crates.io/crates/test-case)
-[![1.49+](https://img.shields.io/badge/rust-1.49.0%2B-orange.svg)](https://img.shields.io/badge/rust-1.49.0%2B-orange.svg)
 [![Docs.rs](https://docs.rs/test-case/badge.svg)](https://docs.rs/test-case)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/rust-lang/docs.rs/master/LICENSE)
 [![Build Status](https://github.com/frondeus/test-case/workflows/Test/badge.svg)](https://github.com/frondeus/test-case/actions)
@@ -17,7 +16,7 @@ Crate has to be added as a dependency to `Cargo.toml`:
 
 ```toml
 [dev-dependencies]
-test-case = "2.2.2"
+test-case = "3.0.0"
 ```
 
 and imported to the scope of a block where it's being called
@@ -57,6 +56,12 @@ test tests::multiplication_tests::when_operands_are_swapped ... ok
 
 test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 ```
+
+## MSRV Policy
+
+Starting with version 3.0 and up `test-case` introduces policy of only supporting latest stable Rust.
+These changes may happen overnight, so if your stack is lagging behind current stable release,
+it may be best to consider locking `test-case` version with `=` in your `Cargo.toml`.
 
 ## Documentation
 

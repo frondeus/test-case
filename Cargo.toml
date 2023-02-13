@@ -1,6 +1,6 @@
 [package]
 name          = "test-case"
-version       = "2.2.2"
+version       = "3.0.0"
 edition       = "2018"
 authors       = ["Marcin Sas-Szymanski <marcin.sas-szymanski@anixe.pl>", "Wojciech Polak <frondeus@gmail.com>", "Łukasz Biel <lukasz.p.biel@gmail.com>"]
 description   = "Provides #[test_case(...)] procedural macro attribute for generating parametrized test cases easily"
@@ -23,7 +23,7 @@ doctest    = false
 path       = "src/lib.rs"
 
 [dependencies]
-test-case-macros = { version = "2.2.2", path = "crates/test-case-macros", default-features = false }
+test-case-macros = { version = "3.0.0", path = "crates/test-case-macros", default-features = false }
 regex = { version = "1.5", optional = true }
 
 [dev-dependencies]

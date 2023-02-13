@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.0.0
+
+[IMPORTANT] Starting with 3.0 release we are changing `test-case` MSRV policy to support only 3 latest stable releases.
+
+### Changes
+* Split out functional parts of `test-case-macros` crate into `test-case-core` for easy reuse by external libraries
+
 ## 2.2.2
 ### Bugfixes
 * Use fully qualified `test` macro path to avoid conflicts in workspace (#105)
