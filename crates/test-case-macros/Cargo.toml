@@ -27,4 +27,4 @@ proc-macro2      = { version = "1.0", features = [] }
 proc-macro-error = "1.0"
 quote            = "1.0"
 syn              = { version = "1.0", features = ["full", "extra-traits"] }
-test-case-core = { version = "2.2.2", path = "../test-case-core", default-features = false }
+test-case-core   = { version = "3.0.0", path = "../test-case-core", default-features = false }

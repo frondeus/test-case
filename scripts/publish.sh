@@ -12,6 +12,7 @@ set -eo xtrace
 
 nvim Cargo.toml
 nvim crates/test-case-macros/Cargo.toml
+nvim crates/test-case-core/Cargo.toml
 cargo build
 
 nvim CHANGELOG.md
