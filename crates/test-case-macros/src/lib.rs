@@ -2,6 +2,7 @@ extern crate proc_macro;
 
 use proc_macro::TokenStream;
 
+use proc_macro2::Span as Span2;
 use syn::{parse_macro_input, ItemFn};
 
 use quote::quote;
@@ -26,7 +27,7 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
     let test_case = parse_macro_input!(args as TestCase);
     let mut item = parse_macro_input!(input as ItemFn);
 
-    let mut test_cases = vec![test_case];
+    let mut test_cases = vec![(test_case, Span2::call_site())];
     let mut attrs_to_remove = vec![];
     let legal_test_case_names = [
         parse_quote!(test_case),
@@ -48,7 +49,7 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
                     .into()
                 }
             };
-            test_cases.push(test_case);
+            test_cases.push((test_case, attr.span()));
             attrs_to_remove.push(idx);
         }
     }
@@ -61,11 +62,11 @@ pub fn test_case(args: TokenStream, input: TokenStream) -> TokenStream {
 }
 
 #[allow(unused_mut)]
-fn render_test_cases(test_cases: &[TestCase], mut item: ItemFn) -> TokenStream {
+fn render_test_cases(test_cases: &[(TestCase, Span2)], mut item: ItemFn) -> TokenStream {
     let mut rendered_test_cases = vec![];
 
-    for test_case in test_cases {
-        rendered_test_cases.push(test_case.render(item.clone()));
+    for (test_case, span) in test_cases {
+        rendered_test_cases.push(test_case.render(item.clone(), *span));
     }
 
     let mod_name = item.sig.ident.clone();

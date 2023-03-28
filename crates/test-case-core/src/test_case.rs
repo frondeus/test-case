@@ -1,7 +1,7 @@
 use crate::comment::TestCaseComment;
 use crate::expr::{TestCaseExpression, TestCaseResult};
 use crate::utils::fmt_syn;
-use proc_macro2::TokenStream as TokenStream2;
+use proc_macro2::{Span as Span2, TokenStream as TokenStream2};
 use quote::quote;
 use syn::parse::{Parse, ParseStream};
 use syn::punctuated::Punctuated;
@@ -46,10 +46,14 @@ impl TestCase {
         crate::utils::escape_test_name(case_desc)
     }
 
-    pub fn render(&self, mut item: ItemFn) -> TokenStream2 {
+    pub fn render(&self, mut item: ItemFn, origin_span: Span2) -> TokenStream2 {
         let item_name = item.sig.ident.clone();
         let arg_values = self.args.iter();
-        let test_case_name = self.test_case_name();
+        let test_case_name = {
+            let mut test_case_name = self.test_case_name();
+            test_case_name.set_span(origin_span);
+            test_case_name
+        };
 
         let mut attrs = self
             .expression
