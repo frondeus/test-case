@@ -7,7 +7,7 @@
 //!
 //! ```toml
 //! [dev-dependencies]
-//! test-case = "3.0.0"
+//! test-case = "3.1.0"
 //! ```
 //!
 //! and imported to the scope of a block where it's being called

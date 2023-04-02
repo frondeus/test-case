@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.1.0
+### New features
+* Copy attribute span to generated test functions so that IDEs recognize them properly as individual tests
+
+### Changes
+* Added LICENSE file to child crates
+
 ## 3.0.0
 
 [IMPORTANT] Starting with 3.0 release we are changing `test-case` MSRV policy to support only 3 latest stable releases.
