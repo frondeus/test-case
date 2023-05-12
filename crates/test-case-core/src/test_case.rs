@@ -5,7 +5,7 @@ use proc_macro2::{Span as Span2, TokenStream as TokenStream2};
 use quote::quote;
 use syn::parse::{Parse, ParseStream};
 use syn::punctuated::Punctuated;
-use syn::{parse_quote, Error, Expr, Ident, ItemFn, ReturnType, Token};
+use syn::{parse_quote, Error, Expr, Ident, ItemFn, Token};
 
 #[derive(Debug)]
 pub struct TestCase {
@@ -88,13 +88,9 @@ impl TestCase {
                 expr.assertion()
             }
         } else {
-            signature.extend(if let ReturnType::Type(_, typ) = item.sig.output {
-                quote! { fn #test_case_name() -> #typ }
-            } else {
-                quote! { fn #test_case_name() }
-            });
+            signature.extend(quote! { fn #test_case_name() });
 
-            quote! { _result }
+            quote! {}
         };
 
         quote! {
