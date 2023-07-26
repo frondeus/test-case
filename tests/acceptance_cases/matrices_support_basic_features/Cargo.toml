@@ -1,0 +1,15 @@
+[package]
+name = "matrices_support_basic_features"
+version = "0.1.0"
+authors = ["Łukasz Biel <lukasz.p.biel@gmail.com>", "Ross Williams <ross@ross-williams.net>"]
+edition = "2021"
+
+[lib]
+name = "matrices_support_basic_features"
+path = "src/lib.rs"
+doctest = false
+
+[dev-dependencies]
+test-case = { path = "../../../" }
+
+[workspace]
