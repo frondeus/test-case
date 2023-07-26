@@ -24,6 +24,19 @@ impl Parse for TestCase {
     }
 }
 
+impl<I> From<I> for TestCase
+where
+    I: IntoIterator<Item = Expr>,
+{
+    fn from(into_iter: I) -> Self {
+        Self {
+            args: into_iter.into_iter().collect(),
+            expression: None,
+            comment: None,
+        }
+    }
+}
+
 impl TestCase {
     pub fn test_case_name(&self) -> Ident {
         let case_desc = self

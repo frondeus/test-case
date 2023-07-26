@@ -59,6 +59,7 @@
 //! Most up to date documentation is available in our [wiki](https://github.com/frondeus/test-case/wiki).
 pub use test_case_macros::test_case;
 pub use test_case_macros::test_case as case;
+pub use test_case_macros::test_matrix;
 
 #[cfg(feature = "with-regex")]
 pub use regex::*;
