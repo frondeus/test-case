@@ -72,7 +72,12 @@ fn render_test_cases(test_cases: &[(TestCase, Span2)], mut item: ItemFn) -> Toke
     let mod_name = item.sig.ident.clone();
 
     // We don't want any external crate to alter main fn code, we are passing attributes to each sub-function anyway
-    item.attrs.clear();
+    item.attrs.retain(|attr| {
+        attr.path
+            .get_ident()
+            .map(|ident| ident == "allow")
+            .unwrap_or(false)
+    });
 
     let output = quote! {
         #[allow(unused_attributes)]
