@@ -6,14 +6,15 @@ use syn::{
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
     spanned::Spanned,
-    Expr, ExprLit, ExprRange, Lit, LitInt, RangeLimits, Token,
+    Expr, ExprLit, ExprRange, Lit, RangeLimits, Token,
 };
 
-use crate::TestCase;
+use crate::{comment::TestCaseComment, expr::TestCaseExpression, TestCase};
 
 #[derive(Debug, Default)]
 pub struct TestMatrix {
     variables: Vec<Vec<Expr>>,
+    expression: Option<TestCaseExpression>,
 }
 
 impl TestMatrix {
@@ -22,19 +23,36 @@ impl TestMatrix {
     }
 
     pub fn cases(&self) -> impl Iterator<Item = TestCase> {
+        let expression = self.expression.clone();
+
         self.variables
             .iter()
             .cloned()
             .multi_cartesian_product()
-            .map(TestCase::from)
+            .map(move |v| {
+                let mut case = TestCase::from(v);
+                case.expression = expression.clone();
+                case
+            })
     }
 }
 
 impl Parse for TestMatrix {
     fn parse(input: ParseStream) -> syn::Result<Self> {
-        let args: Punctuated<Expr, Token![,]> = Punctuated::parse_terminated(input)?;
+        let args: Punctuated<Expr, Token![,]> = Punctuated::parse_separated_nonempty(input)?;
 
-        let mut matrix = TestMatrix::default();
+        let mut matrix = TestMatrix {
+            expression: input.parse().ok(),
+            ..Default::default()
+        };
+
+        if let Ok(c) = input.parse::<TestCaseComment>() {
+            return Err(syn::Error::new(
+                c.span(),
+                "Comments are not allowed in #[test_matrix]",
+            ));
+        }
+
         for arg in args {
             let values: Vec<Expr> = match &arg {
                 Expr::Array(v) => v.elems.iter().cloned().collect(),
@@ -42,18 +60,17 @@ impl Parse for TestMatrix {
                 Expr::Range(ExprRange {
                     from, limits, to, ..
                 }) => {
-                    let start = u64_from_range_expr(arg.span(), from.as_deref())?;
-                    let end = u64_from_range_expr(arg.span(), to.as_deref())?;
+                    let start = u64_from_range_expr(limits.span(), from.as_deref())?;
+                    let end = u64_from_range_expr(limits.span(), to.as_deref())?;
                     let range: Box<dyn Iterator<Item = u64>> = match limits {
                         RangeLimits::HalfOpen(_) => Box::from(start..end),
                         RangeLimits::Closed(_) => Box::from(start..=end),
                     };
                     range
                         .map(|n| {
-                            Expr::from(ExprLit {
-                                lit: Lit::from(LitInt::from(Literal::u64_unsuffixed(n))),
-                                attrs: vec![],
-                            })
+                            let mut lit = Lit::new(Literal::u64_unsuffixed(n));
+                            lit.set_span(arg.span());
+                            Expr::from(ExprLit { lit, attrs: vec![] })
                         })
                         .collect()
                 }
@@ -80,7 +97,7 @@ impl Parse for TestMatrix {
     }
 }
 
-fn u64_from_range_expr(range_span: Span, expr: Option<&Expr>) -> syn::Result<u64> {
+fn u64_from_range_expr(limits_span: Span, expr: Option<&Expr>) -> syn::Result<u64> {
     match expr {
         Some(Expr::Lit(ExprLit {
             lit: Lit::Int(n), ..
@@ -90,7 +107,7 @@ fn u64_from_range_expr(range_span: Span, expr: Option<&Expr>) -> syn::Result<u64
             "Range bounds can only be an integer literal",
         )),
         None => Err(syn::Error::new(
-            range_span,
+            limits_span,
             "Unbounded ranges are not supported",
         )),
     }

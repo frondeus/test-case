@@ -2,8 +2,8 @@
 source: tests/acceptance_tests.rs
 expression: output
 ---
-running 50 tests
-test result: ok. 50 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+running 54 tests
+test result: ok. 54 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 test test_cases::case_after_matrix::_1_expects ... ok
 test test_cases::case_after_matrix::_2_expects ... ok
 test test_cases::case_after_matrix::_3_expects ... ok
@@ -15,15 +15,15 @@ test test_cases::case_before_matrix::_8_expects ... ok
 test test_cases::impl_trait::_bar_expects ... ok
 test test_cases::impl_trait::_baz_expects ... ok
 test test_cases::impl_trait::_foo_expects ... ok
-test test_cases::matrix_can_panic::_1_11_expects - should panic ... ok
-test test_cases::matrix_can_panic::_1_12_expects - should panic ... ok
-test test_cases::matrix_can_panic::_2_11_expects - should panic ... ok
-test test_cases::matrix_can_panic::_2_12_expects - should panic ... ok
 test test_cases::matrix_with_expressions::_2_2_two_expects ... ok
 test test_cases::matrix_with_expressions::_2_4_expects ... ok
 test test_cases::matrix_with_expressions::_2_double_2_expects ... ok
 test test_cases::matrix_with_keywords::true_false_expects ... ok
 test test_cases::matrix_with_keywords::true_true_expects ... ok
+test test_cases::matrix_with_panics::_1_11_expects_panicking_some_always_panics_ - should panic ... ok
+test test_cases::matrix_with_panics::_1_12_expects_panicking_some_always_panics_ - should panic ... ok
+test test_cases::matrix_with_panics::_2_11_expects_panicking_some_always_panics_ - should panic ... ok
+test test_cases::matrix_with_panics::_2_12_expects_panicking_some_always_panics_ - should panic ... ok
 test test_cases::matrix_with_range::_1_11_expects ... ok
 test test_cases::matrix_with_range::_1_12_expects ... ok
 test test_cases::matrix_with_range::_2_11_expects ... ok
@@ -42,6 +42,10 @@ test test_cases::matrix_with_range::_8_11_expects ... ok
 test test_cases::matrix_with_range::_8_12_expects ... ok
 test test_cases::matrix_with_range::_9_11_expects ... ok
 test test_cases::matrix_with_range::_9_12_expects ... ok
+test test_cases::matrix_with_should_panic::_1_11_expects - should panic ... ok
+test test_cases::matrix_with_should_panic::_1_12_expects - should panic ... ok
+test test_cases::matrix_with_should_panic::_2_11_expects - should panic ... ok
+test test_cases::matrix_with_should_panic::_2_12_expects - should panic ... ok
 test test_cases::matrix_with_singleton::_just_1_expects ... ok
 test test_cases::matrix_with_singleton::_just_2_expects ... ok
 test test_cases::matrix_with_singleton::_just_3_expects ... ok

@@ -9,7 +9,7 @@ mod kw {
     syn::custom_keyword!(ignore);
 }
 
-#[derive(PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash)]
 pub enum Modifier {
     Inconclusive,
     InconclusiveWithReason(LitStr),

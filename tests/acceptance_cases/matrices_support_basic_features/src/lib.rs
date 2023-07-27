@@ -4,7 +4,7 @@ mod test_cases {
 
     #[test_matrix(
         [1, 2],
-        [11, 12],
+        [11, 12]
     )]
     fn numeric_values_array(x: u32, y: u32) {
         assert!(x < 10);
@@ -13,7 +13,7 @@ mod test_cases {
 
     #[test_matrix(
         1..10,
-        [11, 12],
+        [11, 12]
     )]
     fn matrix_with_range(x: u32, y: u32) {
         assert!(x < 10);
@@ -22,7 +22,7 @@ mod test_cases {
 
     #[test_matrix(
         ("one", "two"),
-        ("yellow", "blue"),
+        ("yellow", "blue")
     )]
     fn str_values_tuple(a: &str, b: &str) {
         assert!(a.len() == 3);
@@ -31,7 +31,7 @@ mod test_cases {
 
     #[test_matrix(
         "just",
-        (1, 2, 3),
+        (1, 2, 3)
     )]
     fn matrix_with_singleton(a: &str, b: u32) {
         assert_eq!(a, "just");
@@ -51,7 +51,7 @@ mod test_cases {
 
     #[test_matrix(
         2,
-        [double(2), 2 * TWO, 4],
+        [double(2), 2 * TWO, 4]
     )]
     fn matrix_with_expressions(x: u32, two_x: u32) {
         assert_eq!(2 * x, two_x);
@@ -64,14 +64,14 @@ mod test_cases {
 
     #[test_matrix(
         true,
-        [true, false],
+        [true, false]
     )]
     fn matrix_with_keywords(x: bool, y: bool) {
         assert!(x || y)
     }
 
     #[test_matrix(
-        [1, 2, 3],
+        [1, 2, 3]
     )]
     #[test_case(4)]
     fn case_after_matrix(x: u32) {
@@ -80,7 +80,7 @@ mod test_cases {
 
     #[test_case(5)]
     #[test_matrix(
-        [6, 7, 8],
+        [6, 7, 8]
     )]
     fn case_before_matrix(x: u32) {
         assert!(x < 10);
@@ -88,13 +88,21 @@ mod test_cases {
 
     #[test_matrix(
         [1, 2,],
-        [11, 12,],
+        [11, 12,]
     )]
     #[should_panic(expected = "Always panics")]
-    fn matrix_can_panic(_x: u32, _y: u32) {
+    fn matrix_with_should_panic(_x: u32, _y: u32) {
         panic!("Always panics")
     }
 
+    #[test_matrix(
+        [1, 2,],
+        [11, 12,]
+        => panics "Always panics"
+    )]
+    fn matrix_with_panics(_x: u32, _y: u32) {
+        panic!("Always panics")
+    }
 
     // tests from documentation
 

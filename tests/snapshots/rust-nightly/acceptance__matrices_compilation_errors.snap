@@ -4,17 +4,22 @@ expression: output
 ---
    |
    |
+   |
    |                  ^^^
-   |               ^^^
+   |                ^^
+   |     ^^^^^^^^^^^^^^^^^^^
   --> src/lib.rs:13:18
-  --> src/lib.rs:18:15
+  --> src/lib.rs:18:16
+  --> src/lib.rs:25:5
   |
   |             ^
  --> src/lib.rs:5:13
 13 | #[test_matrix(1..END)]
 18 | #[test_matrix(1..)]
+25 |     ; "Illegal comment"
 5 |     ["one", 1, true,]
 error: All literal values must be of the same type
+error: Comments are not allowed in #[test_matrix]
 error: Range bounds can only be an integer literal
 error: Unbounded ranges are not supported
-error: could not compile `matrices_compilation_errors` (lib test) due to 3 previous errors
+error: could not compile `matrices_compilation_errors` (lib test) due to 4 previous errors

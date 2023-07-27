@@ -10,8 +10,8 @@ use syn::{parse_quote, Error, Expr, Ident, ItemFn, ReturnType, Token};
 #[derive(Debug)]
 pub struct TestCase {
     args: Punctuated<Expr, Token![,]>,
-    expression: Option<TestCaseExpression>,
-    comment: Option<TestCaseComment>,
+    pub(crate) expression: Option<TestCaseExpression>,
+    pub(crate) comment: Option<TestCaseComment>,
 }
 
 impl Parse for TestCase {
