@@ -60,15 +60,15 @@ impl Parse for TestMatrix {
                 Expr::Range(ExprRange {
                     from, limits, to, ..
                 }) => {
-                    let start = u64_from_range_expr(limits.span(), from.as_deref())?;
-                    let end = u64_from_range_expr(limits.span(), to.as_deref())?;
-                    let range: Box<dyn Iterator<Item = u64>> = match limits {
+                    let start = isize_from_range_expr(limits.span(), from.as_deref())?;
+                    let end = isize_from_range_expr(limits.span(), to.as_deref())?;
+                    let range: Box<dyn Iterator<Item = isize>> = match limits {
                         RangeLimits::HalfOpen(_) => Box::from(start..end),
                         RangeLimits::Closed(_) => Box::from(start..=end),
                     };
                     range
                         .map(|n| {
-                            let mut lit = Lit::new(Literal::u64_unsuffixed(n));
+                            let mut lit = Lit::new(Literal::isize_unsuffixed(n));
                             lit.set_span(arg.span());
                             Expr::from(ExprLit { lit, attrs: vec![] })
                         })
@@ -97,7 +97,7 @@ impl Parse for TestMatrix {
     }
 }
 
-fn u64_from_range_expr(limits_span: Span, expr: Option<&Expr>) -> syn::Result<u64> {
+fn isize_from_range_expr(limits_span: Span, expr: Option<&Expr>) -> syn::Result<isize> {
     match expr {
         Some(Expr::Lit(ExprLit {
             lit: Lit::Int(n), ..
