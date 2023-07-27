@@ -48,6 +48,39 @@
 //! test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 //! ```
 //!
+//! ## Test Matrix
+//!
+//! The `#[test_matrix(...)]` macro allows generating multiple test cases from the
+//! Cartesian product of one or more possible values for each test function argument. The
+//! number of arguments to the `test_matrix` macro must be the same as the number of arguments to
+//! the test function. Each macro argument can be:
+//!
+//!     1. A list in array (`[x, y, ...]`) or tuple (`(x, y, ...)`) syntax. The values can be any
+//!        valid [expression](https://doc.rust-lang.org/reference/expressions.html).
+//!     2. A closed numeric range expression (e.g. `0..100` or `1..=99`), which will generate
+//!        argument values for all integers in the range.
+//!     3. A single expression, which can be used to keep one argument constant while varying the
+//!        other test function arguments using a list or range.
+//!
+//! ### Example usage:
+//!
+//! ```rust
+//! #[cfg(test)]
+//! mod tests {
+//!     use test_case::test_matrix;
+//!
+//!     #[test_matrix(
+//!         [-2, 2],
+//!         [-4, 4]
+//!     )]
+//!     fn multiplication_tests(x: i8, y: i8) {
+//!         let actual = (x * y).abs();
+//!
+//!         assert_eq!(8, actual)
+//!     }
+//! }
+//! ```
+//!
 //! # MSRV Policy
 //!
 //! Starting with version 3.0 and up `test-case` introduces policy of only supporting latest stable Rust.

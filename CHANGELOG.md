@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### New features
+* Add `test_matrix` macro: generates test cases from Cartesian product of possible test function argument values.
+
 ## 3.1.0
 ### New features
 * Copy attribute span to generated test functions so that IDEs recognize them properly as individual tests
