@@ -142,3 +142,8 @@ fn cases_can_use_regex() {
 fn features_produce_human_readable_errors() {
     run_acceptance_test!("features_produce_human_readable_errors")
 }
+
+#[test]
+fn allow_stays_on_fn() {
+    run_acceptance_test!("allow_stays_on_fn")
+}
