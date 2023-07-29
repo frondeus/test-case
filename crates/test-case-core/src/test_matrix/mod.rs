@@ -1,6 +1,5 @@
 use std::{iter, mem};
 
-use itertools::Itertools;
 use proc_macro2::{Literal, Span};
 use syn::{
     parse::{Parse, ParseStream},
@@ -10,6 +9,8 @@ use syn::{
 };
 
 use crate::{comment::TestCaseComment, expr::TestCaseExpression, TestCase};
+
+mod matrix_product;
 
 #[derive(Debug, Default)]
 pub struct TestMatrix {
@@ -25,15 +26,11 @@ impl TestMatrix {
     pub fn cases(&self) -> impl Iterator<Item = TestCase> {
         let expression = self.expression.clone();
 
-        self.variables
-            .iter()
-            .cloned()
-            .multi_cartesian_product()
-            .map(move |v| {
-                let mut case = TestCase::from(v);
-                case.expression = expression.clone();
-                case
-            })
+        matrix_product::multi_cartesian_product(self.variables.iter().cloned()).map(move |v| {
+            let mut case = TestCase::from(v);
+            case.expression = expression.clone();
+            case
+        })
     }
 }
 
