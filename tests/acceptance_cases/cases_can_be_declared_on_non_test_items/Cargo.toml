@@ -1,3 +1,7 @@
+###
+# Ensure that test cases can be declared outsie of #[cfg(test)] modules.
+###
+
 [package]
 name = "cases_can_be_declared_on_non_test_items"
 version = "0.1.0"

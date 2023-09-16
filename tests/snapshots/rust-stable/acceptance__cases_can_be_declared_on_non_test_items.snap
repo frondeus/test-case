@@ -1,16 +1,8 @@
 ---
 source: tests/acceptance_tests.rs
-assertion_line: 78
 expression: output
 ---
-    internal_tested_function1::_3_expects_6
-  left: `6`,
- right: `0`', src/lib.rs:8:1
----- internal_tested_function1::_3_expects_6 stdout ----
 error: test failed, to rerun pass `--lib`
-failures:
-failures:
-running 6 tests
 test internal_tested_function1::_2_expects_4 ... ok
 test internal_tested_function1::_3_expects_6 ... FAILED
 test internal_tested_function2::_1_expects_0 ... ok

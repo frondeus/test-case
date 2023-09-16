@@ -1,3 +1,7 @@
+###
+# Ensure that `matrix` syntax works.
+###
+
 [package]
 name = "matrices_support_basic_features"
 version = "0.1.0"

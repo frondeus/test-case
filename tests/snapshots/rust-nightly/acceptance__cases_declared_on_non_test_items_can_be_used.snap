@@ -2,6 +2,4 @@
 source: tests/acceptance_tests.rs
 expression: output
 ---
-     Running `target/debug/cases_can_be_declared_on_non_test_items`
-Can't
 thread 'main' panicked at src/lib.rs:33:5:

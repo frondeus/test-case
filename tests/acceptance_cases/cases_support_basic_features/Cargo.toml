@@ -1,3 +1,7 @@
+###
+# Ensure basic test case functionality.
+###
+
 [package]
 name = "cases_support_basic_features"
 version = "0.1.0"

@@ -2,7 +2,6 @@
 source: tests/acceptance_tests.rs
 expression: output
 ---
-running 9 tests
 test descriptions::_expects_inconclusive_ ... ignored, reason but no comment
 test descriptions::ignore_keyword ... ignored, reason and comment
 test descriptions::test_is_not_run ... ignored, reason and comment

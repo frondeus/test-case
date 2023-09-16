@@ -16,7 +16,7 @@ fn pattern_matching_result_fails(e: SimpleEnum) -> SimpleEnum {
 
 #[test_case(() => panics "It has to panic")]
 #[test_case(() => panics "This should fail")]
-fn panicing(_: ()) {
+fn panicking(_: ()) {
     panic!("It has to panic")
 }
 

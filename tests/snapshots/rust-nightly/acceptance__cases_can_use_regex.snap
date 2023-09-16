@@ -2,24 +2,8 @@
 source: tests/acceptance_tests.rs
 expression: output
 ---
-    /
-    ^
-    regex_test::_abcabc201_expects_complex_regex_r_d_4_
-    regex_test::_kumkwat_expects_complex_regex_r_
-    regex_test::_kumkwat_expects_complex_regex_r_abc_
-)
----- regex_test::_abcabc201_expects_complex_regex_r_d_4_ stdout ----
----- regex_test::_kumkwat_expects_complex_regex_r_ stdout ----
----- regex_test::_kumkwat_expects_complex_regex_r_abc_ stdout ----
-Regex::new: Syntax(
-assertion failed: {/n    let re = ::test_case::Regex::new(r#/"//d{4}/"#).expect(/"Regex::new/");/n    re.is_match(_result)/n}
-assertion failed: {/n    let re = ::test_case::Regex::new(r#/"abc/"#).expect(/"Regex::new/");/n    re.is_match(_result)/n}
 error: incomplete escape sequence, reached end of pattern prematurely
 error: test failed, to rerun pass `--lib`
-failures:
-failures:
-regex parse error:
-running 6 tests
 test regex_test::_abcabc201_expects_complex_regex_r_d_ ... ok
 test regex_test::_abcabc201_expects_complex_regex_r_d_4_ ... FAILED
 test regex_test::_abcabc_expects_complex_regex_r_abc_ ... ok
@@ -30,5 +14,3 @@ test result: FAILED. 3 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; 
 thread 'regex_test::_abcabc201_expects_complex_regex_r_d_4_' panicked at src/lib.rs:5:1:
 thread 'regex_test::_kumkwat_expects_complex_regex_r_' panicked at src/lib.rs:5:1:
 thread 'regex_test::_kumkwat_expects_complex_regex_r_abc_' panicked at src/lib.rs:5:1:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

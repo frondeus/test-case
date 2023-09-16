@@ -1,11 +1,14 @@
+###
+# Ensure that matrix syntax produces human readable errors.
+###
+
 [package]
 name = "matrices_compilation_errors"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
+
 [lib]
 name = "matrices_compilation_errors"
 path = "src/lib.rs"

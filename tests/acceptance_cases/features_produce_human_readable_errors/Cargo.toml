@@ -1,9 +1,11 @@
+###
+# Ensure that when missing a `feature` flag in Cargo.toml file, the error message is human readable.
+###
+
 [package]
 name = "features_produce_human_readable_errors"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 test-case = { path = "../../../", default-features = false }

@@ -1,9 +1,11 @@
+###
+# Ensure that `with-regex` feature allows to use `is matching_regex` syntax.
+###
+
 [package]
 name = "cases_can_use_regex"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 test-case = { path = "../../../", features = ["with-regex"]}

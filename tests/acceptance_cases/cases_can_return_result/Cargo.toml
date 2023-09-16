@@ -1,3 +1,7 @@
+###
+# Ensure that test cases automatically assert return values.
+###
+
 [package]
 name = "cases_can_return_result"
 version = "0.1.0"

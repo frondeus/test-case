@@ -1,9 +1,7 @@
 ---
 source: tests/acceptance_tests.rs
-assertion_line: 110
 expression: output
 ---
-running 4 tests
 test power_of_two_with_using::_1_expects_use_assert_is_power_of_two ... ok
 test power_of_two_with_using::_2_expects_use_crate_assert_is_power_of_two ... ok
 test power_of_two_with_using::_4_expects_use_some_mod_assert_is_power_of_two ... ok

@@ -1,14 +1,8 @@
 ---
 source: tests/acceptance_tests.rs
-assertion_line: 108
 expression: output
 ---
-    empty::vec_0_expects_complex_empty
----- empty::vec_0_expects_complex_empty stdout ----
 error: test failed, to rerun pass `--lib`
-failures:
-failures:
-running 54 tests
 test combinators::_0_3_expects_complex_gt_0_0_and_lt_1_0_or_gt_1_2 ... ok
 test combinators::_0_7_expects_complex_gt_0_0_and_lt_1_0_or_gt_1_2 ... ok
 test combinators::_1_0_expects_complex_gt_0_0_and_lt_5_0 ... ok

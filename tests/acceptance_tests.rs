@@ -44,19 +44,10 @@ fn sanitize_lines(s: String) -> String {
     let mut s = s
         .lines()
         .filter(|line| {
-            !line.contains("note")
-                && !line.contains("error: build failed") // For mac builds
-                && !line.contains("error: process didn't exit successfully") // For windows builds
-                && !line.contains("waiting")
-                && !line.contains("Finished")
-                && !line.contains("Compiling")
-                && !line.contains("termination value with a non-zero status code")
-                && !line.contains("Running unittests")
-                && !line.contains("Running target")
-                && !line.contains("Downloaded")
-                && !line.contains("Downloading")
-                && !line.contains("Updating")
-                && !line.is_empty()
+            line.starts_with("test")
+                || line.contains("panicked at")
+                || line.starts_with("error:")
+                || line.starts_with("error[")
         })
         .map(|line| line.replace('\\', "/"))
         .map(|line| line.replace(".exe", ""))

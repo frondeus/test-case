@@ -1,9 +1,11 @@
+###
+# Ensure that all aliases of test case macro are usable.
+###
+
 [package]
 name = "cases_support_multiple_calling_methods"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
 name = "cases_support_multiple_calling_methods"

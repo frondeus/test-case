@@ -1,9 +1,11 @@
+###
+# Ensure that `panics` syntax anh `#[should_panic]` macro works.
+###
+
 [package]
 name = "cases_can_panic"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 [lib]

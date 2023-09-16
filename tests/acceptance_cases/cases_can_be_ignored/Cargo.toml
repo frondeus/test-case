@@ -1,9 +1,11 @@
+###
+# Ensure that `=> ignore` syntax works.
+###
+
 [package]
 name = "cases_can_be_ignored"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
 name = "cases_can_be_ignored"

@@ -1,3 +1,7 @@
+###
+# Ensure that `#[allow(...)]` is propagated to the test function.
+###
+
 [package]
 name = "allow_stays_on_fn"
 version = "0.1.0"
