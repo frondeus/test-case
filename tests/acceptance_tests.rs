@@ -44,10 +44,11 @@ fn sanitize_lines(s: String) -> String {
     let mut s = s
         .lines()
         .filter(|line| {
-            line.starts_with("test")
-                || line.contains("panicked at")
-                || line.starts_with("error:")
-                || line.starts_with("error[")
+            (line.starts_with("test") // For general test output
+                || line.contains("panicked at") // For panic messages
+                || line.starts_with("error:") // For validating red paths
+                || line.starts_with("error[")) // For validating red paths
+                && !line.contains("process didn't exit successfully") // for Windows
         })
         .map(|line| line.replace('\\', "/"))
         .map(|line| line.replace(".exe", ""))
