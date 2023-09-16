@@ -16,7 +16,7 @@ Crate has to be added as a dependency to `Cargo.toml`:
 
 ```toml
 [dev-dependencies]
-test-case = "3.1.0"
+test-case = "3.2.0"
 ```
 
 and imported to the scope of a block where it's being called
@@ -64,12 +64,12 @@ Cartesian product of one or more possible values for each test function argument
 number of arguments to the `test_matrix` macro must be the same as the number of arguments to
 the test function. Each macro argument can be:
 
-1. A list in array (`[x, y, ...]`) or tuple (`(x, y, ...)`) syntax. The values can be any
-   valid [expression](https://doc.rust-lang.org/reference/expressions.html).
-2. A closed numeric range expression (e.g. `0..100` or `1..=99`), which will generate
-   argument values for all integers in the range.
-3. A single expression, which can be used to keep one argument constant while varying the
-   other test function arguments using a list or range.
+    1. A list in array (`[x, y, ...]`) or tuple (`(x, y, ...)`) syntax. The values can be any
+       valid [expression](https://doc.rust-lang.org/reference/expressions.html).
+    2. A closed numeric range expression (e.g. `0..100` or `1..=99`), which will generate
+       argument values for all integers in the range.
+    3. A single expression, which can be used to keep one argument constant while varying the
+       other test function arguments using a list or range.
 
 #### Example usage:
 
