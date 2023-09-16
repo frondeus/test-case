@@ -18,14 +18,14 @@ pub mod kw {
     syn::custom_keyword!(panics);
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct TestCaseExpression {
     _token: Token![=>],
     pub extra_keywords: HashSet<Modifier>,
     pub result: TestCaseResult,
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub enum TestCaseResult {
     // test_case(a, b, c => keywords)
     Empty,

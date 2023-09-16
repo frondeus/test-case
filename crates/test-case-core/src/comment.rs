@@ -1,7 +1,9 @@
+use crate::TokenStream2;
+use quote::ToTokens;
 use syn::parse::{Parse, ParseStream};
 use syn::{LitStr, Token};
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct TestCaseComment {
     _semicolon: Token![;],
     pub comment: LitStr,
@@ -13,6 +15,13 @@ impl Parse for TestCaseComment {
             _semicolon: input.parse()?,
             comment: input.parse()?,
         })
+    }
+}
+
+impl ToTokens for TestCaseComment {
+    fn to_tokens(&self, tokens: &mut TokenStream2) {
+        self._semicolon.to_tokens(tokens);
+        self.comment.to_tokens(tokens);
     }
 }
 

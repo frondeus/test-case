@@ -104,6 +104,11 @@ fn cases_support_basic_features() {
 }
 
 #[test]
+fn matrices_support_basic_features() {
+    run_acceptance_test!("matrices_support_basic_features")
+}
+
+#[test]
 fn cases_support_complex_assertions() {
     run_acceptance_test!("cases_support_complex_assertions")
 }
@@ -146,4 +151,9 @@ fn features_produce_human_readable_errors() {
 #[test]
 fn allow_stays_on_fn() {
     run_acceptance_test!("allow_stays_on_fn")
+}
+
+#[test]
+fn matrices_compilation_errors() {
+    run_acceptance_test!("matrices_compilation_errors")
 }

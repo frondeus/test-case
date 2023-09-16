@@ -38,7 +38,7 @@ mod kw {
     syn::custom_keyword!(matches_regex);
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum OrderingToken {
     Eq,
     Lt,
@@ -47,57 +47,57 @@ pub enum OrderingToken {
     Geq,
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum PathToken {
     Any,
     Dir,
     File,
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Ord {
     pub token: OrderingToken,
     pub expected_value: Box<Expr>,
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct AlmostEqual {
     pub expected_value: Box<Expr>,
     pub precision: Box<Expr>,
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Path {
     pub token: PathToken,
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Contains {
     pub expected_element: Box<Expr>,
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ContainsInOrder {
     pub expected_slice: Box<Expr>,
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Len {
     pub expected_len: Box<Expr>,
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Count {
     pub expected_len: Box<Expr>,
 }
 
 #[cfg(feature = "with-regex")]
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Regex {
     pub expected_regex: Box<Expr>,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum ComplexTestCase {
     Not(Box<ComplexTestCase>),
     And(Vec<ComplexTestCase>),

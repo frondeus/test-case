@@ -5,6 +5,8 @@ mod complex_expr;
 mod expr;
 mod modifier;
 mod test_case;
+mod test_matrix;
 mod utils;
 
 pub use test_case::TestCase;
+pub use test_matrix::TestMatrix;
