@@ -1,12 +1,12 @@
 ---
 source: tests/acceptance_tests.rs
-assertion_line: 78
 expression: output
 ---
     internal_tested_function1::_3_expects_6
   left: `6`,
- right: `0`', src/lib.rs:8:1
+ right: `0`
 ---- internal_tested_function1::_3_expects_6 stdout ----
+assertion failed: `(left == right)`
 error: test failed, to rerun pass `--lib`
 failures:
 failures:
@@ -18,4 +18,4 @@ test internal_tested_function3::_1_expects_matching_3_ ... ok
 test internal_tested_function3::_2_expects_inconclusive6 ... ignored
 test internal_tested_function4::_2_expects_panicking_some_can_t_ - should panic ... ok
 test result: FAILED. 4 passed; 1 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
-thread 'internal_tested_function1::_3_expects_6' panicked at 'assertion failed: `(left == right)`
+thread 'internal_tested_function1::_3_expects_6' panicked at src/lib.rs:8:1:

@@ -1,10 +1,10 @@
 ---
 source: tests/acceptance_tests.rs
-assertion_line: 108
 expression: output
 ---
     empty::vec_0_expects_complex_empty
 ---- empty::vec_0_expects_complex_empty stdout ----
+assertion failed: _result.is_empty()
 error: test failed, to rerun pass `--lib`
 failures:
 failures:
@@ -64,4 +64,4 @@ test not_path::_cargo_toml_parse_unwrap_expects_complex_not_path_dir ... ok
 test not_path::_cargo_yaml_parse_unwrap_expects_complex_not_path_path ... ok
 test not_path::_src_parse_unwrap_expects_complex_not_path_file ... ok
 test result: FAILED. 53 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-thread 'empty::vec_0_expects_complex_empty' panicked at 'assertion failed: _result.is_empty()', src/lib.rs:115:1
+thread 'empty::vec_0_expects_complex_empty' panicked at src/lib.rs:115:1:

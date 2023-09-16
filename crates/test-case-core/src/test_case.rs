@@ -72,7 +72,7 @@ impl TestCase {
             .expression
             .as_ref()
             .map(|expr| expr.attributes())
-            .unwrap_or_else(Vec::new);
+            .unwrap_or_default();
 
         attrs.push(parse_quote! { #[allow(clippy::bool_assert_comparison)] });
         attrs.append(&mut item.attrs);
