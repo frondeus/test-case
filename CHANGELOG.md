@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.2.1
+### Changes
+* Update `syn` dependency to 2.0
+* Ensure that `test-case` selects correct version of it's `core` and `macros` subcrates
+
 ## 3.2.0
 ### New features
 * Add `test_matrix` macro: generates test cases from Cartesian product of possible test function argument values (#128)

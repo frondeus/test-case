@@ -1,6 +1,6 @@
 [package]
 name          = "test-case-core"
-version       = "3.2.0"
+version       = "3.2.1"
 edition       = "2021"
 authors       = ["Marcin Sas-Szymanski <marcin.sas-szymanski@anixe.pl>", "Wojciech Polak <frondeus@gmail.com>", "Łukasz Biel <lukasz.p.biel@gmail.com>"]
 description   = "Provides core functionality for parsing #[test_case(...)] procedural macro attribute for generating parametrized test cases easily"
