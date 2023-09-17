@@ -3,7 +3,7 @@ extern crate proc_macro;
 use proc_macro::TokenStream;
 
 use proc_macro2::Span as Span2;
-use syn::{parse_macro_input, ItemFn};
+use syn::{parse_macro_input, ItemFn, Path};
 
 use quote::quote;
 use syn::parse_quote;
@@ -73,19 +73,19 @@ fn expand_test_matrix(matrix: &TestMatrix, span: Span2) -> Vec<(TestCase, Span2)
 fn expand_additional_test_case_macros(item: &mut ItemFn) -> syn::Result<Vec<(TestCase, Span2)>> {
     let mut additional_cases = vec![];
     let mut attrs_to_remove = vec![];
-    let legal_test_case_names = [
+    let legal_test_case_names: [Path; 4] = [
         parse_quote!(test_case),
         parse_quote!(test_case::test_case),
         parse_quote!(test_case::case),
         parse_quote!(case),
     ];
-    let legal_test_matrix_names = [
+    let legal_test_matrix_names: [Path; 2] = [
         parse_quote!(test_matrix),
         parse_quote!(test_case::test_matrix),
     ];
 
     for (idx, attr) in item.attrs.iter().enumerate() {
-        if legal_test_case_names.contains(&attr.path) {
+        if legal_test_case_names.contains(attr.path()) {
             let test_case = match attr.parse_args::<TestCase>() {
                 Ok(test_case) => test_case,
                 Err(err) => {
@@ -97,7 +97,7 @@ fn expand_additional_test_case_macros(item: &mut ItemFn) -> syn::Result<Vec<(Tes
             };
             additional_cases.push((test_case, attr.span()));
             attrs_to_remove.push(idx);
-        } else if legal_test_matrix_names.contains(&attr.path) {
+        } else if legal_test_matrix_names.contains(attr.path()) {
             let test_matrix = match attr.parse_args::<TestMatrix>() {
                 Ok(test_matrix) => test_matrix,
                 Err(err) => {
@@ -131,7 +131,7 @@ fn render_test_cases(test_cases: &[(TestCase, Span2)], mut item: ItemFn) -> Toke
 
     // We don't want any external crate to alter main fn code, we are passing attributes to each sub-function anyway
     item.attrs.retain(|attr| {
-        attr.path
+        attr.path()
             .get_ident()
             .map(|ident| ident == "allow")
             .unwrap_or(false)

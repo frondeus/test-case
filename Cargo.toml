@@ -24,12 +24,12 @@ doctest    = false
 path       = "src/lib.rs"
 
 [dependencies]
-test-case-macros = { version = "3.0.0", path = "crates/test-case-macros", default-features = false }
+test-case-macros = { version = "3.2.0", path = "crates/test-case-macros", default-features = false }
 regex = { version = "1.5", optional = true }
 
 [dev-dependencies]
 insta           = "1.12"
-itertools       = "0.10"
+itertools       = "0.11"
 regex           = "1.5"
 
 [workspace]

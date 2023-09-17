@@ -55,10 +55,10 @@ impl Parse for TestMatrix {
                 Expr::Array(v) => v.elems.iter().cloned().collect(),
                 Expr::Tuple(v) => v.elems.iter().cloned().collect(),
                 Expr::Range(ExprRange {
-                    from, limits, to, ..
+                    start, limits, end, ..
                 }) => {
-                    let start = isize_from_range_expr(limits.span(), from.as_deref())?;
-                    let end = isize_from_range_expr(limits.span(), to.as_deref())?;
+                    let start = isize_from_range_expr(limits.span(), start.as_deref())?;
+                    let end = isize_from_range_expr(limits.span(), end.as_deref())?;
                     let range: Box<dyn Iterator<Item = isize>> = match limits {
                         RangeLimits::HalfOpen(_) => Box::from(start..end),
                         RangeLimits::Closed(_) => Box::from(start..=end),
