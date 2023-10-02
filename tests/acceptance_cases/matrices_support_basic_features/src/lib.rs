@@ -78,6 +78,34 @@ mod test_cases {
         assert!(x < 10);
     }
 
+    #[test_matrix(
+        [1, 2],
+        [11, 12]
+    )]
+    #[test_matrix(
+        [3, 4],
+        [13, 14]
+    )]
+    fn two_matrices(x: u32, y: u32) {
+        assert!(x < 10);
+        assert!(y > 10);
+    }
+
+    #[test_matrix(
+        [1, 2],
+        [11, 12]
+        ; "one, two"
+    )]
+    #[test_matrix(
+        [3, 4],
+        [13, 14]
+        ; "three, four"
+    )]
+    fn two_matrices_with_comments(x: u32, y: u32) {
+        assert!(x < 10);
+        assert!(y > 10);
+    }
+
     #[test_case(5)]
     #[test_matrix(
         [6, 7, 8]

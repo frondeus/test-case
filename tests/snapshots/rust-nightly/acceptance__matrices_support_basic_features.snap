@@ -2,7 +2,7 @@
 source: tests/acceptance_tests.rs
 expression: output
 ---
-test result: ok. 54 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 70 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 test test_cases::case_after_matrix::_1_expects ... ok
 test test_cases::case_after_matrix::_2_expects ... ok
 test test_cases::case_after_matrix::_3_expects ... ok
@@ -57,3 +57,19 @@ test test_cases::str_values_tuple::_one_blue_expects ... ok
 test test_cases::str_values_tuple::_one_yellow_expects ... ok
 test test_cases::str_values_tuple::_two_blue_expects ... ok
 test test_cases::str_values_tuple::_two_yellow_expects ... ok
+test test_cases::two_matrices::_1_11_expects ... ok
+test test_cases::two_matrices::_1_12_expects ... ok
+test test_cases::two_matrices::_2_11_expects ... ok
+test test_cases::two_matrices::_2_12_expects ... ok
+test test_cases::two_matrices::_3_13_expects ... ok
+test test_cases::two_matrices::_3_14_expects ... ok
+test test_cases::two_matrices::_4_13_expects ... ok
+test test_cases::two_matrices::_4_14_expects ... ok
+test test_cases::two_matrices_with_comments::one_two_1_11_expects ... ok
+test test_cases::two_matrices_with_comments::one_two_1_12_expects ... ok
+test test_cases::two_matrices_with_comments::one_two_2_11_expects ... ok
+test test_cases::two_matrices_with_comments::one_two_2_12_expects ... ok
+test test_cases::two_matrices_with_comments::three_four_3_13_expects ... ok
+test test_cases::two_matrices_with_comments::three_four_3_14_expects ... ok
+test test_cases::two_matrices_with_comments::three_four_4_13_expects ... ok
+test test_cases::two_matrices_with_comments::three_four_4_14_expects ... ok

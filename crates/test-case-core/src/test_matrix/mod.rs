@@ -16,6 +16,7 @@ mod matrix_product;
 pub struct TestMatrix {
     variables: Vec<Vec<Expr>>,
     expression: Option<TestCaseExpression>,
+    comment: Option<TestCaseComment>,
 }
 
 impl TestMatrix {
@@ -25,11 +26,18 @@ impl TestMatrix {
 
     pub fn cases(&self) -> impl Iterator<Item = TestCase> {
         let expression = self.expression.clone();
+        let comment = self.comment.clone();
 
         matrix_product::multi_cartesian_product(self.variables.iter().cloned()).map(move |v| {
-            let mut case = TestCase::from(v);
-            case.expression = expression.clone();
-            case
+            if let Some(comment) = comment.clone() {
+                TestCase::new_with_prefixed_name(
+                    v,
+                    expression.clone(),
+                    comment.comment.value().as_ref(),
+                )
+            } else {
+                TestCase::new(v, expression.clone(), None)
+            }
         })
     }
 }
@@ -40,15 +48,9 @@ impl Parse for TestMatrix {
 
         let mut matrix = TestMatrix {
             expression: input.parse().ok(),
+            comment: input.parse().ok(),
             ..Default::default()
         };
-
-        if let Ok(c) = input.parse::<TestCaseComment>() {
-            return Err(syn::Error::new(
-                c.span(),
-                "Comments are not allowed in #[test_matrix]",
-            ));
-        }
 
         for arg in args {
             let values: Vec<Expr> = match &arg {
