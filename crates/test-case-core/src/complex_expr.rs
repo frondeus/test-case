@@ -323,11 +323,11 @@ impl ComplexTestCase {
                         expected_regex: input.parse()?,
                     })
                 } else {
-                    proc_macro_error::abort!(input.span(), "'with-regex' feature is required to use 'matches-regex' keyword");
+                    return Err(input.error("'with-regex' feature is required to use 'matches-regex' keyword"));
                 }
             }
         } else {
-            proc_macro_error::abort!(input.span(), "cannot parse complex expression")
+            return Err(input.error("cannot parse complex expression"));
         })
     }
 }
