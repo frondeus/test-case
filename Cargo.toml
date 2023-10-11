@@ -11,7 +11,7 @@ license       = "MIT"
 repository    = "https://github.com/frondeus/test-case"
 documentation = "https://docs.rs/test-case"
 exclude       = ["tests/snapshots/**/*"]
-rust-version  = "1.58.1"
+rust-version  = "1.63"
 
 [features]
 with-regex = ["regex", "test-case-macros/with-regex"]

@@ -1,5 +1,6 @@
 use crate::utils::fmt_syn;
 use proc_macro2::Group;
+use proc_macro2::Span;
 use proc_macro2::TokenStream;
 use quote::{quote, TokenStreamExt};
 use std::fmt::{Display, Formatter};
@@ -450,7 +451,11 @@ fn regex_assertion(expected_regex: &Expr) -> TokenStream {
 fn not_assertion(not: &ComplexTestCase) -> TokenStream {
     match not {
         ComplexTestCase::Not(_) => {
-            proc_macro_error::abort_call_site!("multiple negations on single item are forbidden")
+            use proc_macro2_diagnostics::SpanDiagnosticExt as _;
+
+            Span::call_site()
+                .error("multiple negations on single item are forbidden")
+                .emit_as_expr_tokens()
         }
         ComplexTestCase::And(cases) => negate(and_assertion(cases)),
         ComplexTestCase::Or(cases) => negate(or_assertion(cases)),
