@@ -2,4 +2,4 @@
 source: tests/acceptance_tests.rs
 expression: output
 ---
-thread 'main' panicked at 'Can't', src/lib.rs:33:5
+thread 'main' panicked at src/lib.rs:33:5:
