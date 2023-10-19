@@ -79,13 +79,13 @@ mod tests {
     use test_case::test_matrix;
 
     #[test_matrix(
-        [-2, 2],
-        [-4, 4]
+        [4, 6, 8],
+        [1, 3, 5]
     )]
     fn multiplication_tests(x: i8, y: i8) {
-        let actual = (x * y).abs();
+        let product = x * y;
 
-        assert_eq!(8, actual)
+        assert_eq!(0, product % 2)
     }
 }
 ```
