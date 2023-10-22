@@ -10,53 +10,62 @@ use syn::{parse_quote, Error, Expr, Ident, ItemFn, ReturnType, Token};
 #[derive(Debug)]
 pub struct TestCase {
     args: Punctuated<Expr, Token![,]>,
-    pub(crate) expression: Option<TestCaseExpression>,
-    pub(crate) comment: Option<TestCaseComment>,
+    expression: Option<TestCaseExpression>,
+    name: Ident,
 }
 
 impl Parse for TestCase {
     fn parse(input: ParseStream) -> Result<Self, Error> {
-        Ok(Self {
-            args: Punctuated::parse_separated_nonempty_with(input, Expr::parse)?,
-            expression: input.parse().ok(),
-            comment: input.parse().ok(),
-        })
+        let args = Punctuated::parse_separated_nonempty_with(input, Expr::parse)?;
+        let expression = input.parse::<TestCaseExpression>().ok();
+        let comment = input.parse::<TestCaseComment>().ok();
+
+        Ok(Self::new_from_parsed(args, expression, comment))
     }
 }
+impl TestCase {
+    pub(crate) fn new<I: IntoIterator<Item = Expr>>(
+        args: I,
+        expression: Option<TestCaseExpression>,
+        comment: Option<TestCaseComment>,
+    ) -> Self {
+        Self::new_from_parsed(args.into_iter().collect(), expression, comment)
+    }
 
-impl<I> From<I> for TestCase
-where
-    I: IntoIterator<Item = Expr>,
-{
-    fn from(into_iter: I) -> Self {
+    pub(crate) fn new_from_parsed(
+        args: Punctuated<Expr, Token![,]>,
+        expression: Option<TestCaseExpression>,
+        comment: Option<TestCaseComment>,
+    ) -> Self {
+        let name = Self::test_case_name_ident(args.iter(), expression.as_ref(), comment.as_ref());
+
         Self {
-            args: into_iter.into_iter().collect(),
-            expression: None,
-            comment: None,
+            args,
+            expression,
+            name,
         }
     }
-}
 
-impl TestCase {
+    pub(crate) fn new_with_prefixed_name<I: IntoIterator<Item = Expr>>(
+        args: I,
+        expression: Option<TestCaseExpression>,
+        prefix: &str,
+    ) -> Self {
+        let parsed_args = args.into_iter().collect::<Punctuated<Expr, Token![,]>>();
+        let name = Self::prefixed_test_case_name(parsed_args.iter(), expression.as_ref(), prefix);
+
+        Self {
+            args: parsed_args,
+            expression,
+            name,
+        }
+    }
+
     pub fn test_case_name(&self) -> Ident {
-        let case_desc = self
-            .comment
-            .as_ref()
-            .map(|item| item.comment.value())
-            .unwrap_or_else(|| {
-                let mut acc = String::new();
-                for arg in &self.args {
-                    acc.push_str(&fmt_syn(&arg));
-                    acc.push('_');
-                }
-                acc.push_str("expects");
-                if let Some(expression) = &self.expression {
-                    acc.push(' ');
-                    acc.push_str(&expression.to_string())
-                }
-                acc
-            });
-        crate::utils::escape_test_name(case_desc)
+        // The clone is kind of annoying here, but because this is behind a reference, we must clone
+        // to preserve the signature without a breaking change
+        // TODO: return a reference?
+        self.name.clone()
     }
 
     pub fn render(&self, mut item: ItemFn, origin_span: Span2) -> TokenStream2 {
@@ -117,5 +126,49 @@ impl TestCase {
                 #expected
             }
         }
+    }
+
+    fn test_case_name_ident<'a, I: Iterator<Item = &'a Expr>>(
+        args: I,
+        expression: Option<&TestCaseExpression>,
+        comment: Option<&TestCaseComment>,
+    ) -> Ident {
+        let desc = Self::test_case_name_string(args, expression, comment);
+
+        crate::utils::escape_test_name(desc)
+    }
+
+    fn prefixed_test_case_name<'a, I: Iterator<Item = &'a Expr>>(
+        args: I,
+        expression: Option<&TestCaseExpression>,
+        prefix: &str,
+    ) -> Ident {
+        let generated_name = Self::test_case_name_string(args, expression, None);
+        let full_desc = format!("{prefix}_{generated_name}");
+
+        crate::utils::escape_test_name(full_desc)
+    }
+
+    fn test_case_name_string<'a, I: Iterator<Item = &'a Expr>>(
+        args: I,
+        expression: Option<&TestCaseExpression>,
+        comment: Option<&TestCaseComment>,
+    ) -> String {
+        comment
+            .as_ref()
+            .map(|item| item.comment.value())
+            .unwrap_or_else(|| {
+                let mut acc = String::new();
+                for arg in args {
+                    acc.push_str(&fmt_syn(&arg));
+                    acc.push('_');
+                }
+                acc.push_str("expects");
+                if let Some(expression) = expression {
+                    acc.push(' ');
+                    acc.push_str(&expression.to_string())
+                }
+                acc
+            })
     }
 }
