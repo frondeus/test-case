@@ -21,6 +21,9 @@ jobs:
         with:
           components: rustfmt, clippy
 
+      - name: Cache
+        uses: Swatinem/rust-cache@v2
+
       - name: Check
         run: cargo check  --all-features --all-targets
 
@@ -53,6 +56,9 @@ jobs:
         with:
           toolchain: ${{ matrix.toolchain }}
 
+      - name: Cache
+        uses: Swatinem/rust-cache@v2
+
       - name: Test
         env:
           CARGO_TERM_COLOR: never
@@ -75,6 +81,9 @@ jobs:
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ steps.metadata.outputs.rust-version }}
+
+      - name: Cache
+        uses: Swatinem/rust-cache@v2
 
       - name: Build
         run: cargo build
