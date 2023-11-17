@@ -16,7 +16,7 @@ Crate has to be added as a dependency to `Cargo.toml`:
 
 ```toml
 [dev-dependencies]
-test-case = "3.2.1"
+test-case = "*"
 ```
 
 and imported to the scope of a block where it's being called
@@ -79,13 +79,13 @@ mod tests {
     use test_case::test_matrix;
 
     #[test_matrix(
-        [4, 6, 8],
-        [1, 3, 5]
+        [-2, 2],
+        [-4, 4]
     )]
     fn multiplication_tests(x: i8, y: i8) {
-        let product = x * y;
+        let actual = (x * y).abs();
 
-        assert_eq!(0, product % 2)
+        assert_eq!(8, actual)
     }
 }
 ```

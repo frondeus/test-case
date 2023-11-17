@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.3.0
+### Features
+* Allow comments in `test-matrix` macro (#132)
+
+### Changes
+* Drop `proc-macro-error` dependency & improve error messages (#136)
+
 ## 3.2.1
 ### Changes
 * Update `syn` dependency to 2.0
