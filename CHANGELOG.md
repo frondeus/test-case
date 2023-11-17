@@ -12,7 +12,7 @@
 * Drop `proc-macro-error` dependency & improve error messages (#136)
 
 ## 3.2.1
-### Changes
+### Improvements
 * Update `syn` dependency to 2.0
 * Ensure that `test-case` selects correct version of it's `core` and `macros` subcrates
 
@@ -34,7 +34,7 @@
 
 [IMPORTANT] Starting with 3.0 release we are changing `test-case` MSRV policy to support only 3 latest stable releases.
 
-### Changes
+### Improvements
 * Split out functional parts of `test-case-macros` crate into `test-case-core` for easy reuse by external libraries
 
 ## 2.2.2
@@ -88,14 +88,17 @@
 * Deprecation of `allow_result` feature
 
 ## V1.2.3
+### Fixes
 * Fix regression where `panics` and `inconclusive` were not allowed on `test_cases` returning a value
 * Fix case where `test_case` would allow to return a type when only single attribute was used
 
 ## V1.2.2
+### Fixes
 * `test-case` no longer allows returning values from tested function without `=>` pattern (thanks to @tarka)
     * Behaviour can be reenabled via `allow_result` feature 
 
 ## V1.2.1
+### Fixes
 * Disabled clippy warning when test-case was generating `assert_eq(bool, bool)` expression.
 
 ## V1.2.0
@@ -176,6 +179,7 @@
 * Delimiter for test case description is `;` instead of `::`.
 
   Reason: `::` is valid part of expression and rustc treats const variable as path
+
 ### New features
 * Proper error propagation :tada:
   When there is for example a typo in function body, rustc can now show location
