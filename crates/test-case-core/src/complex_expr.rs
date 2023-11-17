@@ -451,11 +451,8 @@ fn regex_assertion(expected_regex: &Expr) -> TokenStream {
 fn not_assertion(not: &ComplexTestCase) -> TokenStream {
     match not {
         ComplexTestCase::Not(_) => {
-            use proc_macro2_diagnostics::SpanDiagnosticExt as _;
-
-            Span::call_site()
-                .error("multiple negations on single item are forbidden")
-                .emit_as_expr_tokens()
+            let msg = "multiple negations on single item are forbidden";
+            syn::Error::new(Span::call_site(), msg).into_compile_error()
         }
         ComplexTestCase::And(cases) => negate(and_assertion(cases)),
         ComplexTestCase::Or(cases) => negate(or_assertion(cases)),
