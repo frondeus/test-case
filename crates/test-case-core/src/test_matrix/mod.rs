@@ -46,9 +46,19 @@ impl Parse for TestMatrix {
     fn parse(input: ParseStream) -> syn::Result<Self> {
         let args: Punctuated<Expr, Token![,]> = Punctuated::parse_separated_nonempty(input)?;
 
+        let expression = (!input.is_empty()).then(|| input.parse()).transpose();
+        let comment = (!input.is_empty()).then(|| input.parse()).transpose();
+        // if both are errors, pick the expression error since it is more likely to be informative.
+        //
+        // TODO(https://github.com/frondeus/test-case/issues/135): avoid Result::ok entirely.
+        let (expression, comment) = match (expression, comment) {
+            (Err(expression), Err(_comment)) => return Err(expression),
+            (expression, comment) => (expression.ok().flatten(), comment.ok().flatten()),
+        };
+
         let mut matrix = TestMatrix {
-            expression: input.parse().ok(),
-            comment: input.parse().ok(),
+            expression,
+            comment,
             ..Default::default()
         };
 

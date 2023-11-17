@@ -193,9 +193,10 @@ where
     Mapping: FnOnce(Option<Inner>) -> TestCaseResult,
     Inner: Parse,
 {
+    let result = (!input.is_empty()).then(|| input.parse()).transpose()?;
     Ok(TestCaseExpression {
         _token: token,
         extra_keywords,
-        result: mapping(input.parse::<Inner>().ok()),
+        result: mapping(result),
     })
 }

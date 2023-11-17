@@ -17,8 +17,15 @@ pub struct TestCase {
 impl Parse for TestCase {
     fn parse(input: ParseStream) -> Result<Self, Error> {
         let args = Punctuated::parse_separated_nonempty_with(input, Expr::parse)?;
-        let expression = input.parse::<TestCaseExpression>().ok();
-        let comment = input.parse::<TestCaseComment>().ok();
+        let expression = (!input.is_empty()).then(|| input.parse()).transpose();
+        let comment = (!input.is_empty()).then(|| input.parse()).transpose();
+        // if both are errors, pick the expression error since it is more likely to be informative.
+        //
+        // TODO(https://github.com/frondeus/test-case/issues/135): avoid Result::ok entirely.
+        let (expression, comment) = match (expression, comment) {
+            (Err(expression), Err(_comment)) => return Err(expression),
+            (expression, comment) => (expression.ok().flatten(), comment.ok().flatten()),
+        };
 
         Ok(Self::new_from_parsed(args, expression, comment))
     }
