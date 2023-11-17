@@ -1,10 +1,14 @@
 # Changelog
 
+## 3.3.1
+### Fixes
+* Avoid emitting additional misleading error messages by proc-macro2-diagnostics (#138)
+
 ## 3.3.0
 ### Features
 * Allow comments in `test-matrix` macro (#132)
 
-### Changes
+### Improvements
 * Drop `proc-macro-error` dependency & improve error messages (#136)
 
 ## 3.2.1
@@ -13,17 +17,17 @@
 * Ensure that `test-case` selects correct version of it's `core` and `macros` subcrates
 
 ## 3.2.0
-### New features
+### Features
 * Add `test_matrix` macro: generates test cases from Cartesian product of possible test function argument values (#128)
 
-### Changes
+### Improvements
 * Retain `allow` attributes on test functions (#127)
 
 ## 3.1.0
-### New features
+### Features
 * Copy attribute span to generated test functions so that IDEs recognize them properly as individual tests
 
-### Changes
+### Improvements
 * Added LICENSE file to child crates
 
 ## 3.0.0
@@ -34,39 +38,39 @@
 * Split out functional parts of `test-case-macros` crate into `test-case-core` for easy reuse by external libraries
 
 ## 2.2.2
-### Bugfixes
+### Fixes
 * Use fully qualified `test` macro path to avoid conflicts in workspace (#105)
 
 ## 2.2.1
-### Bugfixes
+### Fixes
 * Ensure `test-case` depends on correct version of `test-case-macros`
 
 ## 2.2.0
-### New features
+### Features
 * Support `ignore["reason"]` syntax (#102)
 
 ## 2.1.0
-### New features
+### Features
 * Support `matches_regex` complex test-case (requires `with-regex` feature) (#98)
 * Support `len`, `count` and `empty` complex test-cases (#97)
 
-### Bug fixes
+### Fixes
 * Support keyword `ignore` on void fn (#100)
 
 ### Improvements
 * Move macros to separate subcrate so that test-case can export other things (#96)
 
 ## 2.0.2
-### Bug fixes
+### Fixes
 * Covered missing cases in `matches X if Y` *test_case* variant (fixes the fact that previous bug fix didn't produce guard code)
 
 
 ## 2.0.1
-### Bug fixes
+### Fixes
 * `matches Pattern if condition` parses correctly (`if condition` part wasn't allowed)
 
 ## 2.0.0
-### New features
+### Features
 * `=> with |x: T| assert!(x)` custom inline test assertions
 * `=> using path::to::fn` custom fn test assertions
 * `ignore|inconclusive` can be combined with other keywords (eg.: `=> ignore matches Ok(_)`)
@@ -95,14 +99,14 @@
 * Disabled clippy warning when test-case was generating `assert_eq(bool, bool)` expression.
 
 ## V1.2.0
-### New features
+### Features
 * Allow usage of fully qualified attribute `#[test_case::test_case]` (thanks to @tomprince)
 
 ### Improvements
 * Stopped code from emmiting unneded `()` expression in test cases with `expected` fragment (thanks to @martinvonz)
 
 ## V1.1.0
-### New features
+### Features
 * Added support for using `hamcrest2` assertions with test case
 * Enabled support of `async` via tokio or similar
 * Enabled attribute passthrough for test cases - it means that you can combine `test-case` with other testing frameworks,
@@ -112,7 +116,7 @@
 * `inconclusive` inside test case name will not be supported starting `2.0.0`
 
 ## V1.0.0
-### New features
+### Features
 * Added support for three new keywords: `panics`, `matches` and `inconclusive` which can be applied after `=>` token.
 
   `matches` gives possibility to test patterns, like:
@@ -139,16 +143,16 @@
 * Added keeping trailing underscores in names - thanks to @rzumer
 ### Minor improvements
 * Moved `lazy-static` dependency to `dev-dependencies`
-* Fixed README - thanks to @luke_biel and @drwilco
+* Fixed README - thanks to @luke-biel and @drwilco
 ### Upgraded dependencies
 * Upgraded `insta` to `0.12.0`
 
 ## v0.3.3
-### Bugfixes
+### Fixes
 * Fixed "inconclusive" feature with different cases.
 
 ## v0.3.2
-### Bugfixes
+### Fixes
 * Added support for `impl Trait` - it worked in v2.x crate.
 ### Minor improvements
 * Added extra test cases
