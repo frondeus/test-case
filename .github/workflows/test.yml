@@ -16,38 +16,30 @@ jobs:
 
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
-          toolchain: stable
-          override: true
           components: rustfmt, clippy
 
+      - name: Cache
+        uses: Swatinem/rust-cache@v2
+
       - name: Check
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --all-features
+        run: cargo check  --all-features --all-targets
 
       - name: Clippy
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: --all-features --tests -- -D warnings
+        run: cargo clippy --all-features --all-targets -- -D warnings
 
       - name: Fmt
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: -- --check
+        run: cargo fmt -- --check
 
   test:
     name: Test crate
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os:
           - ubuntu-latest
@@ -59,22 +51,21 @@ jobs:
 
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@master
         with:
-          profile: minimal
           toolchain: ${{ matrix.toolchain }}
-          override: true
-          components: rustfmt, clippy
+
+      - name: Cache
+        uses: Swatinem/rust-cache@v2
 
       - name: Test
-        uses: actions-rs/cargo@v1
         env:
+          CARGO_TERM_COLOR: never
           SNAPSHOT_DIR: rust-${{ matrix.toolchain }}
-        with:
-          command: test
+        run: cargo test
 
   msrv-build:
     name: Build crate with documented MSRV
@@ -82,17 +73,19 @@ jobs:
 
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Install Rust MSRV version
-        run: scripts/force-msrv-toolchain.sh
+      - name: Read crate metadata
+        id: metadata
+        run: echo "rust-version=$(sed -ne 's/rust-version *= *\"\(.*\)\"/\1/p' Cargo.toml)" >> $GITHUB_OUTPUT
 
       - name: Install Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@master
         with:
-          profile: minimal
+          toolchain: ${{ steps.metadata.outputs.rust-version }}
+
+      - name: Cache
+        uses: Swatinem/rust-cache@v2
 
       - name: Build
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
+        run: cargo build
