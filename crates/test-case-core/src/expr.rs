@@ -119,7 +119,7 @@ impl Display for TestCaseResult {
 impl TestCaseExpression {
     pub fn assertion(&self) -> TokenStream2 {
         match &self.result {
-            TestCaseResult::Simple(expr) => parse_quote! { assert_eq!(#expr, _result) },
+            TestCaseResult::Simple(expr) => parse_quote! { assert_eq!(_result, #expr) },
             TestCaseResult::Matching(pat, guard) => {
                 let pat_str = pat.to_token_stream().to_string();
 

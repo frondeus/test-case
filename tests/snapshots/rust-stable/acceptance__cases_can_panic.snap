@@ -7,7 +7,6 @@ test panicking::_expects_panicking_some_it_has_to_panic_ - should panic ... ok
 test panicking::_expects_panicking_some_this_should_fail_ - should panic ... FAILED
 test panics_without_value::_expects_panicking_none - should panic ... ok
 test pattern_matching_result_fails::simpleenum_var1_expects_matching_simpleenum_var2_ - should panic ... ok
-test result: FAILED. 3 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-test result_which_panics::_2_2_expects_2_3 - should panic ... FAILED
+test result: FAILED. 4 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result_which_panics::_2_2_expects_2_3 - should panic ... ok
 thread 'panicking::_expects_panicking_some_this_should_fail_' panicked at src/lib.rs:20:5:
-thread 'result_which_panics::_2_2_expects_2_3' panicked at src/lib.rs:28:1:

@@ -26,7 +26,11 @@ fn panics_without_value(_: ()) {
 }
 
 #[test_case(2, 2 => 2 + 3)]
-#[should_panic(expected = "assertion failed: `(left == right)`")]
+#[should_panic(expected = "\
+assertion `left == right` failed
+  left: 4
+ right: 5\
+")]
 fn result_which_panics(x: u32, y: u32) -> u32 {
     x + y
 }
