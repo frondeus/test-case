@@ -29,7 +29,7 @@ regex = { version = "1.5", optional = true }
 
 [dev-dependencies]
 insta           = "1.12"
-itertools       = "0.11"
+itertools       = "0.14"
 regex           = "1.5"
 
 [workspace]
