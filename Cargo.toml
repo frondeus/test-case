@@ -25,12 +25,12 @@ path       = "src/lib.rs"
 
 [dependencies]
 test-case-macros = { version = "3.2.1", path = "crates/test-case-macros", default-features = false }
-regex = { version = "1.5", optional = true }
+regex = { version = "1.9", optional = true }
 
 [dev-dependencies]
-insta           = "1.12"
-itertools       = "0.11"
-regex           = "1.5"
+insta           = "1.43"
+itertools       = "0.15"
+regex           = "1.9"
 
 [workspace]
 members = ["crates/*"]

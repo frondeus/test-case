@@ -79,7 +79,7 @@ impl Parse for TestMatrix {
                         .map(|n| {
                             let mut lit = Lit::new(Literal::isize_unsuffixed(n));
                             lit.set_span(arg.span());
-                            Expr::from(ExprLit { lit, attrs: vec![] })
+                            Expr::Lit(ExprLit { lit, attrs: vec![] })
                         })
                         .collect()
                 }
