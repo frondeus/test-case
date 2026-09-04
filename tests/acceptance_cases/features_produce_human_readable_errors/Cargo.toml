@@ -5,7 +5,7 @@
 [package]
 name = "features_produce_human_readable_errors"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 test-case = { path = "../../../", default-features = false }

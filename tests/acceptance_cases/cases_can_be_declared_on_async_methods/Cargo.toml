@@ -6,7 +6,7 @@
 name = "async_tests"
 version = "0.1.0"
 authors = ["Łukasz Biel <lukasz.p.biel@gmail.com>"]
-edition = "2021"
+edition = "2024"
 
 [lib]
 name = "async"

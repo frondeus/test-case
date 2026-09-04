@@ -1,7 +1,7 @@
 [package]
 name          = "test-case"
 version       = "3.3.1"
-edition       = "2021"
+edition       = "2024"
 authors       = ["Marcin Sas-Szymanski <marcin.sas-szymanski@anixe.pl>", "Wojciech Polak <frondeus@gmail.com>", "Łukasz Biel <lukasz.p.biel@gmail.com>"]
 description   = "Provides #[test_case(...)] procedural macro attribute for generating parametrized test cases easily"
 keywords      = ["test", "case", "tests", "unit", "testing"]
@@ -11,7 +11,7 @@ license       = "MIT"
 repository    = "https://github.com/frondeus/test-case"
 documentation = "https://docs.rs/test-case"
 exclude       = ["tests/snapshots/**/*"]
-rust-version  = "1.63"
+rust-version  = "1.85"
 
 [features]
 with-regex = ["regex", "test-case-macros/with-regex"]
