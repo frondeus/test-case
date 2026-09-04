@@ -2,7 +2,7 @@ use std::collections::HashSet;
 use std::fmt::{Debug, Formatter};
 use syn::parse::{Parse, ParseStream};
 use syn::token::Bracket;
-use syn::{bracketed, parse_quote, Attribute, LitStr};
+use syn::{Attribute, LitStr, bracketed, parse_quote};
 
 mod kw {
     syn::custom_keyword!(inconclusive);

@@ -1,13 +1,13 @@
-use crate::complex_expr::ComplexTestCase;
-use crate::modifier::{parse_kws, Modifier};
-use crate::utils::fmt_syn;
 use crate::TokenStream2;
+use crate::complex_expr::ComplexTestCase;
+use crate::modifier::{Modifier, parse_kws};
+use crate::utils::fmt_syn;
 use quote::ToTokens;
 use std::collections::HashSet;
 use std::fmt::{Display, Formatter};
 use syn::parse::{Parse, ParseStream};
 use syn::token::If;
-use syn::{parse_quote, Attribute, Expr, Pat, Token};
+use syn::{Attribute, Expr, Pat, Token, parse_quote};
 
 pub mod kw {
     syn::custom_keyword!(matches);

@@ -5,7 +5,7 @@ use proc_macro2::{Span as Span2, TokenStream as TokenStream2};
 use quote::quote;
 use syn::parse::{Parse, ParseStream};
 use syn::punctuated::Punctuated;
-use syn::{parse_quote, Error, Expr, Ident, ItemFn, ReturnType, Token};
+use syn::{Error, Expr, Ident, ItemFn, ReturnType, Token, parse_quote};
 
 #[derive(Debug)]
 pub struct TestCase {

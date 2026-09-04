@@ -2,13 +2,13 @@ use std::{iter, mem};
 
 use proc_macro2::{Literal, Span};
 use syn::{
+    Expr, ExprLit, ExprRange, Lit, RangeLimits, Token,
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
     spanned::Spanned,
-    Expr, ExprLit, ExprRange, Lit, RangeLimits, Token,
 };
 
-use crate::{comment::TestCaseComment, expr::TestCaseExpression, TestCase};
+use crate::{TestCase, comment::TestCaseComment, expr::TestCaseExpression};
 
 mod matrix_product;
 
