@@ -16,7 +16,7 @@ doctest = false
 [dev-dependencies]
 test-case = { path = "../../../" }
 tokio = { version = "=1.32.0", features = [ "macros", "rt" ] }
-async-std = { version = "=1.12.0", features = ["attributes"] }
+async-std = { version = "=1.13.2", features = ["attributes"] }
 async-attributes = "=1.1.2"
 once_cell = "=1.18.0"
 
