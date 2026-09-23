@@ -3,5 +3,5 @@ source: tests/acceptance_tests.rs
 expression: output
 ---
 test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-test works_seamlessly_with_async_std::_100i32_expects_100usize ... ok
-test works_seamlessly_with_tokio::_100i32_expects_100usize ... ok
+test works_seamlessly_with_async_std::test_case_1_100i32_expects_100usize ... ok
+test works_seamlessly_with_tokio::test_case_1_100i32_expects_100usize ... ok

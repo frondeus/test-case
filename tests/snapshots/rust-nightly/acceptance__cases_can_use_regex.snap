@@ -4,13 +4,13 @@ expression: output
 ---
 error: incomplete escape sequence, reached end of pattern prematurely
 error: test failed, to rerun pass `--lib`
-test regex_test::_abcabc201_expects_complex_regex_r_d_ ... ok
-test regex_test::_abcabc201_expects_complex_regex_r_d_4_ ... FAILED
-test regex_test::_abcabc_expects_complex_regex_r_abc_ ... ok
-test regex_test::_kumkwat_expects_complex_regex_r_ ... FAILED
-test regex_test::_kumkwat_expects_complex_regex_r_abc_ ... FAILED
-test regex_test::_kumkwat_expects_complex_regex_r_kumkwat_ ... ok
+test regex_test::test_case_1_abcabc_expects_complex_regex_r_abc_ ... ok
+test regex_test::test_case_2_abcabc201_expects_complex_regex_r_d_ ... ok
+test regex_test::test_case_3_abcabc201_expects_complex_regex_r_d_4_ ... FAILED
+test regex_test::test_case_4_kumkwat_expects_complex_regex_r_abc_ ... FAILED
+test regex_test::test_case_5_kumkwat_expects_complex_regex_r_ ... FAILED
+test regex_test::test_case_6_kumkwat_expects_complex_regex_r_kumkwat_ ... ok
 test result: FAILED. 3 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-thread 'regex_test::_abcabc201_expects_complex_regex_r_d_4_' panicked at src/lib.rs:5:1:
-thread 'regex_test::_kumkwat_expects_complex_regex_r_' panicked at src/lib.rs:5:1:
-thread 'regex_test::_kumkwat_expects_complex_regex_r_abc_' panicked at src/lib.rs:5:1:
+thread 'regex_test::test_case_3_abcabc201_expects_complex_regex_r_d_4_' panicked at src/lib.rs:5:1:
+thread 'regex_test::test_case_4_kumkwat_expects_complex_regex_r_abc_' panicked at src/lib.rs:5:1:
+thread 'regex_test::test_case_5_kumkwat_expects_complex_regex_r_' panicked at src/lib.rs:5:1:

@@ -3,7 +3,7 @@ source: tests/acceptance_tests.rs
 expression: output
 ---
 test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-test test_generics::source1_expects_1 ... ok
-test test_generics::source2_expects_2 ... ok
-test test_impl::source1_expects_1 ... ok
-test test_impl::source2_expects_2 ... ok
+test test_generics::test_case_1_source1_expects_1 ... ok
+test test_generics::test_case_2_source2_expects_2 ... ok
+test test_impl::test_case_1_source1_expects_1 ... ok
+test test_impl::test_case_2_source2_expects_2 ... ok

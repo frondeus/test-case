@@ -2,8 +2,8 @@
 source: tests/acceptance_tests.rs
 expression: output
 ---
-test power_of_two_with_using::_1_expects_use_assert_is_power_of_two ... ok
-test power_of_two_with_using::_2_expects_use_crate_assert_is_power_of_two ... ok
-test power_of_two_with_using::_4_expects_use_some_mod_assert_is_power_of_two ... ok
-test pretty_assertions_usage::_1_expects_use_wrapped_pretty_assert_1_ ... ok
+test power_of_two_with_using::test_case_1_1_expects_use_assert_is_power_of_two ... ok
+test power_of_two_with_using::test_case_2_2_expects_use_crate_assert_is_power_of_two ... ok
+test power_of_two_with_using::test_case_3_4_expects_use_some_mod_assert_is_power_of_two ... ok
+test pretty_assertions_usage::test_case_1_1_expects_use_wrapped_pretty_assert_1_ ... ok
 test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
