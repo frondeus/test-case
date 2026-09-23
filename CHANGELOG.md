@@ -1,5 +1,36 @@
 # Changelog
 
+## 3.4.0
+
+### Changes
+* Adds test case number to automatically distinguish test cases with the same generated name (#151)
+   Instead of having a conflict in example like this:
+
+```rust
+#[test_case(42)]
+#[test_case("42")]
+fn cases_are_enumerated(value: impl std::fmt::Display) {
+   assert_eq!("42", &value.to_string())
+}
+```
+
+It now generates prefix name for each test case. In all cases:
+
+```
+test cases_are_enumerated::test_case_1_42_expects ... ok
+test cases_are_enumerated::test_case_2_42_expects ... ok
+```
+
+* Inverts the left and right output for simple test cases.
+  Generates `assert_eq!(result, expectation)` instead of previous `assert_eq!(expectation, result)`;
+* Upgrades edition to 2024
+* Updates:
+  * regex to 1.9
+  * insta to 1.43
+  * itertools to 0.15
+  * syn to 3.0
+
+
 ## 3.3.1
 ### Fixes
 * Avoid emitting additional misleading error messages by proc-macro2-diagnostics (#138)

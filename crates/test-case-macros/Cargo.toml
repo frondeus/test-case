@@ -1,6 +1,6 @@
 [package]
 name          = "test-case-macros"
-version       = "3.3.1"
+version       = "3.4.0"
 edition       = "2024"
 authors       = ["Marcin Sas-Szymanski <marcin.sas-szymanski@anixe.pl>", "Wojciech Polak <frondeus@gmail.com>", "Łukasz Biel <lukasz.p.biel@gmail.com>"]
 description   = "Provides #[test_case(...)] procedural macro attribute for generating parametrized test cases easily"
@@ -26,4 +26,4 @@ path       = "src/lib.rs"
 proc-macro2     = { version = "1.0", features = [] }
 quote           = "1.0"
 syn             = { version = "3.0", features = ["full", "extra-traits", "parsing"] }
-test-case-core  = { version = "3.2.1", path = "../test-case-core", default-features = false }
+test-case-core  = { version = "3.4.0", path = "../test-case-core", default-features = false }

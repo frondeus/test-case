@@ -3,7 +3,7 @@
 [![Docs.rs](https://docs.rs/test-case/badge.svg)](https://docs.rs/test-case)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/rust-lang/docs.rs/master/LICENSE)
 [![Build Status](https://github.com/frondeus/test-case/workflows/Test/badge.svg)](https://github.com/frondeus/test-case/actions)
-![Maintenance](https://img.shields.io/badge/maintenance-activly--developed-brightgreen.svg)
+![Maintenance](https://img.shields.io/badge/maintenance-actively--developed-brightgreen.svg)
 
 # Test Case
 
@@ -14,9 +14,8 @@
 
 Crate has to be added as a dependency to `Cargo.toml`:
 
-```toml
-[dev-dependencies]
-test-case = "*"
+```
+cargo add --dev test_case
 ```
 
 and imported to the scope of a block where it's being called
@@ -125,14 +124,3 @@ available. From a clean working tree, run:
 EDITOR="code --wait" ./scripts/publish.sh
 ```
 
-The script uses `$EDITOR` (default: `vi`); editor arguments are supported as
-whitespace-separated words. It prompts for a version, updates all three packages
-and their internal dependency requirements, runs validation, regenerates the
-README, and opens the changelog. After editing the changelog, it commits the
-release files and pushes the branch to origin. If validation changes source
-files, it stops so you can review and commit those changes manually.
-
-Wait for CI, then follow the printed commands to tag the release, push that tag,
-and create a GitHub release. Publish `test-case-core`, then `test-case-macros`,
-then `test-case`, waiting for each dependency to become available on crates.io.
-Publishing is manual; GitHub Actions only runs validation and tests.
