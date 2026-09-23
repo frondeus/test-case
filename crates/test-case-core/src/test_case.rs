@@ -75,13 +75,13 @@ impl TestCase {
         self.name.clone()
     }
 
-    pub fn render(&self, mut item: ItemFn, origin_span: Span2) -> TokenStream2 {
+    pub fn render(&self, mut item: ItemFn, origin_span: Span2, test_number: usize) -> TokenStream2 {
         let item_name = item.sig.ident.clone();
         let arg_values = self.args.iter();
         let test_case_name = {
-            let mut test_case_name = self.test_case_name();
-            test_case_name.set_span(origin_span);
-            test_case_name
+            let name = self.test_case_name();
+            let sep = if name.to_string().starts_with('_') { "" } else { "_" };
+            Ident::new(&format!("test_case_{test_number}{sep}{name}"), origin_span)
         };
 
         let mut attrs = self

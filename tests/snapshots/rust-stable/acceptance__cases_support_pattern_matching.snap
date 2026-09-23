@@ -3,11 +3,11 @@ source: tests/acceptance_tests.rs
 expression: output
 ---
 error: test failed, to rerun pass `--lib`
-test extended_pattern_matching_result::err_should_fail ... FAILED
-test extended_pattern_matching_result::ok_should_fail ... FAILED
-test extended_pattern_matching_result::simpleenum_var1_expects_matching_ok_e_e_simpleenum_var1 ... ok
-test extended_pattern_matching_result::simpleenum_var2_expects_matching_err_e_e_var2_ ... ok
-test pattern_matching_result::simpleenum_var2_expects_matching_simpleenum_var2_ ... ok
+test extended_pattern_matching_result::test_case_1_simpleenum_var1_expects_matching_ok_e_e_simpleenum_var1 ... ok
+test extended_pattern_matching_result::test_case_2_ok_should_fail ... FAILED
+test extended_pattern_matching_result::test_case_3_simpleenum_var2_expects_matching_err_e_e_var2_ ... ok
+test extended_pattern_matching_result::test_case_4_err_should_fail ... FAILED
+test pattern_matching_result::test_case_1_simpleenum_var2_expects_matching_simpleenum_var2_ ... ok
 test result: FAILED. 3 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-thread 'extended_pattern_matching_result::err_should_fail' panicked at src/lib.rs:16:1:
-thread 'extended_pattern_matching_result::ok_should_fail' panicked at src/lib.rs:16:1:
+thread 'extended_pattern_matching_result::test_case_2_ok_should_fail' panicked at src/lib.rs:16:1:
+thread 'extended_pattern_matching_result::test_case_4_err_should_fail' panicked at src/lib.rs:16:1:

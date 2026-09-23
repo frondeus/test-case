@@ -3,10 +3,10 @@ source: tests/acceptance_tests.rs
 expression: output
 ---
 error: test failed, to rerun pass `--lib`
-test panicking::_expects_panicking_some_it_has_to_panic_ - should panic ... ok
-test panicking::_expects_panicking_some_this_should_fail_ - should panic ... FAILED
-test panics_without_value::_expects_panicking_none - should panic ... ok
-test pattern_matching_result_fails::simpleenum_var1_expects_matching_simpleenum_var2_ - should panic ... ok
+test panicking::test_case_1_expects_panicking_some_it_has_to_panic_ - should panic ... ok
+test panicking::test_case_2_expects_panicking_some_this_should_fail_ - should panic ... FAILED
+test panics_without_value::test_case_1_expects_panicking_none - should panic ... ok
+test pattern_matching_result_fails::test_case_1_simpleenum_var1_expects_matching_simpleenum_var2_ - should panic ... ok
 test result: FAILED. 4 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-test result_which_panics::_2_2_expects_2_3 - should panic ... ok
-thread 'panicking::_expects_panicking_some_this_should_fail_' panicked at src/lib.rs:20:5:
+test result_which_panics::test_case_1_2_2_expects_2_3 - should panic ... ok
+thread 'panicking::test_case_2_expects_panicking_some_this_should_fail_' panicked at src/lib.rs:20:5:

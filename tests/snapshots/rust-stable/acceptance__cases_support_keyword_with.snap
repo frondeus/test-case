@@ -2,6 +2,6 @@
 source: tests/acceptance_tests.rs
 expression: output
 ---
-test divide_by_zero_f64_with_lambda::_0_0_expects_with_v_f64_assert_v_is_nan_ ... ok
-test divide_by_zero_f64_with_lambda::_1_0_expects_with_v_f64_assert_v_is_infinite_ ... ok
+test divide_by_zero_f64_with_lambda::test_case_1_1_0_expects_with_v_f64_assert_v_is_infinite_ ... ok
+test divide_by_zero_f64_with_lambda::test_case_2_0_0_expects_with_v_f64_assert_v_is_nan_ ... ok
 test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

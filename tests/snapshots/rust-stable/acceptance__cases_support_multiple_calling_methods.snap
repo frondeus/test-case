@@ -2,11 +2,11 @@
 source: tests/acceptance_tests.rs
 expression: output
 ---
-test can_use_fully_qualified_case_path::_2_expects ... ok
-test can_use_fully_qualified_case_path::_3_expects ... ok
-test can_use_fully_qualified_test_case_path::first_test ... ok
-test can_use_fully_qualified_test_case_path::second_test ... ok
-test import::can_import_test_case_attribute::_2_expects ... ok
+test can_use_fully_qualified_case_path::test_case_1_2_expects ... ok
+test can_use_fully_qualified_case_path::test_case_2_3_expects ... ok
+test can_use_fully_qualified_test_case_path::test_case_1_first_test ... ok
+test can_use_fully_qualified_test_case_path::test_case_2_second_test ... ok
+test import::can_import_test_case_attribute::test_case_1_2_expects ... ok
 test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-test short_version::can_use_case_attribute_same_as_test_case::_12u8_expects_12u16 ... ok
-test short_version::can_use_case_attribute_same_as_test_case::_8u8_expects_8u16 ... ok
+test short_version::can_use_case_attribute_same_as_test_case::test_case_1_12u8_expects_12u16 ... ok
+test short_version::can_use_case_attribute_same_as_test_case::test_case_2_8u8_expects_8u16 ... ok

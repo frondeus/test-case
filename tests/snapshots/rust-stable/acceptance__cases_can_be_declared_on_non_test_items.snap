@@ -3,11 +3,11 @@ source: tests/acceptance_tests.rs
 expression: output
 ---
 error: test failed, to rerun pass `--lib`
-test internal_tested_function1::_2_expects_4 ... ok
-test internal_tested_function1::_3_expects_6 ... FAILED
-test internal_tested_function2::_1_expects_0 ... ok
-test internal_tested_function3::_1_expects_matching_3_ ... ok
-test internal_tested_function3::_2_expects_inconclusive6 ... ignored
-test internal_tested_function4::_2_expects_panicking_some_can_t_ - should panic ... ok
+test internal_tested_function1::test_case_1_2_expects_4 ... ok
+test internal_tested_function1::test_case_2_3_expects_6 ... FAILED
+test internal_tested_function2::test_case_1_1_expects_0 ... ok
+test internal_tested_function3::test_case_1_1_expects_matching_3_ ... ok
+test internal_tested_function3::test_case_2_2_expects_inconclusive6 ... ignored
+test internal_tested_function4::test_case_1_2_expects_panicking_some_can_t_ - should panic ... ok
 test result: FAILED. 4 passed; 1 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
-thread 'internal_tested_function1::_3_expects_6' panicked at src/lib.rs:8:1:
+thread 'internal_tested_function1::test_case_2_3_expects_6' panicked at src/lib.rs:8:1:

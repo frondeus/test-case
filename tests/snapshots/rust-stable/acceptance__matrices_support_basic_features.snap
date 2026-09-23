@@ -3,73 +3,73 @@ source: tests/acceptance_tests.rs
 expression: output
 ---
 test result: ok. 70 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-test test_cases::case_after_matrix::_1_expects ... ok
-test test_cases::case_after_matrix::_2_expects ... ok
-test test_cases::case_after_matrix::_3_expects ... ok
-test test_cases::case_after_matrix::_4_expects ... ok
-test test_cases::case_before_matrix::_5_expects ... ok
-test test_cases::case_before_matrix::_6_expects ... ok
-test test_cases::case_before_matrix::_7_expects ... ok
-test test_cases::case_before_matrix::_8_expects ... ok
-test test_cases::impl_trait::_bar_expects ... ok
-test test_cases::impl_trait::_baz_expects ... ok
-test test_cases::impl_trait::_foo_expects ... ok
-test test_cases::matrix_with_expressions::_2_2_two_expects ... ok
-test test_cases::matrix_with_expressions::_2_4_expects ... ok
-test test_cases::matrix_with_expressions::_2_double_2_expects ... ok
-test test_cases::matrix_with_keywords::true_false_expects ... ok
-test test_cases::matrix_with_keywords::true_true_expects ... ok
-test test_cases::matrix_with_panics::_1_11_expects_panicking_some_always_panics_ - should panic ... ok
-test test_cases::matrix_with_panics::_1_12_expects_panicking_some_always_panics_ - should panic ... ok
-test test_cases::matrix_with_panics::_2_11_expects_panicking_some_always_panics_ - should panic ... ok
-test test_cases::matrix_with_panics::_2_12_expects_panicking_some_always_panics_ - should panic ... ok
-test test_cases::matrix_with_range::_1_11_expects ... ok
-test test_cases::matrix_with_range::_1_12_expects ... ok
-test test_cases::matrix_with_range::_2_11_expects ... ok
-test test_cases::matrix_with_range::_2_12_expects ... ok
-test test_cases::matrix_with_range::_3_11_expects ... ok
-test test_cases::matrix_with_range::_3_12_expects ... ok
-test test_cases::matrix_with_range::_4_11_expects ... ok
-test test_cases::matrix_with_range::_4_12_expects ... ok
-test test_cases::matrix_with_range::_5_11_expects ... ok
-test test_cases::matrix_with_range::_5_12_expects ... ok
-test test_cases::matrix_with_range::_6_11_expects ... ok
-test test_cases::matrix_with_range::_6_12_expects ... ok
-test test_cases::matrix_with_range::_7_11_expects ... ok
-test test_cases::matrix_with_range::_7_12_expects ... ok
-test test_cases::matrix_with_range::_8_11_expects ... ok
-test test_cases::matrix_with_range::_8_12_expects ... ok
-test test_cases::matrix_with_range::_9_11_expects ... ok
-test test_cases::matrix_with_range::_9_12_expects ... ok
-test test_cases::matrix_with_should_panic::_1_11_expects - should panic ... ok
-test test_cases::matrix_with_should_panic::_1_12_expects - should panic ... ok
-test test_cases::matrix_with_should_panic::_2_11_expects - should panic ... ok
-test test_cases::matrix_with_should_panic::_2_12_expects - should panic ... ok
-test test_cases::matrix_with_singleton::_just_1_expects ... ok
-test test_cases::matrix_with_singleton::_just_2_expects ... ok
-test test_cases::matrix_with_singleton::_just_3_expects ... ok
-test test_cases::numeric_values_array::_1_11_expects ... ok
-test test_cases::numeric_values_array::_1_12_expects ... ok
-test test_cases::numeric_values_array::_2_11_expects ... ok
-test test_cases::numeric_values_array::_2_12_expects ... ok
-test test_cases::only_singleton::_alone_expects ... ok
-test test_cases::str_values_tuple::_one_blue_expects ... ok
-test test_cases::str_values_tuple::_one_yellow_expects ... ok
-test test_cases::str_values_tuple::_two_blue_expects ... ok
-test test_cases::str_values_tuple::_two_yellow_expects ... ok
-test test_cases::two_matrices::_1_11_expects ... ok
-test test_cases::two_matrices::_1_12_expects ... ok
-test test_cases::two_matrices::_2_11_expects ... ok
-test test_cases::two_matrices::_2_12_expects ... ok
-test test_cases::two_matrices::_3_13_expects ... ok
-test test_cases::two_matrices::_3_14_expects ... ok
-test test_cases::two_matrices::_4_13_expects ... ok
-test test_cases::two_matrices::_4_14_expects ... ok
-test test_cases::two_matrices_with_comments::one_two_1_11_expects ... ok
-test test_cases::two_matrices_with_comments::one_two_1_12_expects ... ok
-test test_cases::two_matrices_with_comments::one_two_2_11_expects ... ok
-test test_cases::two_matrices_with_comments::one_two_2_12_expects ... ok
-test test_cases::two_matrices_with_comments::three_four_3_13_expects ... ok
-test test_cases::two_matrices_with_comments::three_four_3_14_expects ... ok
-test test_cases::two_matrices_with_comments::three_four_4_13_expects ... ok
-test test_cases::two_matrices_with_comments::three_four_4_14_expects ... ok
+test test_cases::case_after_matrix::test_case_1_1_expects ... ok
+test test_cases::case_after_matrix::test_case_2_2_expects ... ok
+test test_cases::case_after_matrix::test_case_3_3_expects ... ok
+test test_cases::case_after_matrix::test_case_4_4_expects ... ok
+test test_cases::case_before_matrix::test_case_1_5_expects ... ok
+test test_cases::case_before_matrix::test_case_2_6_expects ... ok
+test test_cases::case_before_matrix::test_case_3_7_expects ... ok
+test test_cases::case_before_matrix::test_case_4_8_expects ... ok
+test test_cases::impl_trait::test_case_1_foo_expects ... ok
+test test_cases::impl_trait::test_case_2_bar_expects ... ok
+test test_cases::impl_trait::test_case_3_baz_expects ... ok
+test test_cases::matrix_with_expressions::test_case_1_2_double_2_expects ... ok
+test test_cases::matrix_with_expressions::test_case_2_2_2_two_expects ... ok
+test test_cases::matrix_with_expressions::test_case_3_2_4_expects ... ok
+test test_cases::matrix_with_keywords::test_case_1_true_true_expects ... ok
+test test_cases::matrix_with_keywords::test_case_2_true_false_expects ... ok
+test test_cases::matrix_with_panics::test_case_1_1_11_expects_panicking_some_always_panics_ - should panic ... ok
+test test_cases::matrix_with_panics::test_case_2_1_12_expects_panicking_some_always_panics_ - should panic ... ok
+test test_cases::matrix_with_panics::test_case_3_2_11_expects_panicking_some_always_panics_ - should panic ... ok
+test test_cases::matrix_with_panics::test_case_4_2_12_expects_panicking_some_always_panics_ - should panic ... ok
+test test_cases::matrix_with_range::test_case_10_5_12_expects ... ok
+test test_cases::matrix_with_range::test_case_11_6_11_expects ... ok
+test test_cases::matrix_with_range::test_case_12_6_12_expects ... ok
+test test_cases::matrix_with_range::test_case_13_7_11_expects ... ok
+test test_cases::matrix_with_range::test_case_14_7_12_expects ... ok
+test test_cases::matrix_with_range::test_case_15_8_11_expects ... ok
+test test_cases::matrix_with_range::test_case_16_8_12_expects ... ok
+test test_cases::matrix_with_range::test_case_17_9_11_expects ... ok
+test test_cases::matrix_with_range::test_case_18_9_12_expects ... ok
+test test_cases::matrix_with_range::test_case_1_1_11_expects ... ok
+test test_cases::matrix_with_range::test_case_2_1_12_expects ... ok
+test test_cases::matrix_with_range::test_case_3_2_11_expects ... ok
+test test_cases::matrix_with_range::test_case_4_2_12_expects ... ok
+test test_cases::matrix_with_range::test_case_5_3_11_expects ... ok
+test test_cases::matrix_with_range::test_case_6_3_12_expects ... ok
+test test_cases::matrix_with_range::test_case_7_4_11_expects ... ok
+test test_cases::matrix_with_range::test_case_8_4_12_expects ... ok
+test test_cases::matrix_with_range::test_case_9_5_11_expects ... ok
+test test_cases::matrix_with_should_panic::test_case_1_1_11_expects - should panic ... ok
+test test_cases::matrix_with_should_panic::test_case_2_1_12_expects - should panic ... ok
+test test_cases::matrix_with_should_panic::test_case_3_2_11_expects - should panic ... ok
+test test_cases::matrix_with_should_panic::test_case_4_2_12_expects - should panic ... ok
+test test_cases::matrix_with_singleton::test_case_1_just_1_expects ... ok
+test test_cases::matrix_with_singleton::test_case_2_just_2_expects ... ok
+test test_cases::matrix_with_singleton::test_case_3_just_3_expects ... ok
+test test_cases::numeric_values_array::test_case_1_1_11_expects ... ok
+test test_cases::numeric_values_array::test_case_2_1_12_expects ... ok
+test test_cases::numeric_values_array::test_case_3_2_11_expects ... ok
+test test_cases::numeric_values_array::test_case_4_2_12_expects ... ok
+test test_cases::only_singleton::test_case_1_alone_expects ... ok
+test test_cases::str_values_tuple::test_case_1_one_yellow_expects ... ok
+test test_cases::str_values_tuple::test_case_2_one_blue_expects ... ok
+test test_cases::str_values_tuple::test_case_3_two_yellow_expects ... ok
+test test_cases::str_values_tuple::test_case_4_two_blue_expects ... ok
+test test_cases::two_matrices::test_case_1_1_11_expects ... ok
+test test_cases::two_matrices::test_case_2_1_12_expects ... ok
+test test_cases::two_matrices::test_case_3_2_11_expects ... ok
+test test_cases::two_matrices::test_case_4_2_12_expects ... ok
+test test_cases::two_matrices::test_case_5_3_13_expects ... ok
+test test_cases::two_matrices::test_case_6_3_14_expects ... ok
+test test_cases::two_matrices::test_case_7_4_13_expects ... ok
+test test_cases::two_matrices::test_case_8_4_14_expects ... ok
+test test_cases::two_matrices_with_comments::test_case_1_one_two_1_11_expects ... ok
+test test_cases::two_matrices_with_comments::test_case_2_one_two_1_12_expects ... ok
+test test_cases::two_matrices_with_comments::test_case_3_one_two_2_11_expects ... ok
+test test_cases::two_matrices_with_comments::test_case_4_one_two_2_12_expects ... ok
+test test_cases::two_matrices_with_comments::test_case_5_three_four_3_13_expects ... ok
+test test_cases::two_matrices_with_comments::test_case_6_three_four_3_14_expects ... ok
+test test_cases::two_matrices_with_comments::test_case_7_three_four_4_13_expects ... ok
+test test_cases::two_matrices_with_comments::test_case_8_three_four_4_14_expects ... ok

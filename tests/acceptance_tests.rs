@@ -155,3 +155,8 @@ fn allow_stays_on_fn() {
 fn matrices_compilation_errors() {
     run_acceptance_test!("matrices_compilation_errors")
 }
+
+#[test]
+fn cases_are_enumerated() {
+    run_acceptance_test!("cases_are_enumerated")
+}

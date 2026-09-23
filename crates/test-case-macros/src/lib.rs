@@ -120,8 +120,8 @@ fn expand_additional_test_case_macros(item: &mut ItemFn) -> syn::Result<Vec<(Tes
 fn render_test_cases(test_cases: &[(TestCase, Span2)], mut item: ItemFn) -> TokenStream {
     let mut rendered_test_cases = vec![];
 
-    for (test_case, span) in test_cases {
-        rendered_test_cases.push(test_case.render(item.clone(), *span));
+    for (i, (test_case, span)) in test_cases.iter().enumerate() {
+        rendered_test_cases.push(test_case.render(item.clone(), *span, i + 1));
     }
 
     let mod_name = item.sig.ident.clone();

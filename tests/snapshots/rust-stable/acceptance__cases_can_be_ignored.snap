@@ -2,13 +2,13 @@
 source: tests/acceptance_tests.rs
 expression: output
 ---
-test descriptions::_expects_inconclusive_ ... ignored, reason but no comment
-test descriptions::ignore_keyword ... ignored, reason and comment
-test descriptions::test_is_not_run ... ignored, reason and comment
-test ignore_void::_1_expects_inconclusiveempty ... ignored
-test ignore_void::_2_expects_inconclusiveempty ... ignored
-test inconclusives::_expects_inconclusive_ ... ignored
-test inconclusives::ignore_keyword ... ignored
-test inconclusives::inconclusive_test ... ignored
-test inconclusives::test_is_not_ran ... ignored
+test descriptions::test_case_1_expects_inconclusive_ ... ignored, reason but no comment
+test descriptions::test_case_2_test_is_not_run ... ignored, reason and comment
+test descriptions::test_case_3_ignore_keyword ... ignored, reason and comment
+test ignore_void::test_case_1_1_expects_inconclusiveempty ... ignored
+test ignore_void::test_case_2_2_expects_inconclusiveempty ... ignored
+test inconclusives::test_case_1_expects_inconclusive_ ... ignored
+test inconclusives::test_case_2_test_is_not_ran ... ignored
+test inconclusives::test_case_3_inconclusive_test ... ignored
+test inconclusives::test_case_4_ignore_keyword ... ignored
 test result: ok. 0 passed; 0 failed; 9 ignored; 0 measured; 0 filtered out; finished in 0.00s

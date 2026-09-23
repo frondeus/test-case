@@ -1,0 +1,18 @@
+###
+# Ensure that `#[allow(...)]` is propagated to the test function.
+###
+
+[package]
+name = "allow_stays_on_fn"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "allow_stays_on_fn"
+path = "src/lib.rs"
+doctest = false
+
+[dependencies]
+test-case = { path = "../../../" }
+
+[workspace]

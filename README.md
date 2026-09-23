@@ -49,12 +49,12 @@ Output from `cargo test` for this example:
 ```sh
 $ cargo test
 
-running 4 tests
-test tests::multiplication_tests::when_both_operands_are_negative ... ok
-test tests::multiplication_tests::when_both_operands_are_positive ... ok
-test tests::multiplication_tests::when_operands_are_swapped ... ok
+running 3 tests
+test tests::multiplication_tests::test_case_1_when_both_operands_are_negative ... ok
+test tests::multiplication_tests::test_case_2_when_both_operands_are_positive ... ok
+test tests::multiplication_tests::test_case_3_when_operands_are_swapped ... ok
 
-test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 ```
 
 ### Test Matrix
