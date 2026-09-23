@@ -25,3 +25,23 @@ Recommended tools:
 * `cargo clippy` - for all insights and tips
 * `cargo fix`    - for fixing warnings
 
+## Releasing
+
+Install `cargo-get` and `cargo-readme`, and ensure stable and nightly Rust are
+available. From a clean working tree, run:
+
+```sh
+EDITOR="code --wait" ./scripts/publish.sh
+```
+
+The script uses `$EDITOR` (default: `vi`); editor arguments are supported as
+whitespace-separated words. It prompts for a version, updates all three packages
+and their internal dependency requirements, runs validation, regenerates the
+README, and opens the changelog. After editing the changelog, it commits the
+release files and pushes the branch to origin. If validation changes source
+files, it stops so you can review and commit those changes manually.
+
+Wait for CI, then follow the printed commands to tag the release, push that tag,
+and create a GitHub release. Publish `test-case-core`, then `test-case-macros`,
+then `test-case`, waiting for each dependency to become available on crates.io.
+Publishing is manual; GitHub Actions only runs validation and tests.

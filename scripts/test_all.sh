@@ -1,12 +1,20 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
-cargo clean
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+cd "${SCRIPT_DIR}/.."
 
-cargo +nightly clippy --all-targets --all-features -- -D warnings
-cargo +nightly fmt --all
-find . -name 'target' | xargs rm -rf
-SNAPSHOT_DIR=rust-stable cargo +stable test --workspace --all-features
-find . -name 'target' | xargs rm -rf
-SNAPSHOT_DIR=rust-nightly cargo +nightly test --workspace --all-features
+# Use the active toolchain, whether supplied by Nix, rustup, or the system.
+# CI covers both stable and nightly. Select matching compiler diagnostics locally.
+if [[ -z ${SNAPSHOT_DIR:-} ]]; then
+    case "$(rustc --version)" in
+        *-nightly*) SNAPSHOT_DIR=rust-nightly ;;
+        *) SNAPSHOT_DIR=rust-stable ;;
+    esac
+fi
+export SNAPSHOT_DIR
+
+cargo fmt --all -- --check
+cargo clippy --workspace --all-targets --all-features -- -D warnings
+cargo test --workspace --all-features

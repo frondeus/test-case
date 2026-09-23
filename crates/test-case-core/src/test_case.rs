@@ -80,7 +80,11 @@ impl TestCase {
         let arg_values = self.args.iter();
         let test_case_name = {
             let name = self.test_case_name();
-            let sep = if name.to_string().starts_with('_') { "" } else { "_" };
+            let sep = if name.to_string().starts_with('_') {
+                ""
+            } else {
+                "_"
+            };
             Ident::new(&format!("test_case_{test_number}{sep}{name}"), origin_span)
         };
 
