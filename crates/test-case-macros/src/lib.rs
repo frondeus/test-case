@@ -3,7 +3,7 @@ extern crate proc_macro;
 use proc_macro::TokenStream;
 
 use proc_macro2::Span as Span2;
-use syn::{parse_macro_input, ItemFn, Path};
+use syn::{ItemFn, Path, parse_macro_input};
 
 use quote::quote;
 use syn::parse_quote;
@@ -89,7 +89,7 @@ fn expand_additional_test_case_macros(item: &mut ItemFn) -> syn::Result<Vec<(Tes
                     return Err(syn::Error::new(
                         attr.span(),
                         format!("cannot parse test_case arguments: {err}"),
-                    ))
+                    ));
                 }
             };
             additional_cases.push((test_case, attr.span()));
@@ -101,7 +101,7 @@ fn expand_additional_test_case_macros(item: &mut ItemFn) -> syn::Result<Vec<(Tes
                     return Err(syn::Error::new(
                         attr.span(),
                         format!("cannot parse test_matrix arguments: {err}"),
-                    ))
+                    ));
                 }
             };
             additional_cases.extend(expand_test_matrix(&test_matrix, attr.span()));

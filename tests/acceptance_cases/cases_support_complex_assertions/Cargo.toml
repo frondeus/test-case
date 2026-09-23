@@ -5,7 +5,7 @@
 [package]
 name = "cases_support_complex_assertions"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [lib]
 name = "cases_support_complex_assertions"

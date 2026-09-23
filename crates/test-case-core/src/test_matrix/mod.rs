@@ -2,13 +2,13 @@ use std::{iter, mem};
 
 use proc_macro2::{Literal, Span};
 use syn::{
+    Expr, ExprLit, ExprRange, Lit, RangeLimits, Token,
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
     spanned::Spanned,
-    Expr, ExprLit, ExprRange, Lit, RangeLimits, Token,
 };
 
-use crate::{comment::TestCaseComment, expr::TestCaseExpression, TestCase};
+use crate::{TestCase, comment::TestCaseComment, expr::TestCaseExpression};
 
 mod matrix_product;
 
@@ -79,7 +79,7 @@ impl Parse for TestMatrix {
                         .map(|n| {
                             let mut lit = Lit::new(Literal::isize_unsuffixed(n));
                             lit.set_span(arg.span());
-                            Expr::from(ExprLit { lit, attrs: vec![] })
+                            Expr::Lit(ExprLit { lit, attrs: vec![] })
                         })
                         .collect()
                 }

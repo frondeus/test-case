@@ -2,10 +2,10 @@ use crate::utils::fmt_syn;
 use proc_macro2::Group;
 use proc_macro2::Span;
 use proc_macro2::TokenStream;
-use quote::{quote, TokenStreamExt};
+use quote::{TokenStreamExt, quote};
 use std::fmt::{Display, Formatter};
 use syn::parse::{Parse, ParseStream};
-use syn::{parse_quote, Expr};
+use syn::{Expr, parse_quote};
 
 mod kw {
     syn::custom_keyword!(eq);
@@ -485,7 +485,7 @@ mod tests {
         AlmostEqual, ComplexTestCase, Contains, ContainsInOrder, Count, Len, OrderingToken, Path,
         PathToken,
     };
-    use syn::{parse_quote, LitFloat, LitInt, LitStr};
+    use syn::{LitFloat, LitInt, LitStr, parse_quote};
 
     macro_rules! assert_ord {
         ($actual:tt, $token:path, $value:tt) => {

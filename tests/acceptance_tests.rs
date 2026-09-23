@@ -22,7 +22,7 @@ macro_rules! run_acceptance_test {
 
             let output = sanitize_lines(output);
 
-            insta::assert_display_snapshot!(output);
+            insta::assert_snapshot!(output);
         })
     };
     ($case_name:expr) => {
@@ -40,6 +40,7 @@ fn get_snapshot_directory() -> String {
 
 fn sanitize_lines(s: String) -> String {
     let re_time = Regex::new(r"\d+\.\d{2}s").expect("Building regex");
+    let re_thread_id = Regex::new(r"(thread '[^']*') \(\d+\) panicked at").expect("Building regex");
 
     let mut s = s
         .lines()
@@ -53,6 +54,11 @@ fn sanitize_lines(s: String) -> String {
         .map(|line| line.replace('\\', "/"))
         .map(|line| line.replace(".exe", ""))
         .map(|line| re_time.replace_all(&line, "0.00s").to_string())
+        .map(|line| {
+            re_thread_id
+                .replace_all(&line, "$1 panicked at")
+                .to_string()
+        })
         .collect::<Vec<_>>();
 
     s.sort_unstable();
