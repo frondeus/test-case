@@ -2,7 +2,7 @@
 source: tests/acceptance_tests.rs
 expression: output
 ---
-test result: ok. 70 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 74 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 test test_cases::case_after_matrix::test_case_1_1_expects ... ok
 test test_cases::case_after_matrix::test_case_2_2_expects ... ok
 test test_cases::case_after_matrix::test_case_3_3_expects ... ok
@@ -14,6 +14,10 @@ test test_cases::case_before_matrix::test_case_4_8_expects ... ok
 test test_cases::impl_trait::test_case_1_foo_expects ... ok
 test test_cases::impl_trait::test_case_2_bar_expects ... ok
 test test_cases::impl_trait::test_case_3_baz_expects ... ok
+test test_cases::matrix_with_described_panics::test_case_1_bare_panic_1_expects_panicking_none - should panic ... ok
+test test_cases::matrix_with_described_panics::test_case_2_bare_panic_2_expects_panicking_none - should panic ... ok
+test test_cases::matrix_with_described_panics::test_case_3_panic_message_3_expects_panicking_some_always_panics_ - should panic ... ok
+test test_cases::matrix_with_described_panics::test_case_4_panic_message_4_expects_panicking_some_always_panics_ - should panic ... ok
 test test_cases::matrix_with_expressions::test_case_1_2_double_2_expects ... ok
 test test_cases::matrix_with_expressions::test_case_2_2_2_two_expects ... ok
 test test_cases::matrix_with_expressions::test_case_3_2_4_expects ... ok

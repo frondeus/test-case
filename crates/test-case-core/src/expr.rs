@@ -193,10 +193,61 @@ where
     Mapping: FnOnce(Option<Inner>) -> TestCaseResult,
     Inner: Parse,
 {
-    let result = (!input.is_empty()).then(|| input.parse()).transpose()?;
+    let result = (!input.is_empty() && !input.peek(Token![;]))
+        .then(|| input.parse())
+        .transpose()?;
     Ok(TestCaseExpression {
         _token: token,
         extra_keywords,
         result: mapping(result),
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::comment::TestCaseComment;
+    use syn::parse::Parser;
+
+    #[test]
+    fn parses_optional_panic_messages_and_descriptions() {
+        for (input, expected_message, expected_description) in [
+            ("=> panics", None, None),
+            ("=> panics; \"description\"", None, Some("description")),
+            ("=> panics \"message\"", Some("message"), None),
+            ("=> panics \"message\"; \"description\"", Some("message"), Some("description")),
+        ] {
+            let parser = |input: ParseStream| -> syn::Result<_> {
+                let expression: TestCaseExpression = input.parse()?;
+                let description = if input.is_empty() {
+                    None
+                } else {
+                    Some(input.parse::<TestCaseComment>()?)
+                };
+                Ok((expression, description))
+            };
+            let (expression, description) = parser.parse_str(input).unwrap();
+            let TestCaseResult::Panicking(message) = &expression.result else {
+                panic!("expected a panic expectation");
+            };
+            let expected_message: Option<Expr> =
+                expected_message.map(|message| parse_quote! { #message });
+            assert_eq!(message, &expected_message);
+            assert_eq!(
+                description.map(|description| description.comment.value()),
+                expected_description.map(str::to_string),
+            );
+            let expected_attribute: Attribute = if let Some(message) = expected_message {
+                parse_quote! { #[should_panic(expected = #message)] }
+            } else {
+                parse_quote! { #[should_panic] }
+            };
+            assert_eq!(expression.attributes(), vec![expected_attribute]);
+        }
+    }
+
+    #[test]
+    fn rejects_malformed_panic_messages() {
+        assert!(syn::parse_str::<TestCaseExpression>("=> panics 1 +").is_err());
+    }
 }

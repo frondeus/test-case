@@ -132,6 +132,12 @@ mod test_cases {
         panic!("Always panics")
     }
 
+    #[test_matrix([1, 2] => panics; "bare panic")]
+    #[test_matrix([3, 4] => panics "Always panics"; "panic message")]
+    fn matrix_with_described_panics(x: u32) {
+        assert_eq!(x, 0, "Always panics");
+    }
+
     // tests from documentation
 
     // TODO

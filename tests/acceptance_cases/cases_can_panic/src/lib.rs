@@ -34,3 +34,10 @@ assertion `left == right` failed
 fn result_which_panics(x: u32, y: u32) -> u32 {
     x + y
 }
+
+#[test_case(1, 2 => panics; "case 1, panics")]
+#[test_case(3, 2; "case 2, okay")]
+#[test_case(1, 2 => panics "assertion `left == right` failed"; "case 3, panic message")]
+fn test_add_5(a: i32, b: i32) {
+    assert_eq!(a + b, 5);
+}
