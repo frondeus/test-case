@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.4.1
+
+### Fixes
+
+* test_case no longer triggers clippy::redundant_test_prefix lint (#155)
+* test_case with => panics no longer fails when test_case panics (#153) thanks to @jtmoon79
+
 ## 3.4.0
 
 ### Changes
