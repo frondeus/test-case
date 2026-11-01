@@ -215,7 +215,11 @@ mod tests {
             ("=> panics", None, None),
             ("=> panics; \"description\"", None, Some("description")),
             ("=> panics \"message\"", Some("message"), None),
-            ("=> panics \"message\"; \"description\"", Some("message"), Some("description")),
+            (
+                "=> panics \"message\"; \"description\"",
+                Some("message"),
+                Some("description"),
+            ),
         ] {
             let parser = |input: ParseStream| -> syn::Result<_> {
                 let expression: TestCaseExpression = input.parse()?;
