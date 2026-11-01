@@ -1,0 +1,18 @@
+###
+# Ensure that generated `test_case_*` names do not trigger `clippy::redundant_test_prefix`.
+###
+
+[package]
+name = "generated_names_pass_redundant_test_prefix_lint"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "generated_names_pass_redundant_test_prefix_lint"
+path = "src/lib.rs"
+doctest = false
+
+[dependencies]
+test-case = { path = "../../../" }
+
+[workspace]

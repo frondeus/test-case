@@ -95,6 +95,9 @@ impl TestCase {
             .unwrap_or_default();
 
         attrs.push(parse_quote! { #[allow(clippy::bool_assert_comparison)] });
+        // Generated names always start with `test_case_`, which users cannot change.
+        // `unknown_lints` keeps clippy older than 1.88 (MSRV is 1.85) quiet about this lint name.
+        attrs.push(parse_quote! { #[allow(unknown_lints, clippy::redundant_test_prefix)] });
         attrs.append(&mut item.attrs);
 
         let (mut signature, body) = if item.sig.asyncness.is_some() {

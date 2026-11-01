@@ -1,0 +1,5 @@
+---
+source: tests/acceptance_tests.rs
+expression: output
+---
+

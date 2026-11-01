@@ -8,11 +8,11 @@ use std::path::PathBuf;
 use std::process::Command;
 
 macro_rules! run_acceptance_test {
-    ($cmd:expr, $case_name:expr) => {
+    ($args:expr, $case_name:expr) => {
         with_settings!({snapshot_path => get_snapshot_directory()}, {
             let subcommand = Command::new("cargo")
                 .current_dir(PathBuf::from("tests").join("acceptance_cases").join($case_name))
-                .args(&[$cmd])
+                .args($args)
                 .output()
                 .expect("Failed to spawn cargo subcommand");
 
@@ -26,7 +26,7 @@ macro_rules! run_acceptance_test {
         })
     };
     ($case_name:expr) => {
-        run_acceptance_test!("test", $case_name)
+        run_acceptance_test!(["test"], $case_name)
     }
 }
 
@@ -78,7 +78,7 @@ fn cases_can_be_declared_on_non_test_items() {
 
 #[test]
 fn cases_declared_on_non_test_items_can_be_used() {
-    run_acceptance_test!("run", "cases_can_be_declared_on_non_test_items")
+    run_acceptance_test!(["run"], "cases_can_be_declared_on_non_test_items")
 }
 
 #[test]
@@ -159,4 +159,12 @@ fn matrices_compilation_errors() {
 #[test]
 fn cases_are_enumerated() {
     run_acceptance_test!("cases_are_enumerated")
+}
+
+#[test]
+fn generated_names_pass_redundant_test_prefix_lint() {
+    run_acceptance_test!(
+        ["clippy", "--tests"],
+        "generated_names_pass_redundant_test_prefix_lint"
+    )
 }
