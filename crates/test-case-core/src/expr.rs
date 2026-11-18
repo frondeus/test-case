@@ -46,7 +46,7 @@ pub enum TestCaseResult {
 impl Parse for TestCaseExpression {
     fn parse(input: ParseStream) -> syn::Result<Self> {
         let token: Token![=>] = input.parse()?;
-        let extra_keywords = parse_kws(input);
+        let extra_keywords = parse_kws(input)?;
 
         if input.parse::<kw::matches>().is_ok() {
             let pattern = Pat::parse_single(input)?;
@@ -72,11 +72,12 @@ impl Parse for TestCaseExpression {
         } else if input.parse::<kw::panics>().is_ok() {
             parse_with_keyword_ok::<_, _>(input, token, extra_keywords, TestCaseResult::Panicking)
         } else {
-            let result = match input.parse::<Expr>() {
-                Ok(expr) => TestCaseResult::Simple(expr),
-                Err(_) if !extra_keywords.is_empty() => TestCaseResult::Empty,
-                Err(e) => return Err(e),
-            };
+            let result =
+                if !extra_keywords.is_empty() && (input.is_empty() || input.peek(Token![;])) {
+                    TestCaseResult::Empty
+                } else {
+                    TestCaseResult::Simple(input.parse()?)
+                };
 
             Ok(Self {
                 _token: token,

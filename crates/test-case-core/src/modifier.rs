@@ -45,6 +45,9 @@ impl Modifier {
             let content;
             let _: Bracket = bracketed!(content in input);
             let reason: LitStr = content.parse()?;
+            if !content.is_empty() {
+                return Err(content.error("unexpected token"));
+            }
             Ok(Self::InconclusiveWithReason(reason))
         } else {
             Ok(Self::Inconclusive)
@@ -59,10 +62,10 @@ impl Modifier {
     }
 }
 
-pub fn parse_kws(input: ParseStream) -> HashSet<Modifier> {
+pub fn parse_kws(input: ParseStream) -> syn::Result<HashSet<Modifier>> {
     let mut kws = HashSet::new();
-    while let Ok(kw) = Modifier::parse(input) {
-        kws.insert(kw);
+    while input.peek(kw::inconclusive) || input.peek(kw::ignore) {
+        kws.insert(input.parse()?);
     }
-    kws
+    Ok(kws)
 }

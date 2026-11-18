@@ -46,15 +46,11 @@ impl Parse for TestMatrix {
     fn parse(input: ParseStream) -> syn::Result<Self> {
         let args: Punctuated<Expr, Token![,]> = Punctuated::parse_separated_nonempty(input)?;
 
-        let expression = (!input.is_empty()).then(|| input.parse()).transpose();
-        let comment = (!input.is_empty()).then(|| input.parse()).transpose();
-        // if both are errors, pick the expression error since it is more likely to be informative.
-        //
-        // TODO(https://github.com/frondeus/test-case/issues/135): avoid Result::ok entirely.
-        let (expression, comment) = match (expression, comment) {
-            (Err(expression), Err(_comment)) => return Err(expression),
-            (expression, comment) => (expression.ok().flatten(), comment.ok().flatten()),
-        };
+        let expression = input.peek(Token![=>]).then(|| input.parse()).transpose()?;
+        let comment = input.peek(Token![;]).then(|| input.parse()).transpose()?;
+        if !input.is_empty() {
+            return Err(input.error("unexpected token"));
+        }
 
         let mut matrix = TestMatrix {
             expression,
@@ -119,5 +115,50 @@ fn isize_from_range_expr(limits_span: Span, expr: Option<&Expr>) -> syn::Result<
             limits_span,
             "Unbounded ranges are not supported",
         )),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parses_optional_expression_and_comment() {
+        for input in [
+            "[1, 2]",
+            "[1, 2] => 3",
+            r#"[1, 2]; "description""#,
+            r#"[1, 2] => 3; "description""#,
+            r#"[1, 2] => ignore; "ignored""#,
+            r#"[1, 2] => panics; "bare panic""#,
+        ] {
+            assert!(
+                syn::parse_str::<TestMatrix>(input).is_ok(),
+                "expected `{input}` to parse"
+            );
+        }
+    }
+
+    #[test]
+    fn propagates_expression_and_comment_parse_errors() {
+        let err =
+            syn::parse_str::<TestMatrix>(r#"[1, 2] => is unknown_keyword; "desc""#).unwrap_err();
+        assert_eq!(err.to_string(), "cannot parse complex expression");
+
+        let err = syn::parse_str::<TestMatrix>("[1, 2]; 123").unwrap_err();
+        assert_eq!(err.to_string(), "expected string literal");
+
+        for input in [
+            r#"[1, 2] => 2 + ; "desc""#,
+            r#"[1, 2] => ; "desc""#,
+            "[1, 2] => 2;",
+            "[1, 2] => ignore[123] 2",
+            "[1, 2] => ignore 2 +",
+        ] {
+            assert!(
+                syn::parse_str::<TestMatrix>(input).is_err(),
+                "expected `{input}` to fail parsing"
+            );
+        }
     }
 }
